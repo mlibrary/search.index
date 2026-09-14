@@ -216,7 +216,12 @@ class ArticlesFilterQuery(BaseFilterQuery):
                         result.append(f"facet_{field},exact,{code}")
                 case "creationdate":
                     for value in self.facets[field]:
-                        normalized = f"[{value} TO {value}]"
+                        parts = value.split(",")
+                        start = parts[0]
+                        upto = start
+                        if len(parts) > 1:
+                            upto = parts[1]
+                        normalized = f"[{start} TO {upto}]"
                         result.append(f"facet_search{field},exact,{normalized}")
         tlevel_map = {
             "open_access": "open_access",

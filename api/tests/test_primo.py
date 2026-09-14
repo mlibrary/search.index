@@ -474,6 +474,21 @@ class TestArticlesFilterQuery:
         subject = ArticlesFilterQuery({"filters": ["date:2025"]}).qInclude()
         assert subject == expected
 
+    def test_qInclude_for_date_range(self):
+        expected = "facet_searchcreationdate,exact,[2025 TO 2026]"
+        subject = ArticlesFilterQuery({"filters": ["date:2025,2026"]}).qInclude()
+        assert subject == expected
+
+    def test_qInclude_for_date_before_range(self):
+        expected = "facet_searchcreationdate,exact,[* TO 2026]"
+        subject = ArticlesFilterQuery({"filters": ["date:*,2026"]}).qInclude()
+        assert subject == expected
+
+    def test_qInclude_for_date_after_range(self):
+        expected = "facet_searchcreationdate,exact,[2025 TO *]"
+        subject = ArticlesFilterQuery({"filters": ["date:2025,*"]}).qInclude()
+        assert subject == expected
+
     def test_qInclude_for_open_access(self):
         expected = "facet_tlevel,exact,open_access"
         subject = ArticlesFilterQuery({"open_access": True, "filters": []}).qInclude()

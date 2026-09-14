@@ -630,8 +630,8 @@ class CSL(BaseCSL):
         result = []
         for au in self.doc.authors:
             if re.search(", ", au):
-                family, given = au.split(", ")
-                result.append({"family": family, "given": given})
+                parts = au.split(", ")
+                result.append({"family": parts[0], "given": parts[1]})
             else:
                 result.append({"literal": au})
         for au in self.doc.corporate_authors:

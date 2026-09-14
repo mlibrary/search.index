@@ -106,17 +106,28 @@ class Filter:
 
     def get_values(self, values):
         result = []
-        for value in values:
+        for idx, value in enumerate(values):
             match self.field:
                 case "language":
                     text = language_code_to_str[value["value"]]
                 case "format":
                     text = format_code_to_string(value["value"])
+                case "date":
+                    text = self.date_string(idx, values)
                 case _:
                     text = remove_html_tags(value["value"])
 
             result.append(FilterValue(text=text, count=int(value["count"])))
 
+        return result
+
+    def date_string(self, idx, values):
+        result = remove_html_tags(values[idx]["value"])
+        if idx > 0:
+            start = int(remove_html_tags(values[idx]["value"]))
+            upto = int(remove_html_tags(values[idx - 1]["value"]))
+            if upto - start > 1:
+                result = f"{start}-{upto - 1}"
         return result
 
 

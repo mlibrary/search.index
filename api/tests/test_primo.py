@@ -540,8 +540,17 @@ class TestResults:
 
     def test_date_filter_reverse_chron(self, results):
         subject = Results(data=results, query_params={})
-        first_filter = subject.filters[3]
-        first_filter_value = subject.filters[3].values[0]
-        assert first_filter.field == "date"
-        assert first_filter_value.text == "2028"
-        assert first_filter_value.count == 4
+        date_filter = subject.filters[3]
+        date_filter_value = subject.filters[3].values[0]
+        assert date_filter.field == "date"
+        assert date_filter_value.text == "2028"
+        assert date_filter_value.count == 4
+
+    def test_date_filter_returns_ranges(self, results):
+        subject = Results(data=results, query_params={})
+        date_filter = subject.filters[3]
+        date_filter_value = subject.filters[3].values[87]
+
+        assert date_filter.field == "date"
+        assert date_filter_value.text == "1500-1599"
+        assert date_filter_value.count == 1345

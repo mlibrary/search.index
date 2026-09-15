@@ -10,11 +10,17 @@ from api.results import BaseFilterQuery, FilterHandler, FilterValue
 import requests
 import string
 import asyncio
+from functools import cached_property
 
 sort_map = {"relevance": "rank", "date_desc": "date_d", "date_asc": "date_a"}
 
 articles_filter_handler = FilterHandler(
-    {"subject": "topic", "language": "lang", "format": "rtype", "date": "creationdate"}
+    {
+        "subject": "topic",
+        "language": "lang",
+        "format": "rtype",
+        "date": "creationdate",
+    }
 )
 
 
@@ -100,17 +106,28 @@ class Filter:
 
     def get_values(self, values):
         result = []
-        for value in values:
+        for idx, value in enumerate(values):
             match self.field:
                 case "language":
                     text = language_code_to_str[value["value"]]
                 case "format":
                     text = format_code_to_string(value["value"])
+                case "date":
+                    text = self.date_string(idx, values)
                 case _:
                     text = remove_html_tags(value["value"])
 
             result.append(FilterValue(text=text, count=int(value["count"])))
 
+        return result
+
+    def date_string(self, idx, values):
+        result = remove_html_tags(values[idx]["value"])
+        if idx > 0:
+            start = int(remove_html_tags(values[idx]["value"]))
+            upto = int(remove_html_tags(values[idx - 1]["value"]))
+            if upto - start > 1:
+                result = f"{start}-{upto - 1}"
         return result
 
 
@@ -143,15 +160,20 @@ class Results:
     def sort(self):
         return self.query_params["sort"]
 
-    @property
+    # cached because reverse() causes mutation.
+    @cached_property
     def filters(self):
         result = []
         for facet in self.data["facets"]:
             if facet["name"] in self.fh.facet_to_filter.keys():
+                values = facet["values"]
+                if facet["name"] == "creationdate":
+                    values.reverse()
+
                 result.append(
                     Filter(
                         field=self.fh.facet_to_filter[facet["name"]],
-                        values=facet["values"],
+                        values=values,
                     )
                 )
         return result
@@ -194,8 +216,13 @@ class ArticlesFilterQuery(BaseFilterQuery):
                         result.append(f"facet_{field},exact,{code}")
                 case "creationdate":
                     for value in self.facets[field]:
-                        normalized = f"[{value} TO {value}]"
-                        result.append(f"facet_{field},exact,{normalized}")
+                        parts = value.split(",")
+                        start = parts[0]
+                        upto = start
+                        if len(parts) > 1:
+                            upto = parts[1]
+                        normalized = f"[{start} TO {upto}]"
+                        result.append(f"facet_search{field},exact,{normalized}")
         tlevel_map = {
             "open_access": "open_access",
             "online": "online_resources",

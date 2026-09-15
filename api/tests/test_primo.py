@@ -470,8 +470,23 @@ class TestArticlesFilterQuery:
         assert subject == expected
 
     def test_qInclude_for_date(self):
-        expected = "facet_creationdate,exact,[2025 TO 2025]"
+        expected = "facet_searchcreationdate,exact,[2025 TO 2025]"
         subject = ArticlesFilterQuery({"filters": ["date:2025"]}).qInclude()
+        assert subject == expected
+
+    def test_qInclude_for_date_range(self):
+        expected = "facet_searchcreationdate,exact,[2025 TO 2026]"
+        subject = ArticlesFilterQuery({"filters": ["date:2025,2026"]}).qInclude()
+        assert subject == expected
+
+    def test_qInclude_for_date_before_range(self):
+        expected = "facet_searchcreationdate,exact,[* TO 2026]"
+        subject = ArticlesFilterQuery({"filters": ["date:*,2026"]}).qInclude()
+        assert subject == expected
+
+    def test_qInclude_for_date_after_range(self):
+        expected = "facet_searchcreationdate,exact,[2025 TO *]"
+        subject = ArticlesFilterQuery({"filters": ["date:2025,*"]}).qInclude()
         assert subject == expected
 
     def test_qInclude_for_open_access(self):
@@ -537,3 +552,20 @@ class TestResults:
         assert first_filter.field == "language"
         assert first_filter_value.text == "English"
         assert first_filter_value.count == 8415627
+
+    def test_date_filter_reverse_chron(self, results):
+        subject = Results(data=results, query_params={})
+        date_filter = subject.filters[3]
+        date_filter_value = subject.filters[3].values[0]
+        assert date_filter.field == "date"
+        assert date_filter_value.text == "2028"
+        assert date_filter_value.count == 4
+
+    def test_date_filter_returns_ranges(self, results):
+        subject = Results(data=results, query_params={})
+        date_filter = subject.filters[3]
+        date_filter_value = subject.filters[3].values[87]
+
+        assert date_filter.field == "date"
+        assert date_filter_value.text == "1500-1599"
+        assert date_filter_value.count == 1345

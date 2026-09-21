@@ -1,6 +1,6 @@
 require "webmock/rspec"
 require "alma_rest_client"
-require "byebug"
+require "debug"
 require "simplecov"
 
 ENV["APP_ENV"] = "test"

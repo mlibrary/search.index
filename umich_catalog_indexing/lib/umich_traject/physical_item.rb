@@ -13,6 +13,7 @@ module Traject
         @item = item
         @has_finding_aid = has_finding_aid
       end
+
       # Returns an item's barcode
       #
       # @return [String] if subfield $a exists
@@ -20,8 +21,9 @@ module Traject
       def barcode
         @item["a"]
       end
+
       # Returns a Boolean of whether or not the item should be suppressed. This
-      # item suppression is in addition the suppression that Alma already does. 
+      # item suppression is in addition the suppression that Alma already does.
       #
       # The process statuses came from Aleph. CA is "Cancelled", WN and WD are
       # "withdrawn". The Library ELEC is for electronic resources that didn't
@@ -33,11 +35,13 @@ module Traject
       # @return [Boolean] whether or not the item should be suppressed
       def should_be_suppressed
         /Process Status: (CA|WN|WD)/.match?(@item["y"]) ||
-        ["ELEC","SDR"].include?(library)
+          ["ELEC", "SDR"].include?(library)
       end
+
       def callnumber
         @item["h"]
       end
+
       # Returns a Boolean of whether or not the item should get a "Reserve This"
       # link in Library Search. Items with a finding aid get a "Finding Aid" link
       # instead of a "Reserve This" link
@@ -45,70 +49,90 @@ module Traject
       # @return [Boolean] whether or not item should have a "Reserve This" link
       # in Library Search
       def can_reserve?
-        ["BENT","CLEM","SPEC"].include?(library) && !finding_aid?
+        ["BENT", "CLEM", "SPEC"].include?(library) && !finding_aid?
       end
+
       def description
         @item["z"]
       end
+
       def display_name
-        ::UMich::LibLocInfo.display_name(library, location) 
+        ::UMich::LibLocInfo.display_name(library, location)
       end
+
       def fulfillment_unit
-        ::UMich::LibLocInfo.fulfillment_unit(library, location) 
+        ::UMich::LibLocInfo.fulfillment_unit(library, location)
       end
+
       def location_type
-        ::UMich::LibLocInfo.location_type(library, location) 
+        ::UMich::LibLocInfo.location_type(library, location)
       end
+
       def info_link
-        ::UMich::LibLocInfo.info_link(library, location) 
+        ::UMich::LibLocInfo.info_link(library, location)
       end
+
       def inventory_number
         @item["i"]
       end
+
       def item_id
         @item["7"]
       end
+
       def item_policy
         @item["p"]
       end
+
       def library
         @item["b"]
       end
+
       def location
         @item["c"]
       end
+
       # A list of locations associated with the item, where locations include the
       # Library code and the "Library Code Location Code" combination. This is
       # added to the locations solr field.
       #
       # @return [Array] an array of library codes and "library location" codes
-      def locations 
+      def locations
         [library, "#{library} #{location}".strip].uniq
       end
+
       def permanent_library
         @item["d"]
       end
+
       def permanent_location
         @item["e"]
       end
+
       def process_type
         @item["t"]
       end
+
       def public_note
         @item["n"]
       end
+
       def finding_aid?
         @has_finding_aid
       end
+
       def material_type
         @item["m"]
       end
+
       def temp_location?
         library != permanent_library || location != permanent_location
       end
+
       def circulating?
         @item["f"] == "1"
       end
+
       # Hash summary of what is in the item. This is what is added to the
       # items array for a given holding in the "hol" solr field
       #
@@ -134,7 +158,7 @@ module Traject
           inventory_number: inventory_number,
           item_id: item_id,
           material_type: material_type,
-          record_has_finding_aid: finding_aid?,
+          record_has_finding_aid: finding_aid?
         }
       end
     end

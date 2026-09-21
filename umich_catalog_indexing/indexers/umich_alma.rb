@@ -28,7 +28,6 @@ each_record do |r, context|
     end
   end
 end
-
 # 035    $a (MiU)003113534MIU01
 aleph_pattern = /^\(MiU\)\d{9}MIU01$/
 to_field "aleph_id" do |record, acc, context|

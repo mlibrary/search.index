@@ -27,10 +27,10 @@ opentelemetry-instrumentation-fastapi = "^0.65b0"
 opentelemetry-distro = "^0.65b0"
 opentelemetry-instrumentation-asyncio = "^0.65b0"
 opentelemetry-instrumentation-dbapi = "^0.65b0"
-opentelemetry-exporter-otlp-proto-http = "^1.44.0"
 opentelemetry-exporter-otlp = "^1.44.0"
 opentelemetry-instrumentation-requests = "^0.65b0"
 opentelemetry-instrumentation-httpx = "^0.65b0"
+fastapi-structured-logging = "^1.0.3"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -1,6 +1,8 @@
 from dataclasses import dataclass
-import logging
 import os
+import fastapi_structured_logging
+
+fastapi_structured_logging.setup_logging()
 
 
 @dataclass(frozen=True)
@@ -25,14 +27,6 @@ class Services:
     lib_key_key: str
     proxy_prefix: str
     alma_api_key: str
-    logger: logging.Logger
-
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
 
 
 S = Services(
@@ -52,5 +46,4 @@ S = Services(
     lib_key_key=os.getenv("LIB_KEY_KEY") or "lib_key_key",
     proxy_prefix="https://proxy.lib.umich.edu/login?qurl=",
     alma_api_key=os.getenv("ALMA_API_KEY") or "your_alma_api_key",
-    logger=logging.getLogger(__name__),
 )

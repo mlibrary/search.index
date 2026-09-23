@@ -4,12 +4,14 @@ from api.solr import SolrDocProcessor
 from api.marc import Processor, FieldRuleset, TRIM_CHARS
 from api.holdings import get_alma_loans
 from api.csl import BaseCSL
-from api.services import S
 import re
 import pymarc
 import io
 import string
 import json
+import fastapi_structured_logging
+
+logger = fastapi_structured_logging.get_logger()
 
 # from dataclasses import dataclass
 # from collections.abc import Callable
@@ -1094,7 +1096,7 @@ class CSL(BaseCSL):
         )
         result = self._get_marc_content(rulesets)
         if result is None:
-            S.logger.error(f"missing_csl_title for {self.id}")
+            logger.error(f"missing_csl_title for {self.id}")
             result = ""
         return result
 

@@ -2,6 +2,9 @@ import requests
 from api.services import S
 from api.metrics import ALMA_LOAN_HISTOGRAM
 import xml.etree.ElementTree as ET
+import fastapi_structured_logging
+
+logger = fastapi_structured_logging.get_logger()
 
 
 class NotFoundError(Exception):
@@ -48,11 +51,11 @@ class AlmaClient(ExlibrisClient):
             result = response.json()
             total = result["total_record_count"]
         except requests.exceptions.HTTPError as e:
-            S.logger.error(
+            logger.error(
                 f"HTTP error occurred: {e} {self.get_error_string(response.text)}"
             )
         except requests.exceptions.RequestException as e:
-            S.logger.error("A request error occurred:", e)
+            logger.error("A request error occurred:", e)
 
         if total > 100:
             while total > offset + limit:
@@ -89,8 +92,8 @@ class PrimoClient(ExlibrisClient):
                 raise NotFoundError()
             return body["docs"][0]
         except requests.exceptions.HTTPError as e:
-            S.logger.error(
+            logger.error(
                 f"HTTP error occurred: {e} {self.get_error_string(response.text)}"
             )
         except requests.exceptions.RequestException as e:
-            S.logger.error("A request error occurred:", e)
+            logger.error("A request error occurred:", e)

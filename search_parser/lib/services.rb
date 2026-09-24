@@ -47,13 +47,23 @@ end
 
 SemanticLogger.default_level = S.log_level
 
+SemanticLogger.on_log do |log|
+  span = OpenTelemetry::Trace.current_span
+
+  log.set_context(:trace_id, span.context.valid? ? span.context.hex_trace_id : nil)
+  log.set_context(:span_id, span.context.valid? ? span.context.hex_span_id : nil)
+end
+
 class ProductionFormatter < SemanticLogger::Formatters::Json
   # Leave out the pid
   def pid
   end
 
-  # Leave out the timestamp
-  def time
+  def named_tags
+    [:trace_id, :span_id].each do |tag|
+      log.named_tags[tag] = log.context[tag] if log.named_tags[tag].nil?
+    end
+    super
   end
 
   # Leave out environment

@@ -37,6 +37,7 @@ class StructuredAccessLoggingMiddleware
   # Log the request to the configured logger.
   def log(env, status, response_headers, began_at)
     request = Rack::Request.new(env)
+    span = request.get_header("otel.rack.token_and_span")[1]
 
     record = {
       host: request.ip,
@@ -52,6 +53,11 @@ class StructuredAccessLoggingMiddleware
       elapsed_time_in_seconds: (Rack::Utils.clock_time - began_at)
     }
 
-    @logger << record
+    SemanticLogger.tagged(
+      trace_id: span.context.valid? ? span.context.hex_trace_id : nil,
+      span_id: span.context.valid? ? span.context.hex_span_id : nil
+    ) do
+      @logger << record
+    end
   end
 end

@@ -9,14 +9,6 @@ require_relative "lib/services"
 require_relative "lib/metrics"
 require "debug" if S.app_env == "development"
 
-require "opentelemetry/sdk"
-require "opentelemetry/instrumentation/all"
-require "opentelemetry-exporter-otlp"
-OpenTelemetry::SDK.configure do |c|
-  c.service_name = "parser"
-  c.use_all # enables all instrumentation!
-end
-
 Metrics::Yabeda.configure!
 
 class SearchParser

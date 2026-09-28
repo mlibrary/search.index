@@ -2,7 +2,7 @@ from __future__ import annotations
 from api.clients.solr_client import SolrClient
 from api.solr import SolrDocProcessor
 from api.marc import Processor, FieldRuleset, TRIM_CHARS
-from api.holdings import get_alma_loans
+from api.holdings import get_alma_loans, AlmaLoans
 from api.csl import BaseCSL
 import re
 import pymarc
@@ -19,14 +19,11 @@ from api.holdings import Holdings
 from datetime import datetime
 
 
-def record_for(id: str) -> Record:
+async def catalog_record_for(id: str) -> Record:
     data = SolrClient().get_record(id)
-    return Record(data)
-
-
-def catalog_record_for(id: str) -> Record:
-    data = SolrClient().get_record(id)
-    return Record(data)
+    holdings_data = json.loads(data.get("hol"))
+    loans = await get_alma_loans(id, holdings_data)
+    return Record(data, loans)
 
 
 def onlinejournals_record_for(id: str) -> Record:
@@ -614,15 +611,6 @@ class BaseRecord(SolrDoc, MARC):
     @property
     def marc(self):
         return json.loads(self.record.as_json())
-
-    @property
-    def holdings(self):
-        holdings_data = json.loads(self.data.get("hol"))
-        loans = get_alma_loans(self.id, holdings_data)
-        holdings = Holdings(
-            holdings_data, bib_id=self.id, record=self.record, loans=loans
-        )
-        return holdings
 
 
 class TaggedCitation:
@@ -1307,10 +1295,26 @@ class Citation:
 
 
 class Record(BaseRecord):
-    def __init__(self, data: dict):
+    @classmethod
+    async def create(cls, data: dict):
+        holdings_data = json.loads(data.get("hol"))
+        id = data.get("id")
+        loans = await get_alma_loans(id, holdings_data)
+        return Record(data, loans)
+
+    def __init__(self, data: dict, loans: AlmaLoans = AlmaLoans()):
         self.data = data
+        self.loans = loans
         self.record = pymarc.parse_xml_to_array(io.StringIO(data["fullrecord"]))[0]
         BaseRecord.__init__(self, data)
+
+    @property
+    def holdings(self):
+        holdings_data = json.loads(self.data.get("hol"))
+        holdings = Holdings(
+            holdings_data, bib_id=self.id, record=self.record, loans=self.loans
+        )
+        return holdings
 
     @property
     def citation(self):
@@ -1322,9 +1326,8 @@ class OnlinejournalsBaseRecord(BaseRecord):
     def holdings(self):
         holdings_data = json.loads(self.data.get("hol"))
         # don't need to look for loans
-        loans = []
         holdings = Holdings(
-            holdings_data, bib_id=self.id, record=self.record, loans=loans
+            holdings_data, bib_id=self.id, record=self.record, loans=None
         )
         return holdings
 

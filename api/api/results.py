@@ -1,11 +1,12 @@
 import requests
 import re
+import asyncio
 from dataclasses import dataclass
 from api.record import Record, OnlinejournalsRecord
 from api.services import S
 
 
-def get_catalog_results(query_params: dict):
+async def get_catalog_results(query_params: dict):
     parser_params = {
         "query": query_params["query"],
         "start": query_params["offset"],
@@ -16,7 +17,7 @@ def get_catalog_results(query_params: dict):
     response = requests.Session().get(
         f"{S.parser_url}/catalog/search", params=parser_params
     )
-    return CatalogResults(data=response.json(), query_params=query_params)
+    return await CatalogResults.create(data=response.json(), query_params=query_params)
 
 
 def get_onlinejournals_results(query_params: dict):
@@ -107,9 +108,10 @@ class BaseResults:
     }
     inverse_sort_map = {v: k for k, v in sort_map.items()}
 
-    def __init__(self, data: dict, query_params: dict):
+    def __init__(self, data: dict, query_params: dict, records: list = []):
         self.data = data
         self.query_params = query_params
+        self.records = records
 
     @property
     def total(self):
@@ -131,11 +133,16 @@ class BaseResults:
 
 
 class CatalogResults(BaseResults):
-    fh = catalog_filter_handler
+    @classmethod
+    async def create(cls, data: dict, query_params: dict):
 
-    @property
-    def records(self):
-        return [Record(data) for data in self.data["response"]["docs"]]
+        async def fetch_record(data):
+            return await Record.create(data)
+
+        records = await asyncio.gather(*map(fetch_record, data["response"]["docs"]))
+        return CatalogResults(data=data, query_params=query_params, records=records)
+
+    fh = catalog_filter_handler
 
     @property
     def filters(self):

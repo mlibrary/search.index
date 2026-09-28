@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, Query
 from api.metrics import REQUEST_HISTOGRAM
 from api import schemas
 from api.clients.solr_client import NotFoundError
-from api.record import record_for
+from api.record import catalog_record_for
 from api.results import get_catalog_results
 from api import specialists
 
@@ -21,14 +21,14 @@ router = APIRouter(prefix="/catalog", tags=["catalog"])
     response_model_exclude_none=True,
 )
 @REQUEST_HISTOGRAM.labels(datastore="catalog", route="record").time()
-def get_record(id: str) -> schemas.Record:
+async def get_record(id: str) -> schemas.Record:
     """
     Gets a record from catalog solr. The record is fetched by the solr id, which
     is the mms_id for an Alma record or a htid with a 11 prefix for a HathiTrust
     record
     """
     try:
-        result = record_for(id)
+        result = await catalog_record_for(id)
         return result
     except NotFoundError:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -36,7 +36,7 @@ def get_record(id: str) -> schemas.Record:
 
 @REQUEST_HISTOGRAM.labels(datastore="catalog", route="results").time()
 @router.get("/search", response_model_exclude_none=True)
-def get_search_results(
+async def get_search_results(
     query: str = "",
     offset: int = 0,
     limit: int = 10,
@@ -47,7 +47,7 @@ def get_search_results(
     """
     Does a search in catalog solr
     """
-    results = get_catalog_results(
+    results = await get_catalog_results(
         {
             "query": query,
             "offset": offset,

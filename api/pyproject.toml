@@ -31,6 +31,8 @@ opentelemetry-exporter-otlp = "^1.44.0"
 opentelemetry-instrumentation-requests = "^0.65b0"
 opentelemetry-instrumentation-httpx = "^0.65b0"
 fastapi-structured-logging = "^1.0.3"
+pytest-asyncio = "^1.4.0"
+respx = "^0.23.1"
 
 
 [tool.poetry.group.dev.dependencies]

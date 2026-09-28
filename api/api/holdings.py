@@ -527,9 +527,9 @@ def has_physical_holdings(holdings_data: list):
     return any(kind_of_holding(holding) == "physical" for holding in holdings_data)
 
 
-def get_alma_loans(mms_id, holdings_data: list):
+async def get_alma_loans(mms_id, holdings_data: list):
     if has_physical_holdings(holdings_data):
-        return AlmaLoans((AlmaClient().get_loans(mms_id)))
+        return AlmaLoans((await AlmaClient().get_loans(mms_id)))
     return AlmaLoans()
 
 

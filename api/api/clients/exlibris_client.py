@@ -1,5 +1,6 @@
 import requests
 import httpx
+from httpx_retries import RetryTransport, Retry
 from api.services import S
 from api.metrics import ALMA_LOAN_HISTOGRAM
 import xml.etree.ElementTree as ET
@@ -50,26 +51,30 @@ class AlmaClient(ExlibrisClient):
         url = f"{self.base_url}/bibs/{mms_id}/loans"
         total = 0
         result = {"item_loan": [], "total_record_count": 0}
-        async with httpx.AsyncClient(headers=self.headers) as client:
+        # this is so that we retry conccurency responses. Alma uses 429; httpx_retries retries that status by default
+        retry = Retry(total=5, backoff_factor=0.1)
+        transport = RetryTransport(retry=retry)
+        async with httpx.AsyncClient(
+            headers=self.headers, transport=transport
+        ) as client:
             try:
-                # response = self.session.get(url, params={"limit": limit})
                 response = await client.get(url, params={"limit": limit})
                 response.raise_for_status()
                 result = response.json()
                 total = result["total_record_count"]
-            # except requests.exceptions.HTTPError as e:
             except httpx.HTTPError as e:
                 logger.error(
                     f"HTTP error occurred: {e} {self.get_error_string(response.text)}"
                 )
-            # except requests.exceptions.RequestException as e:
             except httpx.RequestError as e:
                 logger.error("A request error occurred:", e)
 
         if total > 100:
             while total > offset + limit:
                 offset = offset + limit
-                async with httpx.AsyncClient(headers=self.headers) as client:
+                async with httpx.AsyncClient(
+                    headers=self.headers, transport=transport
+                ) as client:
                     response = await client.get(
                         url, params={"limit": limit, "offset": offset}
                     )

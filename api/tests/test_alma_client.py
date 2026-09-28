@@ -1,6 +1,6 @@
-import responses
 import pytest
 import json
+from httpx import Response
 from api.clients.exlibris_client import AlmaClient
 from api.services import S
 
@@ -28,50 +28,52 @@ def mms_id(loan):
     return loan["item_loan"][0]["mms_id"]
 
 
-@responses.activate
-def test_alma_client_get_loans_gets_one_page(loan, mms_id):
-    responses.get(
-        f"{S.alma_api_url}/bibs/{mms_id}/loans?limit=100", json=loan, status=200
+@pytest.mark.asyncio
+async def test_alma_client_get_loans_gets_one_page(loan, mms_id, respx_mock):
+    respx_mock.get(f"{S.alma_api_url}/bibs/{mms_id}/loans?limit=100").mock(
+        Response(200, json=loan)
     )
 
-    assert AlmaClient().get_loans(mms_id) == loan
+    assert await AlmaClient().get_loans(mms_id) == loan
 
 
-@responses.activate
-def test_alma_client_get_loans_gets_all_results(loan, mms_id):
+@pytest.mark.asyncio
+async def test_alma_client_get_loans_gets_all_results(loan, mms_id, respx_mock):
     loan["total_record_count"] = 101
 
-    responses.get(
-        f"{S.alma_api_url}/bibs/{mms_id}/loans?limit=100", json=loan, status=200
+    respx_mock.get(f"{S.alma_api_url}/bibs/{mms_id}/loans?limit=100").mock(
+        Response(200, json=loan)
     )
 
-    responses.get(
-        f"{S.alma_api_url}/bibs/{mms_id}/loans?limit=100&offset=100",
-        json=loan,
-        status=200,
+    respx_mock.get(f"{S.alma_api_url}/bibs/{mms_id}/loans?limit=100&offset=100").mock(
+        Response(200, json=loan)
     )
-    loans = AlmaClient().get_loans(mms_id)
+
+    loans = await AlmaClient().get_loans(mms_id)
     assert len(loans["item_loan"]) == 2
 
 
-@responses.activate
-def test_alma_client_get_loans_handles_no_loans(empty_loan_data, mms_id):
-    responses.get(
-        f"{S.alma_api_url}/bibs/{mms_id}/loans?limit=100",
-        json=empty_loan_data,
-        status=200,
+@pytest.mark.asyncio
+async def test_alma_client_get_loans_handles_no_loans(
+    empty_loan_data, mms_id, respx_mock
+):
+    respx_mock.get(f"{S.alma_api_url}/bibs/{mms_id}/loans?limit=100").mock(
+        Response(
+            200,
+            json=empty_loan_data,
+        )
     )
-    loans = AlmaClient().get_loans(mms_id)
+    loans = await AlmaClient().get_loans(mms_id)
     assert len(loans["item_loan"]) == 0
 
 
-@responses.activate
-def test_alma_client_get_loans_handles_error_response(alma_error_string, mms_id):
-    responses.get(
-        f"{S.alma_api_url}/bibs/{mms_id}/loans?limit=100",
-        body=alma_error_string,
-        status=500,
+@pytest.mark.asyncio
+async def test_alma_client_get_loans_handles_error_response(
+    alma_error_string, mms_id, respx_mock
+):
+    respx_mock.get(f"{S.alma_api_url}/bibs/{mms_id}/loans?limit=100").mock(
+        Response(500, content=alma_error_string)
     )
-    loans = AlmaClient().get_loans(mms_id)
+    loans = await AlmaClient().get_loans(mms_id)
     # resturns a response with no loans. We do want it to log the situation.
     assert len(loans["item_loan"]) == 0

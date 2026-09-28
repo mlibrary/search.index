@@ -2,6 +2,7 @@ import responses
 import pytest
 import json
 from fastapi.testclient import TestClient
+from httpx import Response
 from api.main import app
 from api.services import S
 
@@ -54,9 +55,9 @@ def loan_data():
 
 
 @responses.activate
-def test_get_catalog_record(client, valid_mms_id, solr_bib, loan_data):
-    responses.get(
-        f"{S.alma_api_url}/bibs/{valid_mms_id}/loans", json=loan_data, status=200
+def test_get_catalog_record(client, valid_mms_id, solr_bib, loan_data, respx_mock):
+    respx_mock.get(f"{S.alma_api_url}/bibs/{valid_mms_id}/loans").mock(
+        Response(200, json=loan_data)
     )
     responses.get(f"{S.solr_url}/solr/biblio/select", json=solr_bib, status=200)
 

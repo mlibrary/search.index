@@ -1,4 +1,3 @@
-require "byebug"
 module Indexer
   module IndexUpdate
     def self.queue_for(environment)

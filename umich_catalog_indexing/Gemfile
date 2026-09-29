@@ -44,7 +44,7 @@ end
 
 platforms :mri do
   gem "mysql2"
-  gem "byebug"
+  gem "debug"
 end
 
 gem "marc-fastxmlwriter", "~>1.0"

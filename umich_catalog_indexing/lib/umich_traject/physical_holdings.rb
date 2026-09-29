@@ -7,9 +7,13 @@ class Traject::UMich::PhysicalHoldings
   end
 
   def all
-    @all ||= @holding_ids.map do |id|
-      Traject::UMich::PhysicalHolding.for(record: @record, holding_id: id)
-    end.reject { |x| x.items.empty? }
+    @all ||= begin
+      result = @holding_ids.map do |id|
+        Traject::UMich::PhysicalHolding.for(record: @record, holding_id: id)
+      end
+      result.reject { |x| x.items.empty? }
+      result
+    end
   end
 
   def not_offsite

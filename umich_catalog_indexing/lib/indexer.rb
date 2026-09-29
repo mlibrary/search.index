@@ -1,9 +1,11 @@
 require "thor"
 require "services"
 require "sidekiq_jobs"
+require "traject"
 require "indexer/index_full"
 require "indexer/index_update"
 require "indexer/filter_zephir"
+require "debug/prelude"
 
 def get_file_names(dir)
   Dir.children("#{S.project_root}/#{dir}").map { |x| File.basename(x, ".rb") }
@@ -30,13 +32,13 @@ module Indexer
       ]
       config.prepend("/readers/#{options[:reader]}.rb")
       config.prepend("/writers/#{options[:writer]}.rb")
-
-      config_options = config.map do |x|
-        path = File.join(S.project_root, x)
-        "-c #{path}"
-      end.join(" ")
-
-      `bundle exec traject #{config_options} #{metadata_file_path}`
+      indexer = Traject::Indexer::MarcIndexer.new(logger: S.logger) do |ind|
+        config.each { |config_path| load_config_file(File.join(S.project_root, config_path)) }
+      end
+      success = indexer.process File.open(metadata_file_path, "r")
+      unless success
+        fatal "traject failed, shutting down"
+      end
     end
 
     desc "index_full", "looks up the latest full metadata files and queues them up for the reindex solr"

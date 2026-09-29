@@ -3,6 +3,7 @@ module Jobs
     module SubjectHeadingRemediation
       class << self
         include FileWriter
+
         def name
           "Subject Headings mapping"
         end
@@ -46,7 +47,7 @@ module Jobs
         # @return [Array<Hash>] an Array of hashes of the hash version of
         # Job::TranslationMapGenerator::SubjecHeadingRemediation::Set::Authority objects
         def to_a
-          authority_records.map { |x| x.to_h }
+          authority_records.map { |x| x.to_a }.flatten
         end
       end
 
@@ -93,6 +94,23 @@ module Jobs
           end
         end
 
+        def geo_remediated_term
+          term = @record.fields("781").find { |x| x.indicator2 == "0" }
+          if term
+            out_hash = Hash.new { |h, key| h[key] = [] }
+            term.subfields.each do |sf|
+              out_hash[sf.code].push(sf.value)
+            end
+            out_hash
+          end
+        end
+
+        def geo_deprecated_terms
+          deprecated_terms.map do |term|
+            {"z" => term["a"]}
+          end
+        end
+
         # @return [Hash] a Hash version of the remediated and deprecated terms
         # for the Authority Record
         def to_h
@@ -100,6 +118,26 @@ module Jobs
             "1xx" => remediated_term,
             "4xx" => deprecated_terms
           }
+        end
+
+        def main_to_h
+          {
+            "1xx" => remediated_term,
+            "4xx" => deprecated_terms
+          }
+        end
+
+        def geo_to_h
+          {
+            "1xx" => geo_remediated_term,
+            "4xx" => geo_deprecated_terms
+          }
+        end
+
+        def to_a
+          result = [main_to_h]
+          result.push geo_to_h if geo_remediated_term
+          result
         end
       end
     end

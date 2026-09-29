@@ -5,7 +5,7 @@ def remediated_term
   {"a" => ["Undocumented immigrants"]}
 end
 
-def geo_remediated_term
+def mexico_remediated_term
   {"a" => ["Mexico, Gulf of, Watershed"]}
 end
 
@@ -37,7 +37,7 @@ def deprecated_terms
   ]
 end
 
-def geo_deprecated_terms
+def mexico_deprecated_terms
   [
     {
       "a" => ["America, Gulf of, Watershed"]
@@ -170,7 +170,7 @@ describe Jobs::TranslationMapGenerator::SubjectHeadingRemediation::Authority do
     end
     it "returns the remediated term in the 151" do
       @data = geo_authority_record
-      expect(subject.remediated_term).to eq(geo_remediated_term)
+      expect(subject.remediated_term).to eq(mexico_remediated_term)
     end
   end
   context "#deprecated_terms" do
@@ -179,15 +179,64 @@ describe Jobs::TranslationMapGenerator::SubjectHeadingRemediation::Authority do
     end
     it "returns the deprecated terms from the 451 field" do
       @data = geo_authority_record
-      expect(subject.deprecated_terms).to contain_exactly(*geo_deprecated_terms)
+      expect(subject.deprecated_terms).to contain_exactly(*mexico_deprecated_terms)
     end
   end
-  context "#to_h" do
-    it "returns the expected deprecated_to_remediated hash with downcased terms" do
-      expect(subject.to_h).to eq({
+  context "#main_to_h" do
+    it "returns the expected remediated/deprecated hash" do
+      expect(subject.main_to_h).to eq({
         "1xx" => remediated_term,
         "4xx" => deprecated_terms
       })
+    end
+  end
+  context "#geo_remediated_term" do
+    it "returns the value for the 781" do
+      @data = geo_authority_record
+      expect(subject.geo_remediated_term).to eq({"z" => ["Mexico, Gulf of, Watershed"]})
+    end
+    it "is nil when there is no 781" do
+      expect(subject.geo_remediated_term).to be_nil
+    end
+  end
+  context "#geo_deprecated_terms" do
+    it "returns the deprecated fields but moves them to the z" do
+      @data = geo_authority_record
+      z_mexico_deprecated = mexico_deprecated_terms.map do |t|
+        {"z" => t["a"]}
+      end
+      expect(subject.geo_deprecated_terms).to contain_exactly(*z_mexico_deprecated)
+    end
+  end
+
+  context "#geo_to_h" do
+    it "returns the geo fields remediated/deprecated" do
+      @data = geo_authority_record
+      expect(subject.geo_to_h).to eq({
+        "1xx" => {"z" => ["Mexico, Gulf of, Watershed"]},
+        "4xx" => [
+          {
+            "z" => ["America, Gulf of, Watershed"]
+          },
+          {
+            "z" => ["Test Test Test"]
+          }
+        ]
+      })
+    end
+  end
+  context "to_a" do
+    it "returns an array with main hash when there is no geo" do
+      expect(subject.to_a).to eq(
+        [{
+          "1xx" => remediated_term,
+          "4xx" => deprecated_terms
+        }]
+      )
+    end
+    it "returns an array with both the main hash and the geo hash when there is one" do
+      @data = geo_authority_record
+      expect(subject.to_a.size).to eq(2)
     end
   end
 end

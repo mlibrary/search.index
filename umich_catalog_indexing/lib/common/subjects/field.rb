@@ -2,6 +2,7 @@ module Common
   class Subjects
     class Field
       extend Forwardable
+
       attr_reader :normalized_sfs
 
       def_delegators :@field, :tag, :indicator2, :[], :subfields

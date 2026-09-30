@@ -599,7 +599,11 @@ def hathi_trust_items(holdings_data: list) -> list[HathiTrustItem]:
 
 class Holdings:
     def __init__(
-        self, holdings_data: list, bib_id: str, record: pymarc.Record, loans: AlmaLoans
+        self,
+        holdings_data: list,
+        bib_id: str,
+        record: pymarc.Record,
+        loans: AlmaLoans = AlmaLoans(),
     ):
         self.data = holdings_data
         self.bib_id = bib_id
@@ -625,3 +629,12 @@ class Holdings:
     @property
     def physical(self):
         return physical_holdings(self.data, self.bib_id, self.record, self.loans)
+
+
+class EmptyHoldings:
+    def __init__(self):
+        self.hathi_trust_items = []
+        self.alma_digital_items = []
+        self.electronic_items = []
+        self.finding_aids = None
+        self.physical = []

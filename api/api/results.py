@@ -177,7 +177,7 @@ class OnlinejournalsResults(BaseResults):
     @property
     def records(self):
         return [
-            OnlinejournalsRecord(
+            OnlinejournalsRecord.create(
                 data=data,
                 recommended_academic_discipline=self.recommended_academic_discipline,
             )

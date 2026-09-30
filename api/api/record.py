@@ -1,21 +1,18 @@
 from __future__ import annotations
-from api.clients.solr_client import SolrClient
-from api.solr import SolrDocProcessor
-from api.marc import Processor, FieldRuleset, TRIM_CHARS
-from api.holdings import get_alma_loans, AlmaLoans
-from api.csl import BaseCSL
 import re
 import pymarc
 import io
 import string
 import json
 import fastapi_structured_logging
+from api.clients.solr_client import SolrClient
+from api.solr import SolrDocProcessor
+from api.marc import Processor, FieldRuleset, TRIM_CHARS
+from api.holdings import get_alma_loans, Holdings, EmptyHoldings, OnlinejournalsHoldings
+from api.csl import BaseCSL
 
 logger = fastapi_structured_logging.get_logger()
 
-# from dataclasses import dataclass
-# from collections.abc import Callable
-from api.holdings import Holdings, EmptyHoldings
 from datetime import datetime
 
 
@@ -1326,28 +1323,22 @@ class OnlinejournalsRecord(BaseRecord):
     @classmethod
     def create(cls, data: dict, recommended_academic_discipline=None):
         holdings_data = json.loads(data.get("hol"))
-        id = data.get("id")
-        record = pymarc.parse_xml_to_array(io.StringIO(data["fullrecord"]))[0]
-        holdings = Holdings(holdings_data, bib_id=id, record=record)
+        holdings = OnlinejournalsHoldings(holdings_data)
         return OnlinejournalsRecord(
             data=data,
             holdings=holdings,
-            record=record,
             recommended_academic_discipline=recommended_academic_discipline,
         )
 
     def __init__(
         self,
         data: dict,
-        recommended_academic_discipline=None,
         holdings=EmptyHoldings(),
-        record=None,
+        recommended_academic_discipline=None,
     ):
         self.data = data
         BaseRecord.__init__(self, data)
-        self.record = (
-            record or pymarc.parse_xml_to_array(io.StringIO(data["fullrecord"]))[0]
-        )
+        self.record = pymarc.parse_xml_to_array(io.StringIO(data["fullrecord"]))[0]
         self.recommended_academic_discipline = recommended_academic_discipline
         self.holdings = holdings
 

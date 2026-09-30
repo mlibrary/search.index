@@ -16,9 +16,9 @@ logger = fastapi_structured_logging.get_logger()
 from datetime import datetime
 
 
-async def catalog_record_for(id: str) -> Record:
+async def catalog_record_for(id: str, ht_search_only: bool = False) -> Record:
     data = SolrClient().get_record(id)
-    return await Record.create(data)
+    return await Record.create(data, ht_search_only)
 
 
 def onlinejournals_record_for(id: str) -> Record:
@@ -1291,13 +1291,17 @@ class Citation:
 
 class Record(BaseRecord):
     @classmethod
-    async def create(cls, data: dict):
+    async def create(cls, data: dict, ht_search_only: bool = False):
         holdings_data = json.loads(data.get("hol"))
         id = data.get("id")
         loans = await get_alma_loans(id, holdings_data)
         record = pymarc.parse_xml_to_array(io.StringIO(data["fullrecord"]))[0]
         holdings = Holdings(
-            holdings_data, bib_id=data.get("id"), record=record, loans=loans
+            holdings_data,
+            bib_id=data.get("id"),
+            record=record,
+            loans=loans,
+            ht_search_only=ht_search_only,
         )
         return Record(data=data, holdings=holdings, record=record)
 

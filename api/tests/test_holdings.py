@@ -15,6 +15,7 @@ from api.holdings import (
     ClementsItem,
     has_physical_holdings,
     AlmaLoans,
+    Holdings,
 )
 
 
@@ -406,6 +407,22 @@ class TestHathiTrustItem:
         assert subject.url == "http://hdl.handle.net/2027/mdp.39015040218748"
 
 
+def test_search_only_false_ht_items_does_not_include_search_only(ht_item):
+    subject = Holdings(
+        holdings_data=[{"library": "HathiTrust Digital Library", "items": [ht_item]}],
+        ht_search_only=False,
+    )
+    assert subject.hathi_trust_items == []
+
+
+def test_search_only_true_ht_items_includes_search_only(ht_item):
+    subject = Holdings(
+        holdings_data=[{"library": "HathiTrust Digital Library", "items": [ht_item]}],
+        ht_search_only=True,
+    )
+    assert len(subject.hathi_trust_items) == 1
+
+
 @pytest.fixture
 def alma_digital_item():
     return {
@@ -595,5 +612,3 @@ class TestReservableItem:
         )
         subject = ClementsItem(record=record, physical_item_data=physical_item)
         assert subject.author == "a b"
-
-    # Next need to handle Bentley and Clements

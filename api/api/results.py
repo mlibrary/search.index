@@ -137,7 +137,9 @@ class CatalogResults(BaseResults):
     async def create(cls, data: dict, query_params: dict):
 
         async def fetch_record(data):
-            return await Record.create(data)
+            return await Record.create(
+                data, ht_search_only=query_params["ht_search_only"]
+            )
 
         records = await asyncio.gather(*map(fetch_record, data["response"]["docs"]))
         return CatalogResults(data=data, query_params=query_params, records=records)
@@ -177,7 +179,7 @@ class OnlinejournalsResults(BaseResults):
     @property
     def records(self):
         return [
-            OnlinejournalsRecord(
+            OnlinejournalsRecord.create(
                 data=data,
                 recommended_academic_discipline=self.recommended_academic_discipline,
             )

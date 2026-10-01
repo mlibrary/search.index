@@ -1,34 +1,29 @@
 from __future__ import annotations
-from api.clients.solr_client import SolrClient
-from api.solr import SolrDocProcessor
-from api.marc import Processor, FieldRuleset, TRIM_CHARS
-from api.holdings import get_alma_loans, AlmaLoans
-from api.csl import BaseCSL
 import re
 import pymarc
 import io
 import string
 import json
 import fastapi_structured_logging
+from api.clients.solr_client import SolrClient
+from api.solr import SolrDocProcessor
+from api.marc import Processor, FieldRuleset, TRIM_CHARS
+from api.holdings import get_alma_loans, Holdings, EmptyHoldings, OnlinejournalsHoldings
+from api.csl import BaseCSL
 
 logger = fastapi_structured_logging.get_logger()
 
-# from dataclasses import dataclass
-# from collections.abc import Callable
-from api.holdings import Holdings
 from datetime import datetime
 
 
-async def catalog_record_for(id: str) -> Record:
+async def catalog_record_for(id: str, ht_search_only: bool = False) -> Record:
     data = SolrClient().get_record(id)
-    holdings_data = json.loads(data.get("hol"))
-    loans = await get_alma_loans(id, holdings_data)
-    return Record(data, loans)
+    return await Record.create(data, ht_search_only)
 
 
 def onlinejournals_record_for(id: str) -> Record:
     data = SolrClient().get_onlinejournals_record(id)
-    return OnlinejournalsRecord(data)
+    return OnlinejournalsRecord.create(data)
 
 
 class SolrDoc:
@@ -1296,48 +1291,60 @@ class Citation:
 
 class Record(BaseRecord):
     @classmethod
-    async def create(cls, data: dict):
+    async def create(cls, data: dict, ht_search_only: bool = False):
         holdings_data = json.loads(data.get("hol"))
         id = data.get("id")
         loans = await get_alma_loans(id, holdings_data)
-        return Record(data, loans)
-
-    def __init__(self, data: dict, loans: AlmaLoans = AlmaLoans()):
-        self.data = data
-        self.loans = loans
-        self.record = pymarc.parse_xml_to_array(io.StringIO(data["fullrecord"]))[0]
-        BaseRecord.__init__(self, data)
-
-    @property
-    def holdings(self):
-        holdings_data = json.loads(self.data.get("hol"))
+        record = pymarc.parse_xml_to_array(io.StringIO(data["fullrecord"]))[0]
         holdings = Holdings(
-            holdings_data, bib_id=self.id, record=self.record, loans=self.loans
+            holdings_data,
+            bib_id=data.get("id"),
+            record=record,
+            loans=loans,
+            ht_search_only=ht_search_only,
         )
-        return holdings
+        return Record(data=data, holdings=holdings, record=record)
+
+    def __init__(
+        self,
+        data: dict,
+        holdings=EmptyHoldings(),
+        record=None,
+    ):
+        self.data = data
+        BaseRecord.__init__(self, data)
+        self.record = (
+            record or pymarc.parse_xml_to_array(io.StringIO(data["fullrecord"]))[0]
+        )
+        self.holdings = holdings
 
     @property
     def citation(self):
         return Citation(marc_record=self.record, base_record=self, solr_doc=self.data)
 
 
-class OnlinejournalsBaseRecord(BaseRecord):
-    @property
-    def holdings(self):
-        holdings_data = json.loads(self.data.get("hol"))
-        # don't need to look for loans
-        holdings = Holdings(
-            holdings_data, bib_id=self.id, record=self.record, loans=None
+class OnlinejournalsRecord(BaseRecord):
+    @classmethod
+    def create(cls, data: dict, recommended_academic_discipline=None):
+        holdings_data = json.loads(data.get("hol"))
+        holdings = OnlinejournalsHoldings(holdings_data)
+        return OnlinejournalsRecord(
+            data=data,
+            holdings=holdings,
+            recommended_academic_discipline=recommended_academic_discipline,
         )
-        return holdings
 
-
-class OnlinejournalsRecord(OnlinejournalsBaseRecord):
-    def __init__(self, data: dict, recommended_academic_discipline=None):
+    def __init__(
+        self,
+        data: dict,
+        holdings=EmptyHoldings(),
+        recommended_academic_discipline=None,
+    ):
         self.data = data
+        BaseRecord.__init__(self, data)
         self.record = pymarc.parse_xml_to_array(io.StringIO(data["fullrecord"]))[0]
         self.recommended_academic_discipline = recommended_academic_discipline
-        OnlinejournalsBaseRecord.__init__(self, data)
+        self.holdings = holdings
 
     @property
     def recommended_resource(self):

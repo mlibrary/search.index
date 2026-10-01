@@ -51,6 +51,9 @@ class HathiTrustItem:
     def status(self):
         return self.data.get("status")
 
+    def is_full_text(self):
+        return self.status.startswith("Full")
+
 
 class ElectronicItem:
     def __init__(self, electronic_item_data: dict):
@@ -599,16 +602,25 @@ def hathi_trust_items(holdings_data: list) -> list[HathiTrustItem]:
 
 class Holdings:
     def __init__(
-        self, holdings_data: list, bib_id: str, record: pymarc.Record, loans: AlmaLoans
+        self,
+        holdings_data: list,
+        bib_id: str | None = None,
+        record: pymarc.Record | None = None,
+        loans: AlmaLoans = AlmaLoans(),
+        ht_search_only: bool = False,
     ):
         self.data = holdings_data
         self.bib_id = bib_id
         self.record = record
         self.loans = loans
+        self.ht_search_only = ht_search_only
 
     @property
     def hathi_trust_items(self):
-        return hathi_trust_items(self.data)
+        def filter_search_only(item):
+            return self.ht_search_only or item.is_full_text()
+
+        return list(filter(filter_search_only, hathi_trust_items(self.data)))
 
     @property
     def alma_digital_items(self):
@@ -625,3 +637,21 @@ class Holdings:
     @property
     def physical(self):
         return physical_holdings(self.data, self.bib_id, self.record, self.loans)
+
+
+class OnlinejournalsHoldings:
+    def __init__(self, holdings_data: list):
+        self.data = holdings_data
+
+    @property
+    def electronic_items(self):
+        return electronic_items(self.data)
+
+
+class EmptyHoldings:
+    def __init__(self):
+        self.hathi_trust_items = []
+        self.alma_digital_items = []
+        self.electronic_items = []
+        self.finding_aids = None
+        self.physical = []

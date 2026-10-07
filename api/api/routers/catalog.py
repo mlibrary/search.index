@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, Query
 from api.metrics import REQUEST_HISTOGRAM
 from api import schemas
 from api.clients.solr_client import NotFoundError
-from api.record import catalog_record_for
+from api.catalog_record import record_for
 from api.results import get_catalog_results
 from api import specialists
 
@@ -28,7 +28,7 @@ async def get_record(id: str, ht_search_only: bool = False) -> schemas.Record:
     record
     """
     try:
-        result = await catalog_record_for(id, ht_search_only)
+        result = await record_for(id, ht_search_only)
         return result
     except NotFoundError:
         raise HTTPException(status_code=404, detail="Item not found")

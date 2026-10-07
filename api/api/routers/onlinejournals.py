@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, Query
 from api.metrics import REQUEST_HISTOGRAM
 from api import schemas
 from api.clients.solr_client import NotFoundError
-from api.record import onlinejournals_record_for
+from api.onlinejournals_record import record_for
 from api.results import (
     get_onlinejournals_results,
     get_onlinejournals_browse_academic_discipline,
@@ -32,7 +32,7 @@ def get_record(id: str) -> schemas.OnlinejournalsRecord:
     record
     """
     try:
-        result = onlinejournals_record_for(id)
+        result = record_for(id)
         return result
     except NotFoundError:
         raise HTTPException(status_code=404, detail="Item not found")

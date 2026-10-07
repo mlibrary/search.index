@@ -5,7 +5,7 @@ import string
 import responses
 from datetime import datetime
 from dataclasses import dataclass, field
-from api.record import Record, MARC, SolrDoc, TaggedCitation, CSL, BaseRecord
+from api.catalog_record import Record, MARC, SolrDoc, TaggedCitation, CSL, BaseRecord
 from api.entities import FieldElement, PairedField
 from api.marc import (
     FieldRuleset,

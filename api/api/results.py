@@ -2,7 +2,8 @@ import requests
 import re
 import asyncio
 from dataclasses import dataclass
-from api.record import Record, OnlinejournalsRecord
+from api.catalog_record import Record
+from api.onlinejournals_record import Record as OnlinejournalsRecord
 from api.services import S
 
 

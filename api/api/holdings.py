@@ -639,13 +639,13 @@ class Holdings:
         return physical_holdings(self.data, self.bib_id, self.record, self.loans)
 
 
-class OnlinejournalsHoldings:
-    def __init__(self, holdings_data: list):
-        self.data = holdings_data
+# class OnlinejournalsHoldings:
+# def __init__(self, holdings_data: list):
+# self.data = holdings_data
 
-    @property
-    def electronic_items(self):
-        return electronic_items(self.data)
+# @property
+# def electronic_items(self):
+# return electronic_items(self.data)
 
 
 class EmptyHoldings:

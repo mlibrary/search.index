@@ -1,6 +1,6 @@
 import requests
-from api.onlinejournals_record import Record as OnlinejournalsRecord
-from api.results import BaseResults, FilterHandler, Filter, SolrFilterQuery
+from api.onlinejournals_record import Record
+from api.results import BaseResults, FilterHandler, BaseFilter, SolrFilterQuery
 from api.services import S
 
 
@@ -9,13 +9,13 @@ def get_onlinejournals_results(query_params: dict):
         "query": query_params["query"],
         "start": query_params["offset"],
         "rows": query_params["limit"],
-        "fq[]": OnlinejournalsFilterQuery(query_params).query(),
+        "fq[]": FilterQuery(query_params).query(),
         "sort": BaseResults.sort_map[query_params["sort"]],
     }
     response = requests.Session().get(
         f"{S.parser_url}/onlinejournals/search", params=parser_params
     )
-    return OnlinejournalsResults(data=response.json(), query_params=query_params)
+    return Results(data=response.json(), query_params=query_params)
 
 
 def get_onlinejournals_browse_academic_discipline(query_params: dict):
@@ -28,14 +28,14 @@ def get_onlinejournals_browse_academic_discipline(query_params: dict):
         f"{S.parser_url}/onlinejournals/browse_academic_discipline/{query_params['academic_discipline']}",
         params=parser_params,
     )
-    return OnlinejournalsResults(
+    return Results(
         data=response.json(),
         query_params=query_params,
         recommended_academic_discipline=query_params["academic_discipline"],
     )
 
 
-onlinejournals_filter_handler = FilterHandler(
+filter_handler = FilterHandler(
     {
         "subject": "topicStr",
         "language": "language",
@@ -45,8 +45,8 @@ onlinejournals_filter_handler = FilterHandler(
 )
 
 
-class OnlinejournalsResults(BaseResults):
-    fh = onlinejournals_filter_handler
+class Results(BaseResults):
+    fh = filter_handler
 
     def __init__(
         self, data: dict, query_params: dict, recommended_academic_discipline=None
@@ -58,7 +58,7 @@ class OnlinejournalsResults(BaseResults):
     @property
     def records(self):
         return [
-            OnlinejournalsRecord.create(
+            Record.create(
                 data=data,
                 recommended_academic_discipline=self.recommended_academic_discipline,
             )
@@ -72,13 +72,13 @@ class OnlinejournalsResults(BaseResults):
         result = []
         for f in facet_fields.keys():
             if f in self.fh.facet_to_filter:
-                result.append(OnlinejournalsFilter(field=f, values=facet_fields[f]))
+                result.append(Filter(field=f, values=facet_fields[f]))
 
         return result
 
 
-class OnlinejournalsFilterQuery(SolrFilterQuery):
-    fh = onlinejournals_filter_handler
+class FilterQuery(SolrFilterQuery):
+    fh = filter_handler
 
     def query(self):
         result = []
@@ -88,5 +88,5 @@ class OnlinejournalsFilterQuery(SolrFilterQuery):
         return result
 
 
-class OnlinejournalsFilter(Filter):
-    fh = onlinejournals_filter_handler
+class Filter(BaseFilter):
+    fh = filter_handler

@@ -5,7 +5,7 @@ from api.results import (
     FilterValue,
     BaseResults,
     SolrFilterQuery,
-    Filter,
+    BaseFilter,
 )
 from api.catalog_record import Record
 from api.services import S
@@ -16,16 +16,16 @@ async def get_results(query_params: dict):
         "query": query_params["query"],
         "start": query_params["offset"],
         "rows": query_params["limit"],
-        "fq[]": CatalogFilterQuery(query_params).query(),
+        "fq[]": FilterQuery(query_params).query(),
         "sort": BaseResults.sort_map[query_params["sort"]],
     }
     response = requests.Session().get(
         f"{S.parser_url}/catalog/search", params=parser_params
     )
-    return await CatalogResults.create(data=response.json(), query_params=query_params)
+    return await Results.create(data=response.json(), query_params=query_params)
 
 
-catalog_filter_handler = FilterHandler(
+filter_handler = FilterHandler(
     {
         "availability": "availability",
         "format": "format",
@@ -43,7 +43,7 @@ catalog_filter_handler = FilterHandler(
 )
 
 
-class CatalogResults(BaseResults):
+class Results(BaseResults):
     @classmethod
     async def create(cls, data: dict, query_params: dict):
 
@@ -53,9 +53,9 @@ class CatalogResults(BaseResults):
             )
 
         records = await asyncio.gather(*map(fetch_record, data["response"]["docs"]))
-        return CatalogResults(data=data, query_params=query_params, records=records)
+        return Results(data=data, query_params=query_params, records=records)
 
-    fh = catalog_filter_handler
+    fh = filter_handler
 
     @property
     def filters(self):
@@ -71,14 +71,14 @@ class CatalogResults(BaseResults):
                         ht_search_only=self.query_params["ht_search_only"],
                     )
                 else:
-                    r = CatalogFilter(field=f, values=facet_fields[f])
+                    r = Filter(field=f, values=facet_fields[f])
                 result.append(r)
 
         return result
 
 
-class CatalogFilterQuery(SolrFilterQuery):
-    fh = catalog_filter_handler
+class FilterQuery(SolrFilterQuery):
+    fh = filter_handler
 
     def query(self):
         result = []
@@ -140,11 +140,11 @@ class CatalogFilterQuery(SolrFilterQuery):
         return f"({result})"
 
 
-class CatalogFilter(Filter):
-    fh = catalog_filter_handler
+class Filter(BaseFilter):
+    fh = filter_handler
 
 
-class AvailabilityFilter(CatalogFilter):
+class AvailabilityFilter(Filter):
     def __init__(self, field: str, values: list, ht_search_only: bool):
         self.ht_search_only = ht_search_only
         self.field = self.fh.filter_field_for(field)

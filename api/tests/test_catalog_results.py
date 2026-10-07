@@ -1,6 +1,10 @@
 import pytest
 import json
-from api.catalog_results import CatalogFilter, CatalogFilterQuery, CatalogResults
+from api.catalog_results import (
+    Filter as CatalogFilter,
+    FilterQuery as CatalogFilterQuery,
+    Results as CatalogResults,
+)
 
 
 @pytest.fixture()

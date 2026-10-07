@@ -92,7 +92,7 @@ class SolrFilterQuery(BaseFilterQuery):
         return f"{field}:({value})"
 
 
-class Filter:
+class BaseFilter:
     def __init__(self, field: str, values: list):
         self.field = self.fh.filter_field_for(field)
         self.values = self.get_values(values)

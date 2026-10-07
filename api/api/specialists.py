@@ -1,8 +1,8 @@
 import requests
 from api.services import S
 from api.results import solr_escape
-from api.catalog_results import CatalogFilterQuery
-from api.onlinejournals_results import OnlinejournalsFilterQuery
+from api.catalog_results import FilterQuery as CatalogFilterQuery
+from api.onlinejournals_results import FilterQuery as OnlinejournalsFilterQuery
 
 
 def get_catalog_specialists(query_params: dict):

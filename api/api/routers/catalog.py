@@ -4,7 +4,7 @@ from api.metrics import REQUEST_HISTOGRAM
 from api import schemas
 from api.clients.solr_client import NotFoundError
 from api.catalog_record import record_for
-from api.results import get_catalog_results
+from api.catalog_results import get_results
 from api import specialists
 
 router = APIRouter(prefix="/catalog", tags=["catalog"])
@@ -47,7 +47,7 @@ async def get_search_results(
     """
     Does a search in catalog solr
     """
-    results = await get_catalog_results(
+    results = await get_results(
         {
             "query": query,
             "offset": offset,

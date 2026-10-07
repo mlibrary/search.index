@@ -4,7 +4,7 @@ from api.metrics import REQUEST_HISTOGRAM
 from api import schemas
 from api.clients.solr_client import NotFoundError
 from api.onlinejournals_record import record_for
-from api.results import (
+from api.onlinejournals_results import (
     get_onlinejournals_results,
     get_onlinejournals_browse_academic_discipline,
 )

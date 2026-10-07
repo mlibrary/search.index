@@ -15,8 +15,8 @@ from api.holdings import (
     ClementsItem,
     has_physical_holdings,
     AlmaLoans,
-    Holdings,
 )
+from api.catalog_record import Holdings
 
 
 @pytest.fixture

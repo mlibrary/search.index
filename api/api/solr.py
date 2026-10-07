@@ -2,6 +2,13 @@ from api.entities import TextField, PairedField
 
 
 class SolrDocProcessor:
+    kinds = {
+        "plain": "get",
+        "paired_field": "get_paired_field",
+        "text_field": "get_text_field",
+        "list": "get_list",
+    }
+
     def __init__(self, data: dict):
         self.data = data
 
@@ -24,10 +31,18 @@ class SolrDocProcessor:
                 ]
 
     def get_text_field(self, key):
-        return [TextField(text=value) for value in (self.data.get(key) or [])]
+        field_values = self.data.get(key)
+        if type(field_values) is str:
+            field_values = [field_values]
+        elif field_values is None:
+            field_values = []
+        return [TextField(text=value) for value in field_values]
 
     def get_list(self, key):
         data = self.data.get(key, [])
         if isinstance(data, str):
             return [data]
         return data
+
+    def get_kind(self, field, kind="plain"):
+        return getattr(self, self.kinds[kind])(field)

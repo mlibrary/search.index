@@ -2,20 +2,14 @@ from __future__ import annotations
 import re
 import pymarc
 import io
-
-# import string
 import json
 import fastapi_structured_logging
 from api.clients.solr_client import SolrClient
 from api.solr import SolrDocProcessor
-
-# from api.marc import Processor, FieldRuleset, TRIM_CHARS
 from api.holdings import (
     electronic_items,
     EmptyHoldings,
-)  # get_alma_loans, Holdings, EmptyHoldings, OnlinejournalsHoldings
-# from api.csl import BaseCSL
-# from datetime import datetime
+)
 
 from api.catalog_record import BaseRecord, Citation
 

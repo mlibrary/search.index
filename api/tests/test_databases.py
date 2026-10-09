@@ -50,3 +50,18 @@ class TestRecord:
     def test_bool_fields(self, field, solr_bib):
         subject = Record(solr_bib)
         assert getattr(subject, field) is self.bool_fields[field]
+
+    def test_academic_disciplines(self, solr_bib):
+        expected = [
+            {"list": ["Arts", "Music"]},
+            {"list": ["General Information Sources", "Images and Videos"]},
+            {
+                "list": [
+                    "General Information Sources",
+                    "Images and Videos",
+                    "Videos and Moving Image Media",
+                ]
+            },
+        ]
+        subject = Record(solr_bib)
+        assert subject.academic_discipline == expected

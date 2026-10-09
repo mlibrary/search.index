@@ -144,10 +144,7 @@ class SolrDoc:
 
     @property
     def academic_discipline(self):
-        return [
-            {"list": discipline.split(" | ")}
-            for discipline in self.solr_processor.get_list("hlb3Delimited")
-        ]
+        return self.solr_processor.get_academic_discipline("hlb3Delimited")
 
 
 class MARC:

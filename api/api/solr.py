@@ -7,6 +7,7 @@ class SolrDocProcessor:
         "paired_field": "get_paired_field",
         "text_field": "get_text_field",
         "list": "get_list",
+        "academic_discipline": "get_academic_discipline",
     }
 
     def __init__(self, data: dict):
@@ -43,6 +44,9 @@ class SolrDocProcessor:
         if isinstance(data, str):
             return [data]
         return data
+
+    def get_academic_discipline(self, key):
+        return [{"list": discipline.split(" | ")} for discipline in self.get_list(key)]
 
     def get_kind(self, field, kind="plain"):
         return getattr(self, self.kinds[kind])(field)

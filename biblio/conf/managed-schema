@@ -237,22 +237,18 @@
  <filter class="solr.CJKWidthFilterFactory"/>
 <filter class="solr.ICUTransformFilterFactory" id="Traditional-Simplified"/>
 <filter class="solr.FixBrokenOffsetsFilterFactory"/>
-<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 <filter class="solr.ICUTransformFilterFactory" id="Katakana-Hiragana"/>
 <filter class="solr.CJKBigramFilterFactory" han="true" hiragana="true"
                katakana="true" hangul="true" outputUnigrams="true" />
 <filter class="solr.FixBrokenOffsetsFilterFactory"/>
-<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 '>
 
 <!ENTITY post_tokenization_cjk_no_bigrams '
 <filter class="solr.CJKWidthFilterFactory"/>
 <filter class="solr.ICUTransformFilterFactory" id="Traditional-Simplified"/>
 <filter class="solr.FixBrokenOffsetsFilterFactory"/>
-<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 <filter class="solr.ICUTransformFilterFactory" id="Katakana-Hiragana"/>
 <filter class="solr.FixBrokenOffsetsFilterFactory"/>
-<filter class="solr.RemoveDuplicatesTokenFilterFactory"/>
 '>
 
 <!ENTITY pre_tokenization_case_folding '
@@ -567,6 +563,7 @@
             &tokenize_into_one_big_token;
             &icu_case_folding_and_normalization;
             &post_tokenization_cjk_no_bigrams;
+            &remove_duplicates_at_same_position;
             <filter class="solr.PatternReplaceFilterFactory"
                     pattern="^\p{Z}*the\p{Z}+" replacement=""
                     replace="all"
@@ -650,6 +647,7 @@
             &remove_unnecessary_ending_punctuation;
     	    &icu_normalization_no_case_folding;
 	        &post_tokenization_cjk_no_bigrams;
+            &remove_duplicates_at_same_position;
             &cleanup;
         </analyzer>
     </fieldType>

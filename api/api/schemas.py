@@ -442,6 +442,23 @@ class ArticlesResultRecord(BaseModel):
     citation: ArticlesCitation
 
 
+class DatabaseRecord(BaseModel):
+    id: str
+    title: list[BareTextField]
+    description: list[BareTextField]
+    type: list[str]
+    access_type: list[BareTextField]
+    alt_title: list[BareTextField]
+    coverage: list[BareTextField]
+    special_message: list[BareTextField]
+    more_information: list[BareTextField]
+    platform: list[BareTextField]
+    new: bool
+    trial: bool
+    permalink: str
+    academic_discipline: list[AcademicDiscipline]
+
+
 class Specialist(BaseModel):
     name: str
     uniqname: str

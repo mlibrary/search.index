@@ -14,6 +14,7 @@ import fastapi_structured_logging
 from .routers import catalog
 from .routers import onlinejournals
 from .routers import articles
+from .routers import databases
 
 
 app = FastAPI(
@@ -24,6 +25,7 @@ app.add_middleware(fastapi_structured_logging.AccessLogMiddleware)
 app.include_router(catalog.router)
 app.include_router(onlinejournals.router)
 app.include_router(articles.router)
+app.include_router(databases.router)
 
 Instrumentator().instrument(app).expose(app)
 # FastAPIInstrumentor.instrument_app(app)

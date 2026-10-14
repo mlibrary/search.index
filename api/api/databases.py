@@ -1,6 +1,10 @@
-# from api.holdings import EmptyHoldings
-
 from api.solr import SolrDocProcessor
+from api.clients.solr_client import WebsiteSolrClient
+
+
+async def record_for(id: str):
+    data = await WebsiteSolrClient().get_databases_record(id)
+    return Record(data)
 
 
 class Record:

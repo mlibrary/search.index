@@ -75,5 +75,9 @@ class Record:
     def academic_discipline(self):
         return self._get("smfield_taxonomy_delimited", kind="academic_discipline")
 
+    @property
+    def citation(self):
+        return {"tagged": [], "csl": {}}
+
     def _get(self, field: str, kind: str = "text_field"):
         return self.solr_processor.get_kind(field, kind)

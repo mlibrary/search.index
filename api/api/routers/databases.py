@@ -21,7 +21,7 @@ router = APIRouter(prefix="/databases", tags=["databases"])
     response_model_exclude_none=True,
 )
 @REQUEST_HISTOGRAM.labels(datastore="databases", route="record").time()
-async def get_record(id: str) -> schemas.DatabaseRecord:
+async def get_record(id: str) -> schemas.DatabasesRecord:
     """
     Gets a record from website solr. The record is fetched by the solr id
     """

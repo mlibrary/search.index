@@ -209,6 +209,11 @@ class ArticlesCitation(BaseModel):
     csl: ArticlesCSL
 
 
+class DatabasesCitation(BaseModel):
+    tagged: list
+    csl: dict
+
+
 ##########
 # Record #
 ##########
@@ -442,7 +447,7 @@ class ArticlesResultRecord(BaseModel):
     citation: ArticlesCitation
 
 
-class DatabaseRecord(BaseModel):
+class DatabasesRecord(BaseModel):
     id: str
     title: list[BareTextField]
     description: list[BareTextField]
@@ -457,6 +462,7 @@ class DatabaseRecord(BaseModel):
     trial: bool
     permalink: str
     academic_discipline: list[AcademicDiscipline]
+    citation: DatabasesCitation
 
 
 class Specialist(BaseModel):

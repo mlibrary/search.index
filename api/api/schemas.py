@@ -203,6 +203,11 @@ class ArticlesCSL(CSL):
     doi: Optional[str]
 
 
+class DatabasesCSL(BaseModel):
+    id: str
+    title: str
+
+
 class CatalogCitation(BaseModel):
     tagged: list[TaggedCitation]
     csl: CatalogCSL
@@ -214,8 +219,8 @@ class ArticlesCitation(BaseModel):
 
 
 class DatabasesCitation(BaseModel):
-    tagged: list
-    csl: dict
+    tagged: list[TaggedCitation]
+    csl: DatabasesCSL
 
 
 ##########
@@ -455,6 +460,7 @@ class DatabasesRecord(BaseModel):
     id: str
     title: list[BareTextField]
     description: list[BareTextField]
+    brief_description: list[BareTextField]
     type: list[str]
     access_type: list[BareTextField]
     alt_title: list[BareTextField]

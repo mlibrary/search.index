@@ -112,6 +112,10 @@ class BareTextField(BaseModel):
     text: str
 
 
+class LinkField(BareTextField):
+    url: str
+
+
 class PairedTextField(BaseModel):
     transliterated: Optional[TextField] = None
     original: TextField
@@ -456,7 +460,7 @@ class DatabasesRecord(BaseModel):
     alt_title: list[BareTextField]
     coverage: list[BareTextField]
     special_message: list[BareTextField]
-    more_information: list[BareTextField]
+    more_information: list[LinkField]
     platform: list[BareTextField]
     new: bool
     trial: bool

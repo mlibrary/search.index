@@ -78,5 +78,8 @@
         "smfield_coverage":["Coverage"],
         "ssfield_special_message": "Special Message",
         "smfield_more_info": ["Help!"],
+        "smfield_help_links": [
+          "{\"text\":\"Help\",\"href\":\"https:\\/\\/www.some_url\"}"
+        ],
         "_version_":1878411094278537217}]
   }}

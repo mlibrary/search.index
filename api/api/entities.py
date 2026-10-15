@@ -8,6 +8,12 @@ class SearchField:
 
 
 @dataclass(frozen=True)
+class LinkField:
+    text: str
+    url: str
+
+
+@dataclass(frozen=True)
 class TextField:
     text: str
 

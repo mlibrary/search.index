@@ -1,5 +1,7 @@
 from api.solr import SolrDocProcessor
 from api.clients.solr_client import WebsiteSolrClient
+import json
+from api.entities import LinkField
 
 
 async def record_for(id: str):
@@ -50,10 +52,13 @@ class Record:
     def special_message(self):
         return self._get("ssfield_special_message")
 
-    # was help vs help links??
     @property
     def more_information(self):
-        return self._get("smfield_more_info")
+        result = []
+        for link in self._get("smfield_help_links", kind="list"):
+            link = json.loads(link)
+            result.append(LinkField(text=link["text"], url=link["href"]))
+        return result
 
     @property
     def platform(self):

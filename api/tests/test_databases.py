@@ -32,7 +32,6 @@ class TestRecord:
         "alt_title": "Rock and Pop Music in Video",
         "coverage": "Coverage",
         "special_message": "Special Message",
-        "more_information": "Help!",
         "platform": "Music Online",
     }
 
@@ -50,6 +49,12 @@ class TestRecord:
     def test_bool_fields(self, field, solr_bib):
         subject = Record(solr_bib)
         assert getattr(subject, field) is self.bool_fields[field]
+
+    def test_more_information(self, solr_bib):
+        subject = Record(solr_bib)
+        expected = {"text": "Help", "url": "https://www.some_url"}
+        assert subject.more_information[0].text == expected["text"]
+        assert subject.more_information[0].url == expected["url"]
 
     def test_academic_disciplines(self, solr_bib):
         expected = [

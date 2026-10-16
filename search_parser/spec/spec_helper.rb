@@ -1,6 +1,7 @@
 require "rack/test"
 require "debug"
 require "webmock/rspec"
+require "httpx/adapters/webmock"
 ENV["APP_ENV"] = "test"
 
 require_relative "../app"

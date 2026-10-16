@@ -16,8 +16,8 @@ from api.catalog_record import BaseRecord, Citation
 logger = fastapi_structured_logging.get_logger()
 
 
-def record_for(id: str) -> Record:
-    data = SolrClient().get_onlinejournals_record(id)
+async def record_for(id: str) -> Record:
+    data = await SolrClient().get_onlinejournals_record(id)
     return Record.create(data)
 
 

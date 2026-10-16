@@ -1,4 +1,3 @@
-import requests
 import httpx
 from httpx_retries import RetryTransport, Retry
 from api.services import S
@@ -15,14 +14,6 @@ class NotFoundError(Exception):
 
 class ExlibrisClient:
     def __init__(self) -> None:
-        self.session = requests.Session()
-        self.session.headers.update(
-            {
-                "Authorization": f"apikey {S.alma_api_key}",
-                "Accept": "application/json",
-                "Content-Type": "application/json",
-            }
-        )
         self.headers = {
             "Authorization": f"apikey {S.alma_api_key}",
             "Accept": "application/json",
@@ -90,7 +81,7 @@ class AlmaClient(ExlibrisClient):
 class PrimoClient(ExlibrisClient):
     base_url = S.primo_api_url
 
-    def get_record(self, id: str):
+    async def get_record(self, id: str):
         params = {
             "q": f"id,exact,{id}",
             "scope": "CentralIndex",
@@ -99,16 +90,21 @@ class PrimoClient(ExlibrisClient):
             "pcAvailability": "true",
         }
         url = f"{self.base_url}/search"
-        try:
-            response = self.session.get(url, params=params)
-            response.raise_for_status()
-            body = response.json()
-            if body["info"]["total"] == 0:
-                raise NotFoundError()
-            return body["docs"][0]
-        except requests.exceptions.HTTPError as e:
-            logger.error(
-                f"HTTP error occurred: {e} {self.get_error_string(response.text)}"
-            )
-        except requests.exceptions.RequestException as e:
-            logger.error("A request error occurred:", e)
+        retry = Retry(total=5, backoff_factor=0.1)
+        transport = RetryTransport(retry=retry)
+        async with httpx.AsyncClient(
+            headers=self.headers, transport=transport
+        ) as client:
+            try:
+                response = await client.get(url, params=params)
+                response.raise_for_status()
+                body = response.json()
+                if body["info"]["total"] == 0:
+                    raise NotFoundError()
+                return body["docs"][0]
+            except httpx.HTTPError as e:
+                logger.error(
+                    f"HTTP error occurred: {e} {self.get_error_string(response.text)}"
+                )
+            except httpx.RequestError as e:
+                logger.error("A request error occurred:", e)

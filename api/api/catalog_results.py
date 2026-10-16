@@ -1,4 +1,4 @@
-import requests
+import httpx
 import asyncio
 from api.results import (
     FilterHandler,
@@ -19,9 +19,10 @@ async def get_results(query_params: dict):
         "fq[]": FilterQuery(query_params).query(),
         "sort": BaseResults.sort_map[query_params["sort"]],
     }
-    response = requests.Session().get(
-        f"{S.parser_url}/catalog/search", params=parser_params
-    )
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{S.parser_url}/catalog/search", params=parser_params
+        )
     return await Results.create(data=response.json(), query_params=query_params)
 
 

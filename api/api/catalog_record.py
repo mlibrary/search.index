@@ -26,7 +26,7 @@ from datetime import datetime
 
 
 async def record_for(id: str, ht_search_only: bool = False) -> Record:
-    data = SolrClient().get_record(id)
+    data = await SolrClient().get_record(id)
     return await Record.create(data, ht_search_only)
 
 

@@ -62,7 +62,7 @@ async def get_search_results(
 
 @REQUEST_HISTOGRAM.labels(datastore="catalog", route="specialists").time()
 @router.get("/specialists", response_model_exclude_none=True)
-def get_specialists(
+async def get_specialists(
     query: str = "",
     filters: Annotated[list[str], Query()] = [],
     ht_search_only: bool = False,
@@ -70,7 +70,7 @@ def get_specialists(
     """
     Looks up specialists associated with given query
     """
-    results = specialists.get_catalog_specialists(
+    results = await specialists.get_catalog_specialists(
         {
             "query": query,
             "filters": filters,

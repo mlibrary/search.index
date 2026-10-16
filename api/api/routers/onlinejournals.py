@@ -25,14 +25,14 @@ router = APIRouter(prefix="/onlinejournals", tags=["onlinejournals"])
     response_model_exclude_none=True,
 )
 @REQUEST_HISTOGRAM.labels(datastore="onlinejournals", route="record").time()
-def get_record(id: str) -> schemas.OnlinejournalsRecord:
+async def get_record(id: str) -> schemas.OnlinejournalsRecord:
     """
     Gets a record from catalog solr. The record is fetched by the solr id, which
     is the mms_id for an Alma record or a htid with a 11 prefix for a HathiTrust
     record
     """
     try:
-        result = record_for(id)
+        result = await record_for(id)
         return result
     except NotFoundError:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -40,7 +40,7 @@ def get_record(id: str) -> schemas.OnlinejournalsRecord:
 
 @REQUEST_HISTOGRAM.labels(datastore="onlinejournals", route="results").time()
 @router.get("/search", response_model_exclude_none=True)
-def get_search_results(
+async def get_search_results(
     query: str = "",
     offset: int = 0,
     limit: int = 10,
@@ -50,7 +50,7 @@ def get_search_results(
     """
     Does a search in catalog solr
     """
-    results = get_onlinejournals_results(
+    results = await get_onlinejournals_results(
         {
             "query": query,
             "offset": offset,
@@ -64,14 +64,14 @@ def get_search_results(
 
 @REQUEST_HISTOGRAM.labels(datastore="onlinejournals", route="specialists").time()
 @router.get("/specialists", response_model_exclude_none=True)
-def get_specialists(
+async def get_specialists(
     query: str = "",
     filters: Annotated[list[str], Query()] = [],
 ) -> schemas.Specialists:
     """
     Looks up specialists associated with given query
     """
-    results = specialists.get_onlinejournals_specialists(
+    results = await specialists.get_onlinejournals_specialists(
         {
             "query": query,
             "filters": filters,
@@ -81,8 +81,8 @@ def get_specialists(
 
 
 @router.get("/academic_disciplines")
-def get_academic_disciplines() -> list[schemas.BrowseAcademicDiscipline]:
-    return get_onlinejournals_academic_disciplines()
+async def get_academic_disciplines() -> list[schemas.BrowseAcademicDiscipline]:
+    return await get_onlinejournals_academic_disciplines()
 
 
 @REQUEST_HISTOGRAM.labels(
@@ -92,9 +92,9 @@ def get_academic_disciplines() -> list[schemas.BrowseAcademicDiscipline]:
     "/browse_academic_discipline/{academic_discipline}",
     response_model_exclude_none=True,
 )
-def get_browse_academic_discipline(
+async def get_browse_academic_discipline(
     academic_discipline: str, offset: int = 0, limit: int = 10
 ) -> schemas.OnlinejournalsResults:
-    return get_onlinejournals_browse_academic_discipline(
+    return await get_onlinejournals_browse_academic_discipline(
         {"limit": limit, "offset": offset, "academic_discipline": academic_discipline}
     )

@@ -1,48 +1,50 @@
-import requests
+import httpx
 from api.services import S
 from api.results import solr_escape
 from api.catalog_results import FilterQuery as CatalogFilterQuery
 from api.onlinejournals_results import FilterQuery as OnlinejournalsFilterQuery
 
 
-def get_catalog_specialists(query_params: dict):
-    response = fetch_catalog_academic_disciplines(query_params)
-    return calculate_specialists(response, query_params)
+async def get_catalog_specialists(query_params: dict):
+    response = await fetch_catalog_academic_disciplines(query_params)
+    return await calculate_specialists(response, query_params)
 
 
-def get_onlinejournals_specialists(query_params: dict):
-    response = fetch_onlinejournals_academic_disciplines(query_params)
-    return calculate_specialists(response, query_params)
+async def get_onlinejournals_specialists(query_params: dict):
+    response = await fetch_onlinejournals_academic_disciplines(query_params)
+    return await calculate_specialists(response, query_params)
 
 
-def fetch_catalog_academic_disciplines(query_params: dict):
+async def fetch_catalog_academic_disciplines(query_params: dict):
     fq = CatalogFilterQuery(query_params)
     parser_params = {
         "query": query_params["query"],
         "fq[]": fq.query(),
     }
-    response = requests.Session().get(
-        f"{S.parser_url}/catalog/academic_disciplines", params=parser_params
-    )
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{S.parser_url}/catalog/academic_disciplines", params=parser_params
+        )
     return response.json()
 
 
-def fetch_onlinejournals_academic_disciplines(query_params: dict):
+async def fetch_onlinejournals_academic_disciplines(query_params: dict):
     fq = OnlinejournalsFilterQuery(query_params)
     parser_params = {
         "query": query_params["query"],
         "fq[]": fq.query(),
     }
-    response = requests.Session().get(
-        f"{S.parser_url}/onlinejournals/academic_disciplines", params=parser_params
-    )
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{S.parser_url}/onlinejournals/academic_disciplines", params=parser_params
+        )
     return response.json()
 
 
-def calculate_specialists(response, query_params: dict):
+async def calculate_specialists(response, query_params: dict):
     top_academic_disciplines = get_top_academic_disciplines(response)
 
-    website_response = fetch_website_solr_specialists(
+    website_response = await fetch_website_solr_specialists(
         website_solr_query_params(top_academic_disciplines, query_params)
     )
     specialists = specialist_response(website_response)
@@ -70,10 +72,11 @@ def get_top_academic_disciplines(data: dict):
     return result
 
 
-def fetch_website_solr_specialists(params):
-    resp = requests.Session().get(
-        f"{S.website_solr_url}/solr/www.lib/select", params=params
-    )
+async def fetch_website_solr_specialists(params):
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(
+            f"{S.website_solr_url}/solr/www.lib/select", params=params
+        )
     return resp.json()
 
 

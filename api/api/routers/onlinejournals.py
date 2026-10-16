@@ -64,14 +64,14 @@ async def get_search_results(
 
 @REQUEST_HISTOGRAM.labels(datastore="onlinejournals", route="specialists").time()
 @router.get("/specialists", response_model_exclude_none=True)
-def get_specialists(
+async def get_specialists(
     query: str = "",
     filters: Annotated[list[str], Query()] = [],
 ) -> schemas.Specialists:
     """
     Looks up specialists associated with given query
     """
-    results = specialists.get_onlinejournals_specialists(
+    results = await specialists.get_onlinejournals_specialists(
         {
             "query": query,
             "filters": filters,

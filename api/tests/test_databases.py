@@ -1,6 +1,7 @@
 import pytest
 import json
 from api.databases import Record
+from datetime import datetime, timedelta
 
 
 @pytest.fixture()
@@ -31,7 +32,6 @@ class TestRecord:
         "access_type": "Authorized U-M users (+ guests in U-M Libraries)",
         "alt_title": "Rock and Pop Music in Video",
         "coverage": "Coverage",
-        "special_message": "Special Message",
         "platform": "Music Online",
     }
 
@@ -55,6 +55,42 @@ class TestRecord:
         expected = {"text": "Help", "url": "https://www.some_url"}
         assert subject.more_information[0].text == expected["text"]
         assert subject.more_information[0].url == expected["url"]
+
+    def test_special_message_when_there_are_no_dates(self, solr_bib):
+        start = datetime.now() - timedelta(days=1)
+        end = datetime.now() + timedelta(days=1)
+        date_format = "%Y-%m-%dT$H:%M:%SZ"
+        solr_bib["special_message_start"] = datetime.strftime(start, date_format)
+        solr_bib["special_message_end"] = datetime.strftime(end, date_format)
+        subject = Record(solr_bib)
+        assert subject.special_message[0].text == "Special Message"
+
+    def test_special_message_does_not_show_when_out_of_date_range(self, solr_bib):
+        start = datetime.now() - timedelta(days=2)
+        end = datetime.now() - timedelta(days=1)
+        date_format = "%Y-%m-%dT$H:%M:%SZ"
+        solr_bib["special_message_start"] = datetime.strftime(start, date_format)
+        solr_bib["special_message_end"] = datetime.strftime(end, date_format)
+        subject = Record(solr_bib)
+        assert subject.special_message == []
+
+    def test_special_message_shows_dates_when_one_of_dates_indicates_its_in_range(
+        self, solr_bib
+    ):
+        end = datetime.now() + timedelta(days=2)
+        date_format = "%Y-%m-%dT$H:%M:%SZ"
+        solr_bib["special_message_end"] = datetime.strftime(end, date_format)
+        subject = Record(solr_bib)
+        assert subject.special_message[0].text == "Special Message"
+
+    def test_special_message_does_not_show_when_one_of_the_dates_is_out_of_range_range(
+        self, solr_bib
+    ):
+        end = datetime.now() - timedelta(days=5)
+        date_format = "%Y-%m-%dT$H:%M:%SZ"
+        solr_bib["special_message_end"] = datetime.strftime(end, date_format)
+        subject = Record(solr_bib)
+        assert subject.special_message == []
 
     def test_academic_disciplines(self, solr_bib):
         expected = [

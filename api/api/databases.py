@@ -2,7 +2,7 @@ from api.solr import SolrDocProcessor
 from api.clients.solr_client import WebsiteSolrClient
 import json
 from api.entities import LinkField
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 async def record_for(id: str):
@@ -55,7 +55,25 @@ class Record:
 
     @property
     def special_message(self):
-        return self._get("ssfield_special_message")
+        special_message = self._get("ssfield_special_message")
+        if special_message:
+            date_format = "%Y-%m-%dT$H:%M:%SZ"
+            start_raw = self._get("special_message_start", kind="plain")
+            end_raw = self._get("special_message_end", kind="plain")
+            if start_raw:
+                start = datetime.strptime(start_raw, date_format)
+            else:
+                start = datetime.now() - timedelta(days=1)
+
+            if end_raw:
+                end = datetime.strptime(end_raw, date_format)
+            else:
+                end = datetime.now() + timedelta(days=1)
+
+            now = datetime.now()
+            if start < now and now < end:
+                return special_message
+        return []
 
     @property
     def more_information(self):

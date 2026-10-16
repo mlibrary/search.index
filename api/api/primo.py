@@ -7,7 +7,7 @@ from urllib.parse import parse_qsl, urlencode
 from api.csl import BaseCSL
 from datetime import datetime
 from api.results import BaseFilterQuery, FilterHandler, FilterValue
-import requests
+import httpx
 import string
 import asyncio
 from functools import cached_property
@@ -92,10 +92,11 @@ async def get_results(query_params):
 
     print(ArticlesFilterQuery(query_params).query_params())
 
-    response = requests.Session().get(
-        f"{S.parser_url}/articles/search", params=parser_params
-    )
-    results = await Results.create(data=response.json(), query_params=query_params)
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{S.parser_url}/articles/search", params=parser_params
+        )
+        results = await Results.create(data=response.json(), query_params=query_params)
     return results
 
 

@@ -2,7 +2,7 @@ import pytest
 import json
 import pymarc
 import string
-import responses
+from httpx import Response
 from datetime import datetime
 from dataclasses import dataclass, field
 from api.catalog_record import Record, MARC, SolrDoc, TaggedCitation, CSL, BaseRecord
@@ -116,24 +116,18 @@ class TestRecord:
         subject = Record(solr_bib)
         assert (subject.marc) == json.loads(record.as_json())
 
-    @responses.activate
-    def test_holdings_is_not_None(self, solr_bib, loan_data):
+    def test_holdings_is_not_None(self, solr_bib, loan_data, respx_mock):
         mms_id = solr_bib["id"]
-        responses.get(
-            f"{S.alma_api_url}/bibs/{mms_id}/loans?limit=100",
-            json=loan_data,
-            status=200,
+        respx_mock.get(f"{S.alma_api_url}/bibs/{mms_id}/loans?limit=100").mock(
+            Response(200, json=loan_data)
         )
         subject = Record(solr_bib)
         assert subject.holdings is not None
 
-    @responses.activate
-    def test_physical_holdings_is_not_None(self, solr_bib, loan_data):
+    def test_physical_holdings_is_not_None(self, solr_bib, loan_data, respx_mock):
         mms_id = solr_bib["id"]
-        responses.get(
-            f"{S.alma_api_url}/bibs/{mms_id}/loans?limit=100",
-            json=loan_data,
-            status=200,
+        respx_mock.get(f"{S.alma_api_url}/bibs/{mms_id}/loans?limit=100").mock(
+            Response(200, json=loan_data)
         )
         subject = Record(solr_bib)
         assert subject.holdings.physical is not None

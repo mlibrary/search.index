@@ -25,14 +25,14 @@ router = APIRouter(prefix="/onlinejournals", tags=["onlinejournals"])
     response_model_exclude_none=True,
 )
 @REQUEST_HISTOGRAM.labels(datastore="onlinejournals", route="record").time()
-def get_record(id: str) -> schemas.OnlinejournalsRecord:
+async def get_record(id: str) -> schemas.OnlinejournalsRecord:
     """
     Gets a record from catalog solr. The record is fetched by the solr id, which
     is the mms_id for an Alma record or a htid with a 11 prefix for a HathiTrust
     record
     """
     try:
-        result = record_for(id)
+        result = await record_for(id)
         return result
     except NotFoundError:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -81,8 +81,8 @@ def get_specialists(
 
 
 @router.get("/academic_disciplines")
-def get_academic_disciplines() -> list[schemas.BrowseAcademicDiscipline]:
-    return get_onlinejournals_academic_disciplines()
+async def get_academic_disciplines() -> list[schemas.BrowseAcademicDiscipline]:
+    return await get_onlinejournals_academic_disciplines()
 
 
 @REQUEST_HISTOGRAM.labels(

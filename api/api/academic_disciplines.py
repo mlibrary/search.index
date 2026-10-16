@@ -1,8 +1,8 @@
 from api.clients.solr_client import SolrClient
 
 
-def get_onlinejournals_academic_disciplines():
-    data = SolrClient().get_onlinejournals_academic_disciplines()
+async def get_onlinejournals_academic_disciplines():
+    data = await SolrClient().get_onlinejournals_academic_disciplines()
     return academic_disciplines_for(data)
 
 

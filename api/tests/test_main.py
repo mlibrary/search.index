@@ -54,13 +54,13 @@ def loan_data():
     return json.loads('{"total_record_count": 0}')
 
 
-@responses.activate
 def test_get_catalog_record(client, valid_mms_id, solr_bib, loan_data, respx_mock):
     respx_mock.get(f"{S.alma_api_url}/bibs/{valid_mms_id}/loans").mock(
         Response(200, json=loan_data)
     )
-    responses.get(f"{S.solr_url}/solr/biblio/select", json=solr_bib, status=200)
-
+    respx_mock.get(f"{S.solr_url}/solr/biblio/select").mock(
+        Response(200, json=solr_bib)
+    )
     with open("tests/fixtures/land_birds.json") as data:
         expected = json.load(data)
 
@@ -71,14 +71,12 @@ def test_get_catalog_record(client, valid_mms_id, solr_bib, loan_data, respx_moc
         assert subject[field] == expected[field]
 
 
-@responses.activate
 def test_get_onlinejournals_record(
-    client, valid_mms_id, onlinejournals_solr_bib, loan_data
+    client, valid_mms_id, onlinejournals_solr_bib, loan_data, respx_mock
 ):
-    responses.get(
-        f"{S.solr_url}/solr/biblio/select", json=onlinejournals_solr_bib, status=200
+    respx_mock.get(f"{S.solr_url}/solr/biblio/select").mock(
+        Response(200, json=onlinejournals_solr_bib)
     )
-
     with open("tests/fixtures/onlinejournal.json") as data:
         expected = json.load(data)
 

@@ -64,7 +64,7 @@ async def fetch_record(data):
 
 
 async def record_for(id):
-    data = PrimoClient().get_record(id)
+    data = await PrimoClient().get_record(id)
     return await fetch_record(data)
 
 

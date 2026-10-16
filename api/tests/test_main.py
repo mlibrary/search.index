@@ -1,4 +1,3 @@
-import responses
 import pytest
 import json
 from fastapi.testclient import TestClient
@@ -105,9 +104,11 @@ def test_get_onlinejournals_results(
     assert subject["records"][0] is not None
 
 
-@responses.activate
-def test_get_articles_record(client, articles_doc):
-    responses.get(f"{S.primo_api_url}/search", json=articles_doc, status=200)
+def test_get_articles_record(client, articles_doc, respx_mock):
+    respx_mock.get(f"{S.primo_api_url}/search").mock(Response(200, json=articles_doc))
+    respx_mock.get(
+        f"{S.lib_key_host}/public/v1/libraries/{S.lib_key_library_id}/articles/doi/10.1515/9781400840458"
+    ).mock(Response(404))
 
     response = client.get("/articles/records/some_id")
     assert response.status_code == 200

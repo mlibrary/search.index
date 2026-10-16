@@ -112,6 +112,10 @@ class BareTextField(BaseModel):
     text: str
 
 
+class LinkField(BareTextField):
+    url: str
+
+
 class PairedTextField(BaseModel):
     transliterated: Optional[TextField] = None
     original: TextField
@@ -199,6 +203,11 @@ class ArticlesCSL(CSL):
     doi: Optional[str]
 
 
+class DatabasesCSL(BaseModel):
+    id: str
+    title: str
+
+
 class CatalogCitation(BaseModel):
     tagged: list[TaggedCitation]
     csl: CatalogCSL
@@ -207,6 +216,11 @@ class CatalogCitation(BaseModel):
 class ArticlesCitation(BaseModel):
     tagged: list[TaggedCitation]
     csl: ArticlesCSL
+
+
+class DatabasesCitation(BaseModel):
+    tagged: list[TaggedCitation]
+    csl: DatabasesCSL
 
 
 ##########
@@ -440,6 +454,25 @@ class ArticlesResultRecord(BaseModel):
     edition: list[BareTextField]
     holdings: list[ArticleHolding]
     citation: ArticlesCitation
+
+
+class DatabasesRecord(BaseModel):
+    id: str
+    title: list[BareTextField]
+    description: list[BareTextField]
+    brief_description: list[BareTextField]
+    type: list[str]
+    access_type: list[BareTextField]
+    alt_title: list[BareTextField]
+    coverage: list[BareTextField]
+    special_message: list[BareTextField]
+    more_information: list[LinkField]
+    platform: list[BareTextField]
+    new: bool
+    trial: bool
+    permalink: str
+    academic_discipline: list[AcademicDiscipline]
+    citation: DatabasesCitation
 
 
 class Specialist(BaseModel):

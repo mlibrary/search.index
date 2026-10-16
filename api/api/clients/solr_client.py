@@ -1,7 +1,12 @@
 import requests
 from requests.auth import HTTPBasicAuth
+
+import httpx
 from api.services import S
 from api.metrics import SOLR_HISTOGRAM
+import fastapi_structured_logging
+
+logger = fastapi_structured_logging.get_logger()
 
 
 class NotFoundError(Exception):
@@ -44,3 +49,20 @@ class SolrClient:
         url = f"{self.base_url}/select"
         response = self.session.get(url, params=params)
         return response.json()["facet_counts"]["facet_fields"]
+
+
+class WebsiteSolrClient:
+    def __init__(self) -> None:
+        self.url = f"{S.website_solr_url}/solr/www.lib/select"
+
+    async def get_databases_record(self, id: str):
+        params = {"q": f"id:{id} AND type:database", "wt": "json"}
+        async with httpx.AsyncClient() as client:
+            try:
+                response = await client.get(self.url, params=params)
+                response.raise_for_status()
+                if response.json()["response"]["numFound"] == 0:
+                    raise NotFoundError()
+                return response.json()["response"]["docs"][0]
+            except httpx.RequestError as e:
+                logger.error("A request error occurred:", e)

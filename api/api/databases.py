@@ -1,6 +1,13 @@
-# from api.holdings import EmptyHoldings
-
 from api.solr import SolrDocProcessor
+from api.clients.solr_client import WebsiteSolrClient
+import json
+from api.entities import LinkField
+from datetime import datetime, timedelta
+
+
+async def record_for(id: str):
+    data = await WebsiteSolrClient().get_databases_record(id)
+    return Record(data)
 
 
 class Record:
@@ -27,6 +34,10 @@ class Record:
         return self._get("body")
 
     @property
+    def brief_description(self):
+        return self._get("teaser")
+
+    @property
     def type(self):
         return self._get("category", kind="list")
 
@@ -44,12 +55,33 @@ class Record:
 
     @property
     def special_message(self):
-        return self._get("ssfield_special_message")
+        special_message = self._get("ssfield_special_message")
+        if special_message:
+            date_format = "%Y-%m-%dT$H:%M:%SZ"
+            start_raw = self._get("special_message_start", kind="plain")
+            end_raw = self._get("special_message_end", kind="plain")
+            if start_raw:
+                start = datetime.strptime(start_raw, date_format)
+            else:
+                start = datetime.now() - timedelta(days=1)
 
-    # was help vs help links??
+            if end_raw:
+                end = datetime.strptime(end_raw, date_format)
+            else:
+                end = datetime.now() + timedelta(days=1)
+
+            now = datetime.now()
+            if start < now and now < end:
+                return special_message
+        return []
+
     @property
     def more_information(self):
-        return self._get("smfield_more_info")
+        result = []
+        for link in self._get("smfield_help_links", kind="list"):
+            link = json.loads(link)
+            result.append(LinkField(text=link["text"], url=link["href"]))
+        return result
 
     @property
     def platform(self):
@@ -69,7 +101,105 @@ class Record:
 
     @property
     def academic_discipline(self):
-        pass
+        return self._get("smfield_taxonomy_delimited", kind="academic_discipline")
+
+    @property
+    def citation(self):
+        return Citation(self.data)
 
     def _get(self, field: str, kind: str = "text_field"):
         return self.solr_processor.get_kind(field, kind)
+
+
+class TaggedCitation:
+    TAG_MAPPING = [
+        {"field": "id", "ris": ["ID"], "meta": ["id"]},
+        {"field": "title", "ris": ["T1", "TI"], "meta": ["title"]},
+        {"field": "ssfield_special_message", "ris": ["N2"], "meta": []},
+        {"field": "permalink", "ris": ["L2"], "meta": []},
+        {"field": "alt", "ris": ["J2"], "meta": []},
+        {"field": "teaser", "ris": ["N2"], "meta": []},
+        {"field": "body", "ris": ["N2"], "meta": []},
+        {"field": "taxonomy_name", "ris": ["KY"], "meta": ["keywords"]},
+    ]
+
+    def __init__(self, doc):
+        self.doc = doc
+
+    def to_list(self, tag_mapping=TAG_MAPPING):
+        result = self._non_record_tags()
+        for element in tag_mapping:
+            contents = self.doc.get(element["field"])
+            if contents is None:
+                continue
+            elif type(contents) is str:
+                contents = [contents]
+            for content in contents:
+                result.append(
+                    {
+                        "content": content,
+                        "ris": element.get("ris", []),
+                        "meta": element.get("meta", []),
+                    }
+                )
+        result += self._end_record_tag()
+        return result
+
+    def _non_record_tags(self):
+        return [
+            {
+                "content": "DBASE",
+                "ris": ["TY"],
+                "meta": [],
+            },
+            {
+                "content": "U-M Database Search",
+                "ris": ["DB"],
+                "meta": [],
+            },
+            {
+                "content": "University of Michigan Library",
+                "ris": ["DP"],
+                "meta": [],
+            },
+            {
+                "content": datetime.now().strftime("%Y-%m-%d"),
+                "ris": ["Y2"],
+                "meta": ["online_date"],
+            },
+        ]
+
+    def _end_record_tag(self):
+        return [
+            {
+                "content": "",
+                "ris": ["ER"],
+                "meta": [],
+            },
+        ]
+
+
+class CSL:
+    def __init__(self, doc):
+        self.doc = doc
+
+    @property
+    def id(self):
+        return self.doc.get("id")
+
+    @property
+    def title(self):
+        return self.doc.get("title")
+
+
+class Citation:
+    def __init__(self, doc):
+        self.doc = doc
+
+    @property
+    def tagged(self):
+        return TaggedCitation(self.doc).to_list()
+
+    @property
+    def csl(self):
+        return CSL(self.doc)

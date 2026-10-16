@@ -51,6 +51,12 @@
         "taxonomy_name":["Music",
           "Images and Videos",
           "Videos and Moving Image Media"],
+        "taxonomy_delimited":["Arts | Music", 
+          "General Information Sources | Images and Videos", 
+          "General Information Sources | Images and Videos | Videos and Moving Image Media"],
+        "smfield_taxonomy_delimited":["Arts | Music", 
+          "General Information Sources | Images and Videos", 
+          "General Information Sources | Images and Videos | Videos and Moving Image Media"],
         "tmfield_taxonomy_name":["Music",
           "Images and Videos",
           "Videos and Moving Image Media"],
@@ -72,5 +78,8 @@
         "smfield_coverage":["Coverage"],
         "ssfield_special_message": "Special Message",
         "smfield_more_info": ["Help!"],
+        "smfield_help_links": [
+          "{\"text\":\"Help\",\"href\":\"https:\\/\\/www.some_url\"}"
+        ],
         "_version_":1878411094278537217}]
   }}

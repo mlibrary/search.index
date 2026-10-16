@@ -40,7 +40,7 @@ async def get_record(id: str) -> schemas.OnlinejournalsRecord:
 
 @REQUEST_HISTOGRAM.labels(datastore="onlinejournals", route="results").time()
 @router.get("/search", response_model_exclude_none=True)
-def get_search_results(
+async def get_search_results(
     query: str = "",
     offset: int = 0,
     limit: int = 10,
@@ -50,7 +50,7 @@ def get_search_results(
     """
     Does a search in catalog solr
     """
-    results = get_onlinejournals_results(
+    results = await get_onlinejournals_results(
         {
             "query": query,
             "offset": offset,
@@ -92,9 +92,9 @@ async def get_academic_disciplines() -> list[schemas.BrowseAcademicDiscipline]:
     "/browse_academic_discipline/{academic_discipline}",
     response_model_exclude_none=True,
 )
-def get_browse_academic_discipline(
+async def get_browse_academic_discipline(
     academic_discipline: str, offset: int = 0, limit: int = 10
 ) -> schemas.OnlinejournalsResults:
-    return get_onlinejournals_browse_academic_discipline(
+    return await get_onlinejournals_browse_academic_discipline(
         {"limit": limit, "offset": offset, "academic_discipline": academic_discipline}
     )

@@ -88,12 +88,14 @@ def test_get_onlinejournals_record(
         assert subject[field] == expected[field]
 
 
-@responses.activate
-def test_get_onlinejournals_results(client, valid_mms_id, onlinejournals_results):
-    responses.get(
-        f"{S.parser_url}/onlinejournals/search",
-        json=onlinejournals_results,
-        status=200,
+def test_get_onlinejournals_results(
+    client, valid_mms_id, onlinejournals_results, respx_mock
+):
+    respx_mock.get(f"{S.parser_url}/onlinejournals/search").mock(
+        Response(
+            200,
+            json=onlinejournals_results,
+        )
     )
 
     response = client.get("/onlinejournals/search", params={"query": "music"})

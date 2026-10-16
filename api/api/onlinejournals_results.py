@@ -1,10 +1,10 @@
-import requests
+import httpx
 from api.onlinejournals_record import Record
 from api.results import BaseResults, FilterHandler, BaseFilter, SolrFilterQuery
 from api.services import S
 
 
-def get_onlinejournals_results(query_params: dict):
+async def get_onlinejournals_results(query_params: dict):
     parser_params = {
         "query": query_params["query"],
         "start": query_params["offset"],
@@ -12,22 +12,24 @@ def get_onlinejournals_results(query_params: dict):
         "fq[]": FilterQuery(query_params).query(),
         "sort": BaseResults.sort_map[query_params["sort"]],
     }
-    response = requests.Session().get(
-        f"{S.parser_url}/onlinejournals/search", params=parser_params
-    )
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{S.parser_url}/onlinejournals/search", params=parser_params
+        )
     return Results(data=response.json(), query_params=query_params)
 
 
-def get_onlinejournals_browse_academic_discipline(query_params: dict):
+async def get_onlinejournals_browse_academic_discipline(query_params: dict):
     parser_params = {
         "start": query_params["offset"],
         "rows": query_params["limit"],
     }
 
-    response = requests.Session().get(
-        f"{S.parser_url}/onlinejournals/browse_academic_discipline/{query_params['academic_discipline']}",
-        params=parser_params,
-    )
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{S.parser_url}/onlinejournals/browse_academic_discipline/{query_params['academic_discipline']}",
+            params=parser_params,
+        )
     return Results(
         data=response.json(),
         query_params=query_params,

@@ -3,11 +3,70 @@ from api.clients.solr_client import WebsiteSolrClient
 import json
 from api.entities import LinkField
 from datetime import datetime, timedelta
+from api.results import BaseResults, FilterHandler, BaseFilter, SolrFilterQuery
+from api.services import S
+import httpx
 
 
 async def record_for(id: str):
     data = await WebsiteSolrClient().get_databases_record(id)
     return Record(data)
+
+
+async def get_results(query_params: dict):
+    parser_params = {
+        "query": query_params["query"],
+        "start": query_params["offset"],
+        "rows": query_params["limit"],
+        "fq[]": FilterQuery(query_params).query(),
+        "sort": BaseResults.sort_map[query_params["sort"]],
+    }
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{S.parser_url}/onlinejournals/search", params=parser_params
+        )
+    return Results(data=response.json(), query_params=query_params)
+
+
+filter_handler = FilterHandler(
+    {
+        "academic_discipline": "og_groups_both",
+        "access_type": "smfield_access_type",
+        "type": "category",
+    }
+)
+
+
+class Results(BaseResults):
+    fh = filter_handler
+
+    def __init__(
+        self, data: dict, query_params: dict, recommended_academic_discipline=None
+    ):
+        self.data = data
+        self.query_params = query_params
+        self.recommended_academic_discipline = recommended_academic_discipline
+
+    @property
+    def records(self):
+        return [
+            Record.create(
+                data=data,
+                recommended_academic_discipline=self.recommended_academic_discipline,
+            )
+            for data in self.data["response"]["docs"]
+        ]
+
+    @property
+    def filters(self):
+        facet_fields = self.data["facet_counts"]["facet_fields"]
+
+        result = []
+        for f in facet_fields.keys():
+            if f in self.fh.facet_to_filter:
+                result.append(Filter(field=f, values=facet_fields[f]))
+
+        return result
 
 
 class Record:
@@ -203,3 +262,18 @@ class Citation:
     @property
     def csl(self):
         return CSL(self.doc)
+
+
+class FilterQuery(SolrFilterQuery):
+    fh = filter_handler
+
+    def query(self):
+        result = []
+        for field in self.facets.keys():
+            result.append(self.basic_facet(field, self.facets[field]))
+
+        return result
+
+
+class Filter(BaseFilter):
+    fh = filter_handler

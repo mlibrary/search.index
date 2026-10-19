@@ -31,7 +31,6 @@
       }
     }
   ],
-  "preferred_title": [],
   "related_title": [
     {
       "original": {
@@ -72,10 +71,6 @@
       }
     }
   ],
-  "new_title": [],
-  "new_title_issn": [],
-  "previous_title": [],
-  "previous_title_issn": [],
   "contributors": [
     {
       "original": {
@@ -98,18 +93,6 @@
       }
     }
   ],
-  "created": [],
-  "distributed": [],
-  "manufactured": [],
-  "edition": [],
-  "series": [],
-  "series_statement": [],
-  "biography_history": [],
-  "summary": [],
-  "in_collection": [],
-  "access": [],
-  "finding_aids": [],
-  "terms_of_use": [],
   "language": [
     {
       "text": "English"
@@ -126,12 +109,6 @@
       }
     }
   ],
-  "performers": [],
-  "date_place_of_event": [],
-  "preferred_citation": [],
-  "location_of_originals": [],
-  "funding_information": [],
-  "source_of_acquisition": [],
   "related_items": [
     {
       "original": {
@@ -140,7 +117,6 @@
       }
     }
   ],
-  "numbering": [],
   "current_publication_frequency": [
     {
       "original": {
@@ -157,11 +133,6 @@
       }
     }
   ],
-  "numbering_notes": [],
-  "source_of_description_note": [],
-  "copy_specific_note": [],
-  "references": [],
-  "copyright_status_information": [],
   "note": [
     {
       "original": {
@@ -182,8 +153,6 @@
       }
     }
   ],
-  "arrangement": [],
-  "copyright": [],
   "physical_description": [
     {
       "original": {

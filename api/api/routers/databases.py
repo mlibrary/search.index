@@ -1,7 +1,7 @@
 # from typing import Annotated
 from fastapi import APIRouter, HTTPException
 from api.metrics import REQUEST_HISTOGRAM
-from api import schemas
+from api.schemas import main as schemas
 from api.clients.solr_client import NotFoundError
 from api.databases import record_for
 # from api.academic_disciplines import get_databases_academic_disciplines
@@ -19,6 +19,7 @@ router = APIRouter(prefix="/databases", tags=["databases"])
         }
     },
     response_model_exclude_none=True,
+    response_model_exclude_defaults=True,
 )
 @REQUEST_HISTOGRAM.labels(datastore="databases", route="record").time()
 async def get_record(id: str) -> schemas.DatabasesRecord:

@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import APIRouter, HTTPException, Query
 from api.metrics import REQUEST_HISTOGRAM
-from api import schemas
+from api.schemas import main as schemas
 from api.clients.solr_client import NotFoundError
 from api.catalog_record import record_for
 from api.catalog_results import get_results
@@ -19,6 +19,7 @@ router = APIRouter(prefix="/catalog", tags=["catalog"])
         }
     },
     response_model_exclude_none=True,
+    response_model_exclude_defaults=True,
 )
 @REQUEST_HISTOGRAM.labels(datastore="catalog", route="record").time()
 async def get_record(id: str, ht_search_only: bool = False) -> schemas.Record:
@@ -35,7 +36,9 @@ async def get_record(id: str, ht_search_only: bool = False) -> schemas.Record:
 
 
 @REQUEST_HISTOGRAM.labels(datastore="catalog", route="results").time()
-@router.get("/search", response_model_exclude_none=True)
+@router.get(
+    "/search", response_model_exclude_none=True, response_model_exclude_defaults=True
+)
 async def get_search_results(
     query: str = "",
     offset: int = 0,
@@ -61,7 +64,11 @@ async def get_search_results(
 
 
 @REQUEST_HISTOGRAM.labels(datastore="catalog", route="specialists").time()
-@router.get("/specialists", response_model_exclude_none=True)
+@router.get(
+    "/specialists",
+    response_model_exclude_none=True,
+    response_model_exclude_defaults=True,
+)
 async def get_specialists(
     query: str = "",
     filters: Annotated[list[str], Query()] = [],

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Query
 from typing import Annotated
 from api.metrics import REQUEST_HISTOGRAM
-from api import schemas
+from api.schemas import main as schemas
 from api.clients.exlibris_client import NotFoundError
 from api.primo import record_for, get_results
 
@@ -17,6 +17,7 @@ router = APIRouter(prefix="/articles", tags=["articles"])
         }
     },
     response_model_exclude_none=True,
+    response_model_exclude_defaults=True,
 )
 @REQUEST_HISTOGRAM.labels(datastore="articles", route="record").time()
 async def get_record(id: str) -> schemas.ArticlesRecord:
@@ -34,7 +35,10 @@ async def get_record(id: str) -> schemas.ArticlesRecord:
 
 @REQUEST_HISTOGRAM.labels(datastore="catalog", route="results").time()
 @router.get(
-    "/search", response_model_exclude_none=True, response_model=schemas.ArticlesResults
+    "/search",
+    response_model_exclude_none=True,
+    response_model_exclude_defaults=True,
+    response_model=schemas.ArticlesResults,
 )
 async def get_search_results(
     query: str = "",

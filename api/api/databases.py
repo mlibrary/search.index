@@ -23,7 +23,7 @@ async def get_results(query_params: dict):
     }
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"{S.parser_url}/onlinejournals/search", params=parser_params
+            f"{S.parser_url}/databases/search", params=parser_params
         )
     return Results(data=response.json(), query_params=query_params)
 
@@ -50,7 +50,7 @@ class Results(BaseResults):
     @property
     def records(self):
         return [
-            Record.create(
+            Record(
                 data=data,
                 recommended_academic_discipline=self.recommended_academic_discipline,
             )

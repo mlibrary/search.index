@@ -266,6 +266,25 @@ class DatabasesRecord(BaseModel):
     citation: DatabasesCitation
 
 
+class DatabasesResultRecord(BaseModel):
+    id: str
+    title: list[BareTextField]
+    # description: list[BareTextField] = []
+    brief_description: list[BareTextField] = []
+    type: list[str] = []
+    access_type: list[BareTextField] = []
+    # alt_title: list[BareTextField] = []
+    coverage: list[BareTextField] = []
+    special_message: list[BareTextField] = []
+    # more_information: list[LinkField] = []
+    # platform: list[BareTextField] = []
+    new: bool = False
+    trial: bool = False
+    permalink: str
+    # academic_discipline: list[AcademicDiscipline] = []
+    citation: DatabasesCitation
+
+
 ###############
 # Specialists #
 ###############
@@ -320,6 +339,10 @@ class ArticlesResults(Results):
     records: list[ArticlesResultRecord]
 
 
+class DatabasesResults(Results):
+    records: list[DatabasesResultRecord]
+
+
 ###########
 # Browse  #
 ###########
@@ -353,6 +376,12 @@ class ArticlesSort(str, Enum):
     relevance = "relevance"
     date_asc = "date_asc"
     date_desc = "date_desc"
+
+
+class DatabasesSort(str, Enum):
+    relevance = "relevance"
+    title_asc = "title_asc"
+    title_desc = "title_desc"
 
 
 #############

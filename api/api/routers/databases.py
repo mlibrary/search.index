@@ -1,5 +1,5 @@
-# from typing import Annotated
-from fastapi import APIRouter, HTTPException
+from typing import Annotated
+from fastapi import APIRouter, HTTPException, Query
 from api.metrics import REQUEST_HISTOGRAM
 from api.schemas import main as schemas
 from api.clients.solr_client import NotFoundError
@@ -31,3 +31,31 @@ async def get_record(id: str) -> schemas.DatabasesRecord:
         return result
     except NotFoundError:
         raise HTTPException(status_code=404, detail="Item not found")
+
+
+@REQUEST_HISTOGRAM.labels(datastore="onlinejournals", route="results").time()
+@router.get(
+    "/search",
+    response_model_exclude_none=True,
+    response_model_exclude_defaults=True,
+)
+async def get_search_results(
+    query: str = "",
+    offset: int = 0,
+    limit: int = 10,
+    filters: Annotated[list[str], Query()] = [],
+    sort: schemas.Sort = schemas.DatabasesSort.relevance,
+) -> schemas.DatabasesResults:
+    """
+    Does a search in catalog solr
+    """
+    results = await get_onlinejournals_results(
+        {
+            "query": query,
+            "offset": offset,
+            "limit": limit,
+            "filters": filters,
+            "sort": sort,
+        }
+    )
+    return results

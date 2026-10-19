@@ -7,6 +7,7 @@ require "active_support"
 require "active_support/core_ext/hash/indifferent_access"
 require_relative "lib/services"
 require_relative "lib/metrics"
+require_relative "lib/mlibrary_search_parser_transformer_sometimes_quoted_local_params"
 require "debug" if S.app_env == "development"
 
 Metrics::Yabeda.configure!
@@ -77,9 +78,6 @@ class SearchParser
   end
 
   def self.academic_discipline_solr_query(query:, fq:)
-    # how to handle fq:
-    # fq":["topicStr:(Motion\\ pictures)","institution:(UM\\ Ann\\ Arbor\\ Libraries)","+(new_availability:physical OR new_availability:hathi_trust_full_text_or_electronic_holding)"]
-    # sort comes from config/sorts.yml
     lp = MLibrarySearchParser::Transformer::Solr::LocalParams.new(build(query))
 
     result = {
@@ -90,6 +88,26 @@ class SearchParser
       fl: "hlb3Str"
     }.merge(lp.params).with_indifferent_access
     S.logger.info("academic_disciplines_query", datastore: datastore, query: result)
+    result
+  end
+
+  def self.databases_solr_query(query:, rows:, start:, sort:, fq:)
+    # how to handle fq:
+    # fq":["topicStr:(Motion\\ pictures)","institution:(UM\\ Ann\\ Arbor\\ Libraries)","+(new_availability:physical OR new_availability:hathi_trust_full_text_or_electronic_holding)"]
+    # sort comes from config/sorts.yml
+    lp = MLibrarySearchParser::Transformer::Solr::SometimesQuotedLocalParams.new(build(query))
+
+    result = {
+      rows: rows,
+      start: start,
+      sort: sort,
+      fq: fq,
+      wt: "json"
+    }.merge(facet_params).merge(lp.params).with_indifferent_access
+
+    result["qt"] = "standard" unless ["edismax", "dismax"].include?(result["qt"]) # code from spectrum so I don't forget. Don't know if we need this.
+    result["qq"] = '"' + solr_escape(result["q"]) + '"'
+    S.logger.info("results_query", datastore: datastore, query: result)
     result
   end
 
@@ -177,6 +195,10 @@ class SearchParser
       return false if node.is_type?(:tokens)
       node.children.any? { |child| node_has_fielded_children?(child) }
     end
+  end
+
+  class Databases < self
+    CONFIG = YAML.safe_load_file("./config/databases.yaml", aliases: true).freeze
   end
 end
 
@@ -302,6 +324,26 @@ class SearchParser::Application < Sinatra::Base
 
       response = conn.get("https://api-na.hosted.exlibrisgroup.com/primo/v1/search", SearchParser::Articles.primo_query(query_params))
       S.logger.info("primo_request", url: response.url.to_str)
+      response.body.to_json
+    end
+  end
+  namespace "/databases" do
+    get "/search" do
+      headers "metrics.route" => "onlinejournals/search"
+      content_type :json
+      query_params = {
+        query: params["query"] || "",
+        rows: params["rows"] || 10,
+        start: params["start"] || 0,
+        sort: params["sort"] || "score desc",
+        fq: params["fq"] || []
+      }
+      query_params[:fq].push("type:database")
+
+      solr_params = SearchParser::Databases.databases_solr_query(**query_params)
+      #      Yabeda.catalog_solr_query_duration.measure do
+      response = S.website_solr_conn.get("solr/#{S.website_solr_core}/select", solr_params)
+      #      end
       response.body.to_json
     end
   end

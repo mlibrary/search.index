@@ -26,6 +26,17 @@ S.register(:solr_conn) do
   end
 end
 
+S.register(:website_solr_url) { ENV["WEBSITE_SOLR_URL"] || "http://website-solr:8983" }
+S.register(:website_solr_core) { ENV["WEBSITE_SOLR_CORE"] || "www.lib" }
+S.register(:website_solr_conn) do
+  Faraday.new(
+    url: S.website_solr_url, request: {params_encoder: Faraday::FlatParamsEncoder}
+  ) do |f|
+    f.request :json
+    f.response :json
+  end
+end
+
 #######
 # Logging
 ######

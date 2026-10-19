@@ -72,6 +72,6 @@ search_fields:
   exact: *ALL_FIELDS
   contains: *ALL_FIELDS
 facets:
-  - db_academic_discipline
-  - access_type
-  - database_type
+  - og_groups_both
+  - smfield_access_type
+  - category

@@ -23,6 +23,7 @@ router = APIRouter(prefix="/onlinejournals", tags=["onlinejournals"])
         }
     },
     response_model_exclude_none=True,
+    response_model_exclude_defaults=True,
 )
 @REQUEST_HISTOGRAM.labels(datastore="onlinejournals", route="record").time()
 async def get_record(id: str) -> schemas.OnlinejournalsRecord:
@@ -39,7 +40,11 @@ async def get_record(id: str) -> schemas.OnlinejournalsRecord:
 
 
 @REQUEST_HISTOGRAM.labels(datastore="onlinejournals", route="results").time()
-@router.get("/search", response_model_exclude_none=True)
+@router.get(
+    "/search",
+    response_model_exclude_none=True,
+    response_model_exclude_defaults=True,
+)
 async def get_search_results(
     query: str = "",
     offset: int = 0,
@@ -63,7 +68,11 @@ async def get_search_results(
 
 
 @REQUEST_HISTOGRAM.labels(datastore="onlinejournals", route="specialists").time()
-@router.get("/specialists", response_model_exclude_none=True)
+@router.get(
+    "/specialists",
+    response_model_exclude_none=True,
+    response_model_exclude_defaults=True,
+)
 async def get_specialists(
     query: str = "",
     filters: Annotated[list[str], Query()] = [],

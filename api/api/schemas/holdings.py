@@ -20,7 +20,7 @@ class HathiTustItem(BaseModel):
 
 class ElectronicItem(BaseModel):
     url: str | None
-    campuses: list[str]
+    campuses: list[str] = []
     interface_name: str | None
     collection_name: str | None
     description: str | None
@@ -72,22 +72,22 @@ class PhysicalItem(BaseModel):
 class PhysicalHolding(BaseModel):
     holding_id: str | None
     call_number: str | None
-    summary: list[str] | None
-    public_note: list[str] | None
+    summary: list[str] | None = []
+    public_note: list[str] | None = []
     physical_location: PhysicalLocation
     items: list[PhysicalItem]
 
 
 class Holdings(BaseModel):
-    hathi_trust_items: list[HathiTustItem]
-    alma_digital_items: list[AlmaDigitalItem]
-    electronic_items: list[ElectronicItem]
+    hathi_trust_items: list[HathiTustItem] = []
+    alma_digital_items: list[AlmaDigitalItem] = []
+    electronic_items: list[ElectronicItem] = []
     finding_aids: FindingAids | None
-    physical: list[PhysicalHolding]
+    physical: list[PhysicalHolding] = []
 
 
 class OnlinejournalsHoldings(BaseModel):
-    electronic_items: list[ElectronicItem]
+    electronic_items: list[ElectronicItem] = []
 
 
 class ArticleHolding(BaseModel):

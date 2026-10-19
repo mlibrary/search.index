@@ -19,6 +19,7 @@ router = APIRouter(prefix="/databases", tags=["databases"])
         }
     },
     response_model_exclude_none=True,
+    response_model_exclude_defaults=True,
 )
 @REQUEST_HISTOGRAM.labels(datastore="databases", route="record").time()
 async def get_record(id: str) -> schemas.DatabasesRecord:

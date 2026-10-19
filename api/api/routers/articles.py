@@ -17,6 +17,7 @@ router = APIRouter(prefix="/articles", tags=["articles"])
         }
     },
     response_model_exclude_none=True,
+    response_model_exclude_defaults=True,
 )
 @REQUEST_HISTOGRAM.labels(datastore="articles", route="record").time()
 async def get_record(id: str) -> schemas.ArticlesRecord:
@@ -34,7 +35,10 @@ async def get_record(id: str) -> schemas.ArticlesRecord:
 
 @REQUEST_HISTOGRAM.labels(datastore="catalog", route="results").time()
 @router.get(
-    "/search", response_model_exclude_none=True, response_model=schemas.ArticlesResults
+    "/search",
+    response_model_exclude_none=True,
+    response_model_exclude_defaults=True,
+    response_model=schemas.ArticlesResults,
 )
 async def get_search_results(
     query: str = "",

@@ -8,8 +8,8 @@ def to_kebab_case(string: str) -> str:
 
 class TaggedCitation(BaseModel):
     content: str
-    ris: list[str]
-    meta: list[str]
+    ris: list[str] = []
+    meta: list[str] = []
 
 
 class CSLLiteral(BaseModel):

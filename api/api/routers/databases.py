@@ -1,7 +1,7 @@
 # from typing import Annotated
 from fastapi import APIRouter, HTTPException
 from api.metrics import REQUEST_HISTOGRAM
-from api import schemas
+from api.schemas import main as schemas
 from api.clients.solr_client import NotFoundError
 from api.databases import record_for
 # from api.academic_disciplines import get_databases_academic_disciplines

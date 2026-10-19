@@ -1,226 +1,23 @@
-from pydantic import BaseModel, ConfigDict, Field, AliasGenerator
+from pydantic import BaseModel, ConfigDict
 from typing import Optional
+from .holdings import Holdings, OnlinejournalsHoldings, ArticleHolding
+from .metadata import (
+    TextField,
+    PairedTextField,
+    PairedSearchField,
+    PairedBrowseField,
+    BareTextField,
+    BareSearchField,
+    AcademicDiscipline,
+    LinkField,
+)
+from .citation import (
+    DatabasesCitation,
+    ArticlesCitation,
+    CatalogCitation,
+)
 import datetime
 from enum import Enum
-
-
-def to_kebab_case(string: str) -> str:
-    return string.replace("_", "-")
-
-
-############
-# Holdings #
-############
-
-
-class AlmaDigitalItem(BaseModel):
-    url: str
-    delivery_description: str | None
-    label: str | None
-    public_note: str | None
-
-
-class HathiTustItem(BaseModel):
-    id: str
-    url: str
-    description: str | None
-    source: str
-    status: str
-
-
-class ElectronicItem(BaseModel):
-    url: str | None
-    campuses: list[str]
-    interface_name: str | None
-    collection_name: str | None
-    description: str | None
-    public_note: str | None
-    note: str | None
-    is_available: bool
-
-
-class LibLoc(BaseModel):
-    library: str | None
-    location: str | None
-
-
-class PhysicalLocation(BaseModel):
-    url: str | None
-    text: str | None
-    floor: Optional[str] = None
-    code: LibLoc
-    temporary: bool
-
-
-class FindingAidItem(BaseModel):
-    url: str | None
-    call_number: str | None
-    description: str | None
-
-
-class FindingAids(BaseModel):
-    physical_location: PhysicalLocation | None
-    items: list[FindingAidItem]
-
-
-class PhysicalItem(BaseModel):
-    item_id: str
-    barcode: str | None
-    fulfillment_unit: str
-    call_number: str | None
-    process_type: str | None
-    due_back_at: datetime.datetime | None
-    item_policy: str | None
-    description: str | None
-    inventory_number: str | None
-    material_type: str | None
-    reservable: bool
-    physical_location: PhysicalLocation | None
-    url: str | None
-
-
-class PhysicalHolding(BaseModel):
-    holding_id: str | None
-    call_number: str | None
-    summary: list[str] | None
-    public_note: list[str] | None
-    physical_location: PhysicalLocation
-    items: list[PhysicalItem]
-
-
-class Holdings(BaseModel):
-    hathi_trust_items: list[HathiTustItem]
-    alma_digital_items: list[AlmaDigitalItem]
-    electronic_items: list[ElectronicItem]
-    finding_aids: FindingAids | None
-    physical: list[PhysicalHolding]
-
-
-class OnlinejournalsHoldings(BaseModel):
-    electronic_items: list[ElectronicItem]
-
-
-############
-# Metadata #
-############
-class TextField(BaseModel):
-    text: str
-    tag: Optional[str] = None
-
-
-class BareTextField(BaseModel):
-    text: str
-
-
-class LinkField(BareTextField):
-    url: str
-
-
-class PairedTextField(BaseModel):
-    transliterated: Optional[TextField] = None
-    original: TextField
-
-
-class FieldedSearchField(BaseModel):
-    field: str
-    value: str
-
-
-class SearchField(TextField):
-    search: list[FieldedSearchField]
-
-
-class BareSearchField(BareTextField):
-    search: list[FieldedSearchField]
-
-
-class PairedSearchField(BaseModel):
-    transliterated: Optional[SearchField] = None
-    original: SearchField
-
-
-class BrowseField(SearchField):
-    browse: str
-    tag: Optional[str] = None
-
-
-class PairedBrowseField(BaseModel):
-    transliterated: Optional[BrowseField] = None
-    original: BrowseField
-
-
-class AcademicDiscipline(BaseModel):
-    list: list[str]
-
-
-class TaggedCitation(BaseModel):
-    content: str
-    ris: list[str]
-    meta: list[str]
-
-
-class CSLLiteral(BaseModel):
-    literal: str
-
-
-class CSLName(BaseModel):
-    family: Optional[str]
-    given: Optional[str]
-
-
-class CSL(BaseModel):
-    model_config = ConfigDict(
-        # CSL has kebab case JSON keys
-        alias_generator=AliasGenerator(
-            serialization_alias=lambda field_name: to_kebab_case(field_name)
-        )
-    )
-    id: str
-    type: str
-    title: str
-    author: Optional[list[CSLName | CSLLiteral]]
-    issued: Optional[CSLLiteral]
-    publisher: Optional[str]
-    isbn: Optional[list[str]] = Field(serialization_alias="ISBN")
-    issn: Optional[list[str]] = Field(serialization_alias="ISSN")
-    edition: Optional[str]
-
-
-class CatalogCSL(CSL):
-    collection_title: Optional[str]
-    call_number: Optional[str]
-    publisher_place: Optional[str]
-    editor: Optional[list[CSLName | CSLLiteral]]
-    number: Optional[str]
-
-
-class ArticlesCSL(CSL):
-    page: Optional[str]
-    container_title: Optional[str]
-    volume: Optional[str]
-    issue: Optional[str]
-    genre: Optional[str]
-    doi: Optional[str]
-
-
-class DatabasesCSL(BaseModel):
-    id: str
-    title: str
-
-
-class CatalogCitation(BaseModel):
-    tagged: list[TaggedCitation]
-    csl: CatalogCSL
-
-
-class ArticlesCitation(BaseModel):
-    tagged: list[TaggedCitation]
-    csl: ArticlesCSL
-
-
-class DatabasesCitation(BaseModel):
-    tagged: list[TaggedCitation]
-    csl: DatabasesCSL
 
 
 ##########
@@ -393,12 +190,6 @@ class OnlinejournalsRecord(Record):
     holdings: OnlinejournalsHoldings
 
 
-class ArticleHolding(BaseModel):
-    source: str
-    availability: str
-    url: str
-
-
 class ArticlesRecord(BaseModel):
     id: str
     peer_reviewed: bool
@@ -475,6 +266,9 @@ class DatabasesRecord(BaseModel):
     citation: DatabasesCitation
 
 
+###############
+# Specialists #
+###############
 class Specialist(BaseModel):
     name: str
     uniqname: str
@@ -492,6 +286,11 @@ class SpecialistAcademicDiscipline(BaseModel):
 class Specialists(BaseModel):
     specialists: list[Specialist]
     academic_disciplines: list[SpecialistAcademicDiscipline]
+
+
+###########
+# Results #
+###########
 
 
 class FilterValue(BaseModel):
@@ -521,6 +320,11 @@ class ArticlesResults(Results):
     records: list[ArticlesResultRecord]
 
 
+###########
+# Browse  #
+###########
+
+
 class BrowseAcademicDiscipline(BaseModel):
     name: str
     count: int
@@ -528,6 +332,10 @@ class BrowseAcademicDiscipline(BaseModel):
 
 
 BrowseAcademicDiscipline.model_rebuild()
+
+###########
+# Sorts   #
+###########
 
 
 class Sort(str, Enum):
@@ -545,6 +353,11 @@ class ArticlesSort(str, Enum):
     relevance = "relevance"
     date_asc = "date_asc"
     date_desc = "date_desc"
+
+
+#############
+# Responses #
+#############
 
 
 class Response(BaseModel):

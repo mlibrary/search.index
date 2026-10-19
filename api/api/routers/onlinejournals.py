@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import APIRouter, HTTPException, Query
 from api.metrics import REQUEST_HISTOGRAM
-from api import schemas
+from api.schemas import main as schemas
 from api.clients.solr_client import NotFoundError
 from api.onlinejournals_record import record_for
 from api.onlinejournals_results import (

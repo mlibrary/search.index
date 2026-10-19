@@ -49,7 +49,7 @@ async def get_search_results(
     """
     Does a search in catalog solr
     """
-    results = await get_onlinejournals_results(
+    results = await get_results(
         {
             "query": query,
             "offset": offset,

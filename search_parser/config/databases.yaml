@@ -1,5 +1,12 @@
 name: databases
 transformer: MLibrarySearchParser::Transformer::Solr::SometimesQuotedLocalParams
+solr_name: website
+academic_discipline_field: "og_groups_both"
+facets:
+  - og_groups_both
+  - smfield_access_type
+  - category
+# for MLibrarySearchParser
 search_field_default: all_fields
 search_attr_defaults:
   mm: $default_mm
@@ -73,8 +80,3 @@ search_fields:
   keywords: *ALL_FIELDS
   exact: *ALL_FIELDS
   contains: *ALL_FIELDS
-facets:
-  - og_groups_both
-  - smfield_access_type
-  - category
-academic_discipline_field: "og_groups_both"

@@ -44,7 +44,7 @@ class SearchParser::Application < Sinatra::Base
       solr_params = SearchParser.get_datastore(:catalog).solr_query(**query_params)
 
       #      Yabeda.catalog_solr_query_duration.measure do
-      response = S.solr_conn.get("solr/#{S.solr_core}/select", solr_params)
+      response = SearchParser.get_datastore(:catalog).search(solr_params)
       #      end
       response.body.to_json
     end
@@ -58,7 +58,7 @@ class SearchParser::Application < Sinatra::Base
       }
       solr_params = SearchParser.get_datastore(:catalog).academic_discipline_solr_query(**query_params)
 
-      response = S.solr_conn.get("solr/#{S.solr_core}/select", solr_params)
+      response = SearchParser.get_datastore(:catalog).search(solr_params)
 
       response.body.to_json
     end
@@ -80,7 +80,7 @@ class SearchParser::Application < Sinatra::Base
       #      response = nil
       solr_params = SearchParser.get_datastore(:onlinejournals).solr_query(**query_params)
       #      Yabeda.catalog_solr_query_duration.measure do
-      response = S.solr_conn.get("solr/#{S.solr_core}/select", solr_params)
+      response = SearchParser.get_datastore(:onlinejournals).search(solr_params)
       #      end
       response.body.to_json
     end
@@ -96,7 +96,7 @@ class SearchParser::Application < Sinatra::Base
       query_params[:fq].push("format:Serial")
       solr_params = SearchParser.get_datastore(:onlinejournals).academic_discipline_solr_query(**query_params)
 
-      response = S.solr_conn.get("solr/#{S.solr_core}/select", solr_params)
+      response = SearchParser.get_datastore(:onlinejournals).search(solr_params)
 
       response.body.to_json
     end
@@ -119,7 +119,7 @@ class SearchParser::Application < Sinatra::Base
       query_params[:sort] = "#{bb_field} asc,titleSort asc"
       solr_params = SearchParser.get_datastore(:onlinejournals).solr_query(**query_params)
 
-      response = S.solr_conn.get("solr/#{S.solr_core}/select", solr_params)
+      response = SearchParser.get_datastore(:onlinejournals).search(solr_params)
 
       response.body.to_json
     end

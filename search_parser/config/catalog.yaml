@@ -1,5 +1,22 @@
 name: catalog
 transformer: MLibrarySearchParser::Transformer::Solr::LocalParams
+solr_name: catalog
+academic_discipline_field: "hlb3Str"
+facets:
+  - authorStr
+  - availability
+  - building
+  - collection
+  - format
+  - geographicStr
+  - hlb3Str
+  - institution
+  - language
+  - place_of_publication
+  - publishDateRange
+  - search_only
+  - topicStr
+# for MLibrarySearchParser
 search_field_default: all_fields
 search_attr_defaults:
   mm: $default_mm
@@ -24,7 +41,6 @@ search_fields:
     ps2: 2
     boost: >-
       product(
-
 
         if(termfreq('format', 'Journal'), 1.4, 1),
         max(
@@ -102,19 +118,4 @@ solr_params:
   mm.autoRelax: true
   tie: 0.1
   facet.threads: 10
-facets:
-  - authorStr
-  - availability
-  - building
-  - collection
-  - format
-  - geographicStr
-  - hlb3Str
-  - institution
-  - language
-  - place_of_publication
-  - publishDateRange
-  - search_only
-  - topicStr
 qt: standard
-academic_discipline_field: "hlb3Str"

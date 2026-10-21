@@ -1,7 +1,8 @@
-describe SearchParser::Articles do
+describe SearchParser::Datastore::Primo do
   context ".primo_q" do
     def expect_primo_q(input, output)
-      expect(described_class.primo_q(input)).to eq(output)
+      primo = SearchParser.get_datastore(:articles)
+      expect(primo.primo_q(input)).to eq(output)
     end
     it "returns expected q string for basic query" do
       expect_primo_q("birds", "any,contains,birds")

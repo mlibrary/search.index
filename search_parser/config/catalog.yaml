@@ -1,3 +1,5 @@
+name: catalog
+transformer: MLibrarySearchParser::Transformer::Solr::LocalParams
 search_field_default: all_fields
 search_attr_defaults:
   mm: $default_mm
@@ -22,7 +24,6 @@ search_fields:
     ps2: 2
     boost: >-
       product(
-
 
 
         if(termfreq('format', 'Journal'), 1.4, 1),
@@ -116,3 +117,4 @@ facets:
   - search_only
   - topicStr
 qt: standard
+academic_discipline_field: "hlb3Str"

@@ -1,3 +1,5 @@
+name: databases
+transformer: MLibrarySearchParser::Transformer::Solr::SometimesQuotedLocalParams
 search_field_default: all_fields
 search_attr_defaults:
   mm: $default_mm
@@ -75,3 +77,4 @@ facets:
   - og_groups_both
   - smfield_access_type
   - category
+academic_discipline_field: "og_groups_both"

@@ -14,12 +14,22 @@ S.register(:app_name) { ENV["APP_NAME"] || "search_parser" }
 #######
 # Solr
 ######
-
 S.register(:solr_url) { ENV["CATALOG_SOLR_URL"] || "http://solr:8983" }
 S.register(:solr_core) { ENV["CATALOG_SOLR_CORE"] || "biblio" }
 S.register(:solr_conn) do
   Faraday.new(
     url: S.solr_url, request: {params_encoder: Faraday::FlatParamsEncoder}
+  ) do |f|
+    f.request :json
+    f.response :json
+  end
+end
+
+S.register(:catalog_solr_url) { ENV["CATALOG_SOLR_URL"] || "http://solr:8983" }
+S.register(:catalog_solr_core) { ENV["CATALOG_SOLR_CORE"] || "biblio" }
+S.register(:catalog_solr_conn) do
+  Faraday.new(
+    url: S.catalog_solr_url, request: {params_encoder: Faraday::FlatParamsEncoder}
   ) do |f|
     f.request :json
     f.response :json

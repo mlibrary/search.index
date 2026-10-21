@@ -30,6 +30,12 @@ module SearchParser
         @facets ||= config["facets"].freeze
       end
 
+      def search(params)
+        solr_name = config["solr_name"]
+        solr_core = "#{solr_name}_solr_core"
+        S["#{solr_name}_solr_conn"].get("solr/#{S[solr_core]}/select", params)
+      end
+
       def facet_params
         result = {}
         facets.each do |field|

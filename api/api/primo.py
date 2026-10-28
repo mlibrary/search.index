@@ -123,13 +123,14 @@ class Filter:
         return result
 
     def date_string(self, idx, values):
-        result = remove_html_tags(values[idx]["value"])
-        if idx > 0:
-            start = int(remove_html_tags(values[idx]["value"]))
-            upto = int(remove_html_tags(values[idx - 1]["value"]))
-            if upto - start > 1:
-                result = f"{start}-{upto - 1}"
-        return result
+        upto = int(remove_html_tags(values[idx]["value"]))
+        if idx == len(values) - 1:
+            return f"0-{upto}"
+        start = int(remove_html_tags(values[idx + 1]["value"]))
+        if upto - start > 1:
+            return f"{start + 1}-{upto}"
+        else:
+            return str(upto)
 
 
 class Results:
@@ -200,7 +201,7 @@ class ArticlesFilterQuery(BaseFilterQuery):
 
     def qInclude(self):
         result = []
-        for field in self.facets.keys():
+        for field in self.facets:
             match field:
                 case "topic":
                     for value in self.facets[field]:

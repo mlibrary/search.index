@@ -41,6 +41,8 @@ class BaseCSL:
 
     TYPE_MAPPING = []
 
+    DEFAULT = "article"
+
     @property
     def type(self):
         if self._formats():
@@ -48,6 +50,7 @@ class BaseCSL:
             for t in self.TYPE_ORDER:
                 if t in types:
                     return t
+        return self.DEFAULT
 
     def _formats(self):
         pass

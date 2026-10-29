@@ -564,17 +564,18 @@ class TestResults:
     def test_date_filter_returns_ranges(self, results):
         subject = Results(data=results, query_params={})
         date_filter = subject.filters[3]
-        date_filter_value = subject.filters[3].values[87]
+        date_filter_value = subject.filters[3].values[86]
 
         assert date_filter.field == "date"
-        assert date_filter_value.text == "1002-1500"
-        assert date_filter_value.count == 1345
+        assert date_filter_value.text == "1501-1600"
+        assert date_filter_value.count == 496
 
     def test_date_filter_returns_early_range(self, results):
         subject = Results(data=results, query_params={})
         date_filter = subject.filters[3]
-        date_filter_value = subject.filters[3].values[88]
+        date_filter_value = subject.filters[3].values[87]
 
         assert date_filter.field == "date"
-        assert date_filter_value.text == "0-1001"
-        assert date_filter_value.count == 1
+        assert date_filter_value.text == "1000-1500"
+        assert date_filter_value.count == 1345
+        assert len(subject.filters[3].values) == 88

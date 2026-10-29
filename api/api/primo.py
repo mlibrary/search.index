@@ -117,16 +117,31 @@ class Filter:
                     text = self.date_string(idx, values)
                 case _:
                     text = remove_html_tags(value["value"])
-
+            if text is None:
+                continue
             result.append(FilterValue(text=text, count=int(value["count"])))
 
         return result
 
-    def date_string(self, idx, values):
-        upto = int(remove_html_tags(values[idx]["value"]))
+    def date_string(self, idx, values) -> str | None:
+        """Create date string for primo creationdate facet
+
+        The primo dates can refer to single years or a range of years.
+        The earliest date in the response is more of a bounding number than a range.
+        It always returns a value of 1 and should be thrown out. The early bound is the earliest year - 1.
+
+        Args:
+            idx (str): the index of where we are in the list of year values
+            values (list): list of year values
+        """
         if idx == len(values) - 1:
-            return f"0-{upto}"
+            return None
+
+        upto = int(remove_html_tags(values[idx]["value"]))
         start = int(remove_html_tags(values[idx + 1]["value"]))
+        if idx == len(values) - 2:
+            start = int(remove_html_tags(values[idx + 1]["value"])) - 2
+
         if upto - start > 1:
             return f"{start + 1}-{upto}"
         else:

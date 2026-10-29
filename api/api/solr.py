@@ -27,7 +27,7 @@ class SolrDocProcessor:
                 return [
                     PairedField(
                         transliterated=TextField(text=values[0]),
-                        original=TextField(text=values[1]),
+                        original=TextField(text=f"\u2068{values[1]}\u2069"),
                     )
                 ]
 

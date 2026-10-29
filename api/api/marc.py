@@ -10,6 +10,22 @@ from api.entities import SearchField, FieldElement, PairedField
 TRIM_CHARS = "/.,: "
 
 
+def bidi(string):
+    """Make string bidirectional
+
+    Surrounds the string with First Strong Isolate \\u2068 and Pop Directional Isolate \\u2069
+    More info https://en.wikipedia.org/wiki/Unicode_bidirectional_algorithm
+
+    Args:
+        string str: string to be surrounded with bidirectional characters
+    """
+    stripped_string = string.strip()
+    if stripped_string:
+        return f"\u2068{stripped_string}\u2069"
+    else:
+        return stripped_string
+
+
 class Linkage:
     def __init__(self, field: pymarc.Field):
         if field.get("6"):
@@ -67,7 +83,10 @@ class FieldRuleset:
         return FieldElement(**result)
 
     def _get_subfields(self, field: pymarc.Field, subfields: str):
-        return " ".join(field.get_subfields(*tuple(subfields)))
+        result = " ".join(field.get_subfields(*tuple(subfields)))
+        if field.tag == "880":
+            result = bidi(result)
+        return result
 
 
 class Processor:
@@ -90,7 +109,7 @@ class Processor:
             for fields in self._get_paired_fields_for(ruleset):
                 if ruleset.filter(fields["original"]):
                     r = {}
-                    for key in fields.keys():
+                    for key in fields:
                         r[key] = ruleset.value_for(fields[key])
                     result.append(PairedField(**r))
         return result
@@ -104,7 +123,7 @@ class Processor:
     def _get_paired_fields_for(self, ruleset: FieldRuleset) -> list:
         mapping = {}
         for field in self._get_original_for_tags(ruleset.tags):
-            mapping[Linkage(field).__str__()] = field
+            mapping[str(Linkage(field))] = field
 
         results = []
         for field in self.record.get_fields(*ruleset.tags):

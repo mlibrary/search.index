@@ -135,9 +135,11 @@ class SolrDoc:
                             "browse": search[0],
                         },
                         "original": {
-                            "text": main[1],
-                            "search": [{"field": "author", "value": search[1]}],
-                            "browse": search[1],
+                            "text": f"\u2068{main[1]}\u2069",
+                            "search": [
+                                {"field": "author", "value": f"\u2068{search[1]}\u2069"}
+                            ],
+                            "browse": f"\u2068{search[1]}\u2069",
                         },
                     }
                 ]

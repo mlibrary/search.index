@@ -4,6 +4,7 @@ import json
 import io
 from datetime import datetime
 from urllib.parse import urlparse, parse_qs
+from api.marc import bidi
 from api.holdings import (
     PhysicalHolding,
     ElectronicItem,
@@ -471,12 +472,12 @@ def base_reservable_item_fields():
         "Form": "30",
         "callnumber": "QL 691 .J3 S25 1983",
         "genre": "BOOK",
-        "title": "山野の鳥 = Concise field guide to land birds /; Sanʼya no tori = Concise field guide to land birds /",
-        "author": "佐伯彰光.; Saeki, Akimitsu.",
+        "title": f"{bidi('山野の鳥 = Concise field guide to land birds /')}; Sanʼya no tori = Concise field guide to land birds /",
+        "author": f"{bidi('佐伯彰光.')}; Saeki, Akimitsu.",
         "date": "1983",
-        "edition": "3訂版.; 3-teiban.",
-        "publisher": "日本野鳥の会,; Nihon Yachō no Kai,",
-        "place": "東京 :; Tōkyō :",
+        "edition": f"{bidi('3訂版.')}; 3-teiban.",
+        "publisher": f"{bidi('日本野鳥の会,')}; Nihon Yachō no Kai,",
+        "place": f"{bidi('東京 :')}; Tōkyō :",
         "extent": "64 p. : ill. ; 18 cm.",
         "barcode": "39015052384248",
         "description": "description",
@@ -500,13 +501,13 @@ class TestReservableItem:
     def test_title(self, base_reservable_item):
         assert (
             base_reservable_item.title
-            == "山野の鳥 = Concise field guide to land birds /; Sanʼya no tori = Concise field guide to land birds /"
+            == f"{bidi('山野の鳥 = Concise field guide to land birds /')}; Sanʼya no tori = Concise field guide to land birds /"
         )
 
     def test_author_has_original_and_transliterated_with_semicolon_sep(
         self, base_reservable_item
     ):
-        assert base_reservable_item.author == "佐伯彰光.; Saeki, Akimitsu."
+        assert base_reservable_item.author == f"{bidi('佐伯彰光.')}; Saeki, Akimitsu."
 
     def test_author_handles_empty_mainauthor(self, record, physical_item):
         record.remove_field(record["100"])
@@ -518,13 +519,16 @@ class TestReservableItem:
         assert base_reservable_item.date == "1983"
 
     def test_edition(self, base_reservable_item):
-        assert base_reservable_item.edition == "3訂版.; 3-teiban."
+        assert base_reservable_item.edition == f"{bidi('3訂版.')}; 3-teiban."
 
     def test_publisher(self, base_reservable_item):
-        assert base_reservable_item.publisher == "日本野鳥の会,; Nihon Yachō no Kai,"
+        assert (
+            base_reservable_item.publisher
+            == f"{bidi('日本野鳥の会,')}; Nihon Yachō no Kai,"
+        )
 
     def test_place(self, base_reservable_item):
-        assert base_reservable_item.place == "東京 :; Tōkyō :"
+        assert base_reservable_item.place == f"{bidi('東京 :')}; Tōkyō :"
 
     def test_extent(self, base_reservable_item):
         assert base_reservable_item.extent == "64 p. : ill. ; 18 cm."

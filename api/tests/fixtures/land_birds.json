@@ -6,7 +6,7 @@
                 "text": "Sanʼya no tori = Concise field guide to land birds / kaisetsu Saeki Akimitsu ; e Taniguchi Takashi."
             },
             "original": {
-                "text": "山野の鳥 = Concise field guide to land birds / 解說佐伯彰光 ; 絵谷口高司."
+                "text": "\u2068山野の鳥 = Concise field guide to land birds / 解說佐伯彰光 ; 絵谷口高司.\u2069"
             }
         }
     ],
@@ -26,14 +26,14 @@
                 "browse": "Saeki, Akimitsu."
             },
             "original": {
-                "text": "佐伯彰光.",
+                "text": "\u2068佐伯彰光.\u2069",
                 "search": [
                     {
                         "field": "author",
-                        "value": "佐伯彰光."
+                        "value": "\u2068佐伯彰光.\u2069"
                     }
                 ],
-                "browse": "佐伯彰光."
+                "browse": "\u2068佐伯彰光.\u2069"
             }
         }
     ],
@@ -65,14 +65,14 @@
                 "tag": "700"
             },
             "original": {
-                "text": "谷口高司.",
+                "text": "\u2068谷口高司.\u2069",
                 "search": [
                     {
                         "field": "author",
-                        "value": "谷口高司."
+                        "value": "\u2068谷口高司.\u2069"
                     }
                 ],
-                "browse": "谷口高司.",
+                "browse": "\u2068谷口高司.\u2069",
                 "tag": "880"
             }
         }
@@ -83,7 +83,7 @@
                 "text": "Tōkyō : Nihon Yachō no Kai, 1983"
             },
             "original": {
-                "text": "東京 : 日本野鳥の会, 1983"
+                "text": "\u2068東京 : 日本野鳥の会, 1983\u2069"
             }
         }
     ],
@@ -94,7 +94,7 @@
                 "tag": "260"
             },
             "original": {
-                "text": "(1984 printing)",
+                "text": "\u2068(1984 printing)\u2069",
                 "tag": "880"
             }
         }
@@ -105,7 +105,7 @@
                 "text": "3-teiban."
             },
             "original": {
-                "text": "3訂版."
+                "text": "\u20683訂版.\u2069"
             }
         }
     ],
@@ -116,7 +116,7 @@
                 "tag": "490"
             },
             "original": {
-                "text": "野外観察ハンドブック ; 1",
+                "text": "\u2068野外観察ハンドブック ; 1\u2069",
                 "tag": "880"
             }
         }
@@ -128,7 +128,7 @@
                 "tag": "830"
             },
             "original": {
-                "text": "野外観察ハンドブック ; 1.",
+                "text": "\u2068野外観察ハンドブック ; 1.\u2069",
                 "tag": "880"
             }
         }

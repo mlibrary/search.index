@@ -2,14 +2,13 @@ import pytest
 import json
 import pymarc
 import string
+import copy
 from httpx import Response
 from datetime import datetime
 from dataclasses import dataclass, field
 from api.catalog_record import Record, MARC, SolrDoc, TaggedCitation, CSL, BaseRecord
 from api.entities import FieldElement, PairedField
-from api.marc import (
-    FieldRuleset,
-)
+from api.marc import FieldRuleset, bidi
 from api.services import S
 from dataclasses import asdict
 
@@ -142,7 +141,7 @@ class TestSolrDoc:
                     "text": "Sanʼya no tori = Concise field guide to land birds / kaisetsu Saeki Akimitsu ; e Taniguchi Takashi."
                 },
                 "original": {
-                    "text": "山野の鳥 = Concise field guide to land birds / 解說佐伯彰光 ; 絵谷口高司."
+                    "text": "\u2068山野の鳥 = Concise field guide to land birds / 解說佐伯彰光 ; 絵谷口高司.\u2069"
                 },
             }
         ]
@@ -194,9 +193,9 @@ class TestSolrDoc:
                     "browse": "Saeki, Akimitsu.",
                 },
                 "original": {
-                    "text": "佐伯彰光.",
-                    "search": [{"field": "author", "value": "佐伯彰光."}],
-                    "browse": "佐伯彰光.",
+                    "text": "\u2068佐伯彰光.\u2069",
+                    "search": [{"field": "author", "value": "\u2068佐伯彰光.\u2069"}],
+                    "browse": "\u2068佐伯彰光.\u2069",
                 },
             }
         ]
@@ -208,7 +207,7 @@ class TestSolrDoc:
                 "transliterated": {
                     "text": "Tōkyō : Nihon Yachō no Kai, 1983",
                 },
-                "original": {"text": "東京 : 日本野鳥の会, 1983"},
+                "original": {"text": "\u2068東京 : 日本野鳥の会, 1983\u2069"},
             }
         ]
 
@@ -217,7 +216,7 @@ class TestSolrDoc:
         assert serialize(subject.edition) == [
             {
                 "transliterated": {"text": "3-teiban."},
-                "original": {"text": "3訂版."},
+                "original": {"text": "\u20683訂版.\u2069"},
             }
         ]
 
@@ -762,7 +761,7 @@ class TestMARC:
         expected = [
             {
                 "original": {
-                    "text": a_to_z_str,
+                    "text": bidi(a_to_z_str),
                     "tag": "880",
                     "browse": None,
                     "search": None,
@@ -1352,10 +1351,18 @@ class TestMARC:
         assert serialize(subject.contents) == expected
 
     def expected_paired_field(self, tag: str, elements: dict):
+        original_elements = copy.deepcopy(elements)
+        original_elements["text"] = bidi(original_elements["text"])
+        if "search" in original_elements:
+            for element in original_elements["search"]:
+                element["value"] = bidi(element["value"])
+        if "browse" in original_elements:
+            original_elements["browse"] = bidi(original_elements["browse"])
+
         result = [
             {
                 "transliterated": asdict(FieldElement(tag=tag, **elements)),
-                "original": asdict(FieldElement(tag="880", **elements)),
+                "original": asdict(FieldElement(tag="880", **original_elements)),
             }
         ]
         return result
@@ -1478,7 +1485,7 @@ class TestTaggedCitation:
         record = create_record_with_paired_field(tag="300")
         record.remove_fields("300")
         expected = [
-            {"content": "a b c", "ris": ["EX"], "meta": ["example"]},
+            {"content": bidi("a b c"), "ris": ["EX"], "meta": ["example"]},
         ]
         subject = TaggedCitation(base_record=None, marc_record=record).to_list(
             tag_mapping=marc_mapping

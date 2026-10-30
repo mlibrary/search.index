@@ -3,6 +3,7 @@ from api.services import S
 from api.results import solr_escape
 from api.catalog_results import FilterQuery as CatalogFilterQuery
 from api.onlinejournals_results import FilterQuery as OnlinejournalsFilterQuery
+from api.databases import FilterQuery as DatabasesFilterQuery
 
 
 class SpecialistFetcher:
@@ -117,6 +118,11 @@ for fetcher in [
         "name": "onlinejournals",
         "ad_field": "hlb3Str",
         "fq_klass": OnlinejournalsFilterQuery,
+    },
+    {
+        "name": "databases",
+        "ad_field": "og_groups_both",
+        "fq_klass": DatabasesFilterQuery,
     },
 ]:
     fetchers[fetcher["name"]] = SpecialistFetcher(fetcher)

@@ -4,8 +4,9 @@ from api.metrics import REQUEST_HISTOGRAM
 from api.schemas import main as schemas
 from api.clients.solr_client import NotFoundError
 from api.databases import record_for, get_results
+
 # from api.academic_disciplines import get_databases_academic_disciplines
-# from api import specialists
+from api import specialists
 
 router = APIRouter(prefix="/databases", tags=["databases"])
 
@@ -33,7 +34,7 @@ async def get_record(id: str) -> schemas.DatabasesRecord:
         raise HTTPException(status_code=404, detail="Item not found")
 
 
-@REQUEST_HISTOGRAM.labels(datastore="onlinejournals", route="results").time()
+@REQUEST_HISTOGRAM.labels(datastore="databases", route="results").time()
 @router.get(
     "/search",
     response_model_exclude_none=True,
@@ -57,5 +58,28 @@ async def get_search_results(
             "filters": filters,
             "sort": sort,
         }
+    )
+    return results
+
+
+@REQUEST_HISTOGRAM.labels(datastore="databases", route="specialists").time()
+@router.get(
+    "/specialists",
+    response_model_exclude_none=True,
+    response_model_exclude_defaults=True,
+)
+async def get_specialists(
+    query: str = "",
+    filters: Annotated[list[str], Query()] = [],
+) -> schemas.Specialists:
+    """
+    Looks up specialists associated with given query
+    """
+    results = await specialists.get_specialists(
+        "databases",
+        {
+            "query": query,
+            "filters": filters,
+        },
     )
     return results

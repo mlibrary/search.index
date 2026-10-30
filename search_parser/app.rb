@@ -77,10 +77,11 @@ class SearchParser::Application < Sinatra::Base
 
       query_params[:fq].push("location:ELEC")
       query_params[:fq].push("format:Serial")
-      #      response = nil
-      solr_params = SearchParser.get_datastore(:onlinejournals).solr_query(**query_params)
+
+      datastore = SearchParser.get_datastore(:onlinejournals)
+      solr_params = datastore.solr_query(**query_params)
       #      Yabeda.catalog_solr_query_duration.measure do
-      response = SearchParser.get_datastore(:onlinejournals).search(solr_params)
+      response = datastore.search(solr_params)
       #      end
       response.body.to_json
     end
@@ -94,9 +95,10 @@ class SearchParser::Application < Sinatra::Base
       }
       query_params[:fq].push("location:ELEC")
       query_params[:fq].push("format:Serial")
-      solr_params = SearchParser.get_datastore(:onlinejournals).academic_discipline_solr_query(**query_params)
 
-      response = SearchParser.get_datastore(:onlinejournals).search(solr_params)
+      datastore = SearchParser.get_datastore(:onlinejournals)
+      solr_params = datastore.academic_discipline_solr_query(**query_params)
+      response = datastore.search(solr_params)
 
       response.body.to_json
     end
@@ -117,9 +119,9 @@ class SearchParser::Application < Sinatra::Base
       bb_field = "#{academic_discipline.downcase.gsub(/\s+/, "_")}_bb"
 
       query_params[:sort] = "#{bb_field} asc,titleSort asc"
-      solr_params = SearchParser.get_datastore(:onlinejournals).solr_query(**query_params)
-
-      response = SearchParser.get_datastore(:onlinejournals).search(solr_params)
+      datastore = SearchParser.get_datastore(:onlinejournals)
+      solr_params = datastore.solr_query(**query_params)
+      response = datastore.search(solr_params)
 
       response.body.to_json
     end
@@ -154,7 +156,7 @@ class SearchParser::Application < Sinatra::Base
   end
   namespace "/databases" do
     get "/search" do
-      headers "metrics.route" => "onlinejournals/search"
+      headers "metrics.route" => "databases/search"
       content_type :json
       query_params = {
         query: params["query"] || "",
@@ -168,12 +170,14 @@ class SearchParser::Application < Sinatra::Base
       datastore = SearchParser.get_datastore(:databases)
       solr_params = datastore.solr_query(**query_params)
       #      Yabeda.catalog_solr_query_duration.measure do
-      response = S.website_solr_conn.get("solr/#{S.website_solr_core}/select", solr_params)
+      #
+      response = datastore.search(solr_params)
+      # response = S.website_solr_conn.get("solr/#{S.website_solr_core}/select", solr_params)
       #      end
       response.body.to_json
     end
     get "/academic_disciplines" do
-      headers "metrics.route" => "onlinejournals/academic_disciplines"
+      headers "metrics.route" => "databases/academic_disciplines"
       content_type :json
       query_params = {
         query: params["query"] || "",
@@ -183,7 +187,28 @@ class SearchParser::Application < Sinatra::Base
       datastore = SearchParser.get_datastore(:databases)
       solr_params = datastore.academic_discipline_solr_query(**query_params)
 
-      response = S.website_solr_conn.get("solr/#{S.website_solr_core}/select", solr_params)
+      response = datastore.search(solr_params)
+
+      response.body.to_json
+    end
+    get "/browse_academic_discipline/:academic_discipline" do |academic_discipline|
+      headers "metrics.route" => "databases/browse_academic_discipline"
+
+      content_type :json
+      query_params = {
+        query: "",
+        rows: params["rows"] || 10,
+        start: params["start"] || 0,
+        fq: []
+      }
+      query_params[:fq].push("type:database")
+      query_params[:fq].push("og_groups_both:\"#{academic_discipline}\"")
+      bb_field = "isfield-order-#{academic_discipline.downcase.gsub(/\s+/, "_")}"
+
+      query_params[:sort] = "#{bb_field} asc,sort_title asc"
+      datastore = SearchParser.get_datastore(:databases)
+      solr_params = datastore.solr_query(**query_params)
+      response = datastore.search(solr_params)
 
       response.body.to_json
     end

@@ -44,7 +44,7 @@ async def get_search_results(
     offset: int = 0,
     limit: int = 10,
     filters: Annotated[list[str], Query()] = [],
-    sort: schemas.Sort = schemas.DatabasesSort.relevance,
+    sort: schemas.DatabasesSort = schemas.DatabasesSort.relevance,
 ) -> schemas.DatabasesResults:
     """
     Does a search in catalog solr

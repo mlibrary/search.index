@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, Query
 from api.metrics import REQUEST_HISTOGRAM
 from api.schemas import main as schemas
 from api.clients.solr_client import NotFoundError
-from api.databases import record_for, get_results
+from api.databases import record_for, get_results, get_browse_academic_discipline
 from api.academic_disciplines import get_databases_academic_disciplines
 from api import specialists
 
@@ -87,3 +87,18 @@ async def get_specialists(
 @router.get("/academic_disciplines")
 async def get_academic_disciplines() -> list[schemas.BrowseAcademicDiscipline]:
     return await get_databases_academic_disciplines()
+
+
+@REQUEST_HISTOGRAM.labels(
+    datastore="databases", route="browse_academic_discipline"
+).time()
+@router.get(
+    "/browse_academic_discipline/{academic_discipline}",
+    response_model_exclude_none=True,
+)
+async def get_browse_academic_discipline_results(
+    academic_discipline: str, offset: int = 0, limit: int = 10
+) -> schemas.DatabasesResults:
+    return await get_browse_academic_discipline(
+        {"limit": limit, "offset": offset, "academic_discipline": academic_discipline}
+    )

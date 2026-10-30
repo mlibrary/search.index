@@ -5,6 +5,7 @@ from api.entities import LinkField
 from datetime import datetime, timedelta
 from api.results import BaseResults, FilterHandler, BaseFilter, SolrFilterQuery
 from api.services import S
+import re
 import httpx
 
 
@@ -33,6 +34,34 @@ filter_handler = FilterHandler(
         "academic_discipline": "og_groups_both",
         "access_type": "smfield_access_type",
         "type": "category",
+    }
+)
+
+
+async def get_browse_academic_discipline(query_params: dict):
+    parser_params = {
+        "start": query_params["offset"],
+        "rows": query_params["limit"],
+    }
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"{S.parser_url}/databases/browse_academic_discipline/{query_params['academic_discipline']}",
+            params=parser_params,
+        )
+    return Results(
+        data=response.json(),
+        query_params=query_params,
+        recommended_academic_discipline=query_params["academic_discipline"],
+    )
+
+
+filter_handler = FilterHandler(
+    {
+        "subject": "topicStr",
+        "language": "language",
+        "place_of_publication": "place_of_publication",
+        "academic_discipline": "hlb3Str",
     }
 )
 
@@ -82,6 +111,15 @@ class Record:
     @property
     def id(self):
         return self._get("id", kind="plain")
+
+    @property
+    def recommended_resource(self):
+        if self.recommended_academic_discipline:
+            normalized_ad = re.sub(
+                r"\s+", "_", self.recommended_academic_discipline
+            ).lower()
+            result = SolrDocProcessor(self.data).get(f"isfield-order-{normalized_ad}")
+            return bool(result)
 
     @property
     def title(self):

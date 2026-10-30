@@ -282,6 +282,7 @@ class DatabasesResultRecord(BaseModel):
     trial: bool = False
     permalink: str
     # academic_discipline: list[AcademicDiscipline] = []
+    recommended_resource: bool | None
     citation: DatabasesCitation
 
 

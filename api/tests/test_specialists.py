@@ -1,9 +1,11 @@
 import pytest
 import json
+from api.services import S
 from api.specialists import (
     get_top_academic_disciplines,
     specialist_response,
     website_solr_query_params,
+    get_specialists,
 )
 
 
@@ -31,6 +33,51 @@ def specialist_data():
     with open("tests/fixtures/specialists/person.json") as data:
         body = json.load(data)
     return body
+
+
+@pytest.fixture()
+def specialist_response_data():
+    with open("tests/fixtures/specialists/specialists_response.json") as data:
+        body = json.load(data)
+    return body
+
+
+@pytest.mark.asyncio
+async def test_get_specialists_for_catalog(
+    academic_discipline_data, specialist_data, specialist_response_data, respx_mock
+):
+    respx_mock.get(f"{S.parser_url}/catalog/academic_disciplines").respond(
+        200, json=academic_discipline_data
+    )
+    respx_mock.get(f"{S.website_solr_url}/solr/www.lib/select").respond(
+        200, json=specialist_data
+    )
+    assert (
+        await get_specialists(
+            datastore="catalog",
+            query_params={"query": "", "filters": [], "ht_search_only": False},
+        )
+        == specialist_response_data
+    )
+
+
+@pytest.mark.asyncio
+async def test_get_specialists_for_onlinejournals(
+    academic_discipline_data, specialist_data, specialist_response_data, respx_mock
+):
+    respx_mock.get(f"{S.parser_url}/onlinejournals/academic_disciplines").respond(
+        200, json=academic_discipline_data
+    )
+    respx_mock.get(f"{S.website_solr_url}/solr/www.lib/select").respond(
+        200, json=specialist_data
+    )
+    assert (
+        await get_specialists(
+            datastore="onlinejournals",
+            query_params={"query": "", "filters": []},
+        )
+        == specialist_response_data
+    )
 
 
 def test_specialist_response(specialist_data):

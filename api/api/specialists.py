@@ -5,44 +5,31 @@ from api.catalog_results import FilterQuery as CatalogFilterQuery
 from api.onlinejournals_results import FilterQuery as OnlinejournalsFilterQuery
 
 
-async def get_catalog_specialists(query_params: dict):
-    response = await fetch_catalog_academic_disciplines(query_params)
-    return await calculate_specialists(response, query_params)
-
-
-async def get_onlinejournals_specialists(query_params: dict):
-    response = await fetch_onlinejournals_academic_disciplines(query_params)
-    return await calculate_specialists(response, query_params)
-
-
-async def fetch_catalog_academic_disciplines(query_params: dict):
-    fq = CatalogFilterQuery(query_params)
+async def get_specialists(datastore: str, query_params: dict):
+    fq = get_filter_query(datastore, query_params)
     parser_params = {
         "query": query_params["query"],
         "fq[]": fq.query(),
     }
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"{S.parser_url}/catalog/academic_disciplines", params=parser_params
+            f"{S.parser_url}/{datastore}/academic_disciplines", params=parser_params
         )
-    return response.json()
+    return await calculate_specialists(response.json(), query_params)
 
 
-async def fetch_onlinejournals_academic_disciplines(query_params: dict):
-    fq = OnlinejournalsFilterQuery(query_params)
-    parser_params = {
-        "query": query_params["query"],
-        "fq[]": fq.query(),
-    }
-    async with httpx.AsyncClient() as client:
-        response = await client.get(
-            f"{S.parser_url}/onlinejournals/academic_disciplines", params=parser_params
-        )
-    return response.json()
+def get_filter_query(datastore: str, query_params: dict):
+    match datastore:
+        case "catalog":
+            return CatalogFilterQuery(query_params)
+        case "onlinejournals":
+            return OnlinejournalsFilterQuery(query_params)
 
 
-async def calculate_specialists(response, query_params: dict):
-    top_academic_disciplines = get_top_academic_disciplines(response)
+async def calculate_specialists(
+    response, query_params: dict, ad_field: str = "hlb3Str"
+):
+    top_academic_disciplines = get_top_academic_disciplines(response, ad_field)
 
     website_response = await fetch_website_solr_specialists(
         website_solr_query_params(top_academic_disciplines, query_params)
@@ -54,12 +41,12 @@ async def calculate_specialists(response, query_params: dict):
     }
 
 
-def get_top_academic_disciplines(data: dict):
+def get_top_academic_disciplines(data: dict, ad_field: str = "hlb3Str"):
     term_threshold = 25
     term_counts = {}
     for doc in data["response"]["docs"]:
-        if "hlb3Str" in doc:
-            for term in doc["hlb3Str"]:
+        if ad_field in doc:
+            for term in doc[ad_field]:
                 if term in term_counts:
                     term_counts[term] += 1
                 else:

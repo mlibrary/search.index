@@ -1,0 +1,41 @@
+{
+  "specialists": [
+    {
+      "name": "So And So",
+      "uniqname": "soandso",
+      "title": "Biological Sciences Librarian",
+      "email": "soandso@umich.edu",
+      "phone": "999-999-9999",
+      "academic_disciplines": [
+        "Genetics",
+        "Molecular, Cellular and Developmental Biology",
+        "Zoology",
+        "Ecology and Evolutionary Biology",
+        "Botany",
+        "Biology"
+      ]
+    }
+  ],
+  "academic_disciplines": [
+    {
+      "discipline": "Science",
+      "count": 40 
+    },
+    {
+      "discipline": "Biology",
+      "count": 39
+    },
+    {
+      "discipline": "Zoology",
+      "count": 39
+    },
+    {
+      "discipline": "Ecology\\ and\\ Evolutionary\\ Biology",
+      "count": 39
+    },
+    {
+      "discipline": "Humanities",
+      "count": 31
+    }
+  ]
+}

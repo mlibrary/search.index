@@ -80,11 +80,12 @@ async def get_specialists(
     """
     Looks up specialists associated with given query
     """
-    results = await specialists.get_onlinejournals_specialists(
+    results = await specialists.get_specialists(
+        "onlinejournals",
         {
             "query": query,
             "filters": filters,
-        }
+        },
     )
     return results
 

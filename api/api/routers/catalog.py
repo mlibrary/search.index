@@ -77,11 +77,12 @@ async def get_specialists(
     """
     Looks up specialists associated with given query
     """
-    results = await specialists.get_catalog_specialists(
+    results = await specialists.get_specialists(
+        "catalog",
         {
             "query": query,
             "filters": filters,
             "ht_search_only": ht_search_only,
-        }
+        },
     )
     return results

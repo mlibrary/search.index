@@ -2,9 +2,7 @@ import pytest
 import json
 from api.services import S
 from api.specialists import (
-    get_top_academic_disciplines,
-    specialist_response,
-    website_solr_query_params,
+    fetchers,
     get_specialists,
 )
 
@@ -17,7 +15,7 @@ def academic_discipline_data():
 
 
 def test_top_academic_disciplines(academic_discipline_data):
-    subject = get_top_academic_disciplines(academic_discipline_data)
+    subject = fetchers["catalog"].get_top_academic_disciplines(academic_discipline_data)
 
     assert subject == [
         {"discipline": "Science", "count": 40},
@@ -82,7 +80,7 @@ async def test_get_specialists_for_onlinejournals(
 
 def test_specialist_response(specialist_data):
 
-    subject = specialist_response(specialist_data)
+    subject = fetchers["catalog"].specialist_response(specialist_data)
 
     assert subject == [
         {
@@ -105,7 +103,7 @@ def test_specialist_response(specialist_data):
 
 def test_specialist_response_where_keys_are_missing(specialist_data):
     specialist_data["response"]["docs"][0].pop("ssfield_phone")
-    subject = specialist_response(specialist_data)
+    subject = fetchers["catalog"].specialist_response(specialist_data)
 
     assert subject[0]["phone"] is None
 
@@ -118,7 +116,7 @@ def test_website_solr_query_params():
 
     query_params = {}
 
-    subject = website_solr_query_params(
+    subject = fetchers["catalog"].website_solr_query_params(
         top_academic_disciplines=tads, query_params=query_params
     )
 
@@ -141,7 +139,7 @@ def test_website_solr_query_params_handles_academic_discipline_fq():
         ]
     }
 
-    subject = website_solr_query_params(
+    subject = fetchers["catalog"].website_solr_query_params(
         top_academic_disciplines=tads, query_params=query_params
     )
 

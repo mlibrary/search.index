@@ -1,7 +1,7 @@
 module Traject
   module UMich
     class Availability
-      ELECTRONIC_LIBRARIES = ["HathiTrust Digital Library", "ELEC", "ALMA_DIGITAL"]
+      ELECTRONIC_LIBRARIES = ["HathiTrust Digital Library", "ELEC", "ALMA_DIGITAL", "SDR"]
       ALMA_ELECTRONIC_LIBRARIES = ["ELEC", "ALMA_DIGITAL"]
 
       # @param hol [Array<Hash>] holding structure

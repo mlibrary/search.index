@@ -12,10 +12,20 @@ class SpecialistFetcher:
         self.fq_klass = config.get("fq_klass")
 
     async def get_specialists(self, query_params: dict):
-        response = await self.get_specialists_response(query_params)
-        return await self.calculate_specialists(response.json(), query_params)
+        ad_response = await self.fetch_ad_response(query_params)
+        top_academic_disciplines = self.get_top_academic_disciplines(ad_response.json())
 
-    async def get_specialists_response(self, query_params: dict):
+        website_response = await self.fetch_website_solr_specialists(
+            self.website_solr_query_params(top_academic_disciplines, query_params)
+        )
+
+        specialists = self.specialist_response(website_response.json())
+        return {
+            "specialists": specialists,
+            "academic_disciplines": top_academic_disciplines,
+        }
+
+    async def fetch_ad_response(self, query_params: dict):
         fq = self.fq_klass(query_params)
         parser_params = {
             "query": query_params["query"],
@@ -25,18 +35,6 @@ class SpecialistFetcher:
             return await client.get(
                 f"{S.parser_url}/{self.name}/academic_disciplines", params=parser_params
             )
-
-    async def calculate_specialists(self, response, query_params: dict):
-        top_academic_disciplines = self.get_top_academic_disciplines(response)
-
-        website_response = await self.fetch_website_solr_specialists(
-            self.website_solr_query_params(top_academic_disciplines, query_params)
-        )
-        specialists = self.specialist_response(website_response)
-        return {
-            "specialists": specialists,
-            "academic_disciplines": top_academic_disciplines,
-        }
 
     def get_top_academic_disciplines(self, data: dict):
         term_threshold = 25
@@ -109,7 +107,7 @@ class SpecialistFetcher:
             resp = await client.get(
                 f"{S.website_solr_url}/solr/www.lib/select", params=params
             )
-        return resp.json()
+        return resp
 
 
 fetchers = {}

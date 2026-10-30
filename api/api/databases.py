@@ -20,7 +20,7 @@ async def get_results(query_params: dict):
         "start": query_params["offset"],
         "rows": query_params["limit"],
         "fq[]": FilterQuery(query_params).query(),
-        "sort": BaseResults.sort_map[query_params["sort"]],
+        "sort": Results.sort_map[query_params["sort"]],
     }
     async with httpx.AsyncClient() as client:
         response = await client.get(
@@ -67,6 +67,11 @@ filter_handler = FilterHandler(
 
 
 class Results(BaseResults):
+    sort_map = {
+        "relevance": "score desc",
+        "title_asc": "sort_title asc",
+        "title_desc": "sort_title desc",
+    }
     fh = filter_handler
 
     def __init__(
@@ -119,7 +124,10 @@ class Record:
                 r"\s+", "_", self.recommended_academic_discipline
             ).lower()
             result = SolrDocProcessor(self.data).get(f"isfield-order-{normalized_ad}")
-            return bool(result)
+
+            if type(result) is int:
+                return result < 100
+            return False
 
     @property
     def title(self):

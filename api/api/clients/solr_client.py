@@ -54,7 +54,7 @@ class SolrClient:
         async with httpx.AsyncClient(auth=self.auth) as client:
             try:
                 response = await client.get(self.url, params=params)
-                response.raise_for_status()
+                breakpoint()
                 return response.json()["facet_counts"]["facet_fields"]
             except httpx.RequestError as e:
                 logger.error("A request error occurred:", e)
@@ -73,5 +73,22 @@ class WebsiteSolrClient:
                 if response.json()["response"]["numFound"] == 0:
                     raise NotFoundError()
                 return response.json()["response"]["docs"][0]
+            except httpx.RequestError as e:
+                logger.error("A request error occurred:", e)
+
+    async def get_databases_academic_disciplines(self):
+        params = {
+            "q": "type:database",
+            "facet": "on",
+            "facet.field": ["og_groups_both", "smfield_taxonomy_delimited"],
+            "facet.limit": -1,
+            "rows": 0,
+            "wt": "json",
+        }
+        async with httpx.AsyncClient() as client:
+            try:
+                response = await client.get(self.url, params=params)
+                response.raise_for_status()
+                return response.json()["facet_counts"]["facet_fields"]
             except httpx.RequestError as e:
                 logger.error("A request error occurred:", e)

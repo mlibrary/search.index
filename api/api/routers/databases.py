@@ -4,8 +4,7 @@ from api.metrics import REQUEST_HISTOGRAM
 from api.schemas import main as schemas
 from api.clients.solr_client import NotFoundError
 from api.databases import record_for, get_results
-
-# from api.academic_disciplines import get_databases_academic_disciplines
+from api.academic_disciplines import get_databases_academic_disciplines
 from api import specialists
 
 router = APIRouter(prefix="/databases", tags=["databases"])
@@ -83,3 +82,8 @@ async def get_specialists(
         },
     )
     return results
+
+
+@router.get("/academic_disciplines")
+async def get_academic_disciplines() -> list[schemas.BrowseAcademicDiscipline]:
+    return await get_databases_academic_disciplines()

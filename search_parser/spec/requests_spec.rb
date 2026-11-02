@@ -1,9 +1,9 @@
 RSpec.describe "requests" do
-  def gen_solr_stub(key, value)
+  def gen_solr_stub(key, value, solr_url = S.solr_url, core = S.solr_core)
     # this should do proper matching.
     # (?=&|\z) means the string is followed by either the "&" character or
     # the end of the string
-    stub_request(:get, /#{S.solr_url}\/solr\/biblio\/select.*[?&]#{key}=#{value}(?=&|\z)/)
+    stub_request(:get, /#{solr_url}\/solr\/#{core}\/select.*[?&]#{key}=#{value}(?=&|\z)/)
   end
   let(:key) { "" }
   let(:value) { "" }
@@ -50,7 +50,7 @@ RSpec.describe "requests" do
       end
     end
 
-    SearchParser::Catalog.facets.each do |facet|
+    SearchParser.get_datastore(:catalog).facets.each do |facet|
       context "#{facet} parameters" do
         it "has the default facet limit" do
           expect_has_param("f.#{facet}.facet.limit", "50")
@@ -144,8 +144,11 @@ RSpec.describe "requests" do
     it "has format:Serial in filter query" do
       expect_has_param("fq", "format:Serial")
     end
+    it "has wt json" do
+      expect_has_param("wt", "json")
+    end
   end
-  context "get /catalog/academic_disciplines" do
+  context "get /onlinejournals/academic_disciplines" do
     def expect_has_param(key, value)
       solr_stub = gen_solr_stub(key, value)
       get "/onlinejournals/academic_disciplines", params
@@ -156,6 +159,16 @@ RSpec.describe "requests" do
     end
     it "has format:Serial in filter query" do
       expect_has_param("fq", "format:Serial")
+    end
+  end
+  context "get /databases/search" do
+    def expect_has_param(key, value)
+      solr_stub = gen_solr_stub(key, value, S.website_solr_url, S.website_solr_core)
+      get "/databases/search", params
+      expect(solr_stub).to have_been_requested
+    end
+    it "has type:database in filter query" do
+      expect_has_param("fq", "type:database")
     end
   end
 end

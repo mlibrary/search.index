@@ -1,4 +1,4 @@
-from api.clients.solr_client import SolrClient
+from api.clients.solr_client import SolrClient, WebsiteSolrClient
 
 
 async def get_onlinejournals_academic_disciplines():
@@ -6,7 +6,16 @@ async def get_onlinejournals_academic_disciplines():
     return academic_disciplines_for(data)
 
 
-def academic_disciplines_for(data):
+async def get_databases_academic_disciplines():
+    data = await WebsiteSolrClient().get_databases_academic_disciplines()
+    return academic_disciplines_for(
+        data, plain_field="og_groups_both", delimited_field="smfield_taxonomy_delimited"
+    )
+
+
+def academic_disciplines_for(
+    data, plain_field: str = "hlb3Str", delimited_field: str = "hlb3Delimited"
+):
     def get_counts(data):
         chunked_facets = [data[i : i + 2] for i in range(0, len(data), 2)]
 
@@ -18,9 +27,9 @@ def academic_disciplines_for(data):
     def get_delimited_ads(data):
         return [facet.split(" | ") for facet in data if isinstance(facet, str)]
 
-    counts = get_counts(data["hlb3Str"])
+    counts = get_counts(data[plain_field])
 
-    delimited_ads = get_delimited_ads(data["hlb3Delimited"])
+    delimited_ads = get_delimited_ads(data[delimited_field])
 
     root = AcademicDiscipline(name="root", count=0)
 

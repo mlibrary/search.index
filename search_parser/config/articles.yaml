@@ -1,3 +1,5 @@
+name: articles
+transformer: MLibrarySearchParser::Transformer::Solr::LocalParams
 search_field_default: any
 search_attr_defaults:
   mm: $default_mm

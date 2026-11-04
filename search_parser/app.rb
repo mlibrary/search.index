@@ -19,7 +19,7 @@ module SearchParser
     onlinejournals: SearchParser::Datastore::Solr.for("./config/onlinejournals.yaml"),
     databases: SearchParser::Datastore::Solr.for("./config/databases.yaml"),
     articles: SearchParser::Datastore::Primo.for("./config/articles.yaml"),
-    guidesandmore: SearchParser::Datastore::Primo.for("./config/guidesandmore.yaml")
+    guidesandmore: SearchParser::Datastore::Solr.for("./config/guidesandmore.yaml")
   }
 
   def self.get_datastore(datastore)
@@ -228,7 +228,7 @@ class SearchParser::Application < Sinatra::Base
       query_params[:fq].push("+source:(drupal OR libguides-page OR libguides-guide OR drupal-blog-post)")
       query_params[:fq].push("+status:true")
 
-      datastore = SearchParser.get_datastore(:databases)
+      datastore = SearchParser.get_datastore(:guidesandmore)
       solr_params = datastore.solr_query(**query_params)
       response = datastore.search(solr_params)
       response.body.to_json

@@ -15,6 +15,7 @@ from .citation import (
     DatabasesCitation,
     ArticlesCitation,
     CatalogCitation,
+    GuidesandmoreCitation,
 )
 import datetime
 from enum import Enum
@@ -293,6 +294,7 @@ class GuidesandmoreRecord(BaseModel):
     date: datetime.date | None
     description: list[BareTextField] = []
     url: str
+    citation: GuidesandmoreCitation
 
 
 ###############

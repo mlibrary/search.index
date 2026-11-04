@@ -54,3 +54,7 @@ class BaseCSL:
 
     def _formats(self):
         pass
+
+    @property
+    def url(self):
+        pass

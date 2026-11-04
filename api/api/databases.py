@@ -4,6 +4,7 @@ import json
 from api.entities import LinkField
 from datetime import datetime, timedelta
 from api.results import BaseResults, FilterHandler, BaseFilter, SolrFilterQuery
+from api.csl import BaseCSL
 from api.services import S
 import re
 import httpx
@@ -274,7 +275,7 @@ class TaggedCitation:
         ]
 
 
-class CSL:
+class CSL(BaseCSL):
     def __init__(self, doc):
         self.doc = doc
 

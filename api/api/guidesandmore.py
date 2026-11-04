@@ -1,6 +1,8 @@
 from api.solr import SolrDocProcessor
 from api.results import BaseResults, FilterHandler, BaseFilter, SolrFilterQuery
 from api.services import S
+from api.csl import BaseCSL
+from api.entities import TextField
 import httpx
 from datetime import date
 
@@ -98,11 +100,85 @@ class Record:
 
     @property
     def description(self):
-        return self._get("teaser")
+        teaser = self._get("teaser", kind="plain")
+        if teaser:
+            return [TextField(teaser.strip())]
+
+    @property
+    def author(self):
+        return self._get("ssfield_author")
 
     @property
     def url(self):
         return self._get("url", kind="plain")
 
+    @property
+    def citation(self):
+        return Citation(self.data)
+
     def _get(self, field: str, kind: str = "text_field"):
         return self.solr_processor.get_kind(field, kind)
+
+
+class CSL(BaseCSL):
+    TYPE_MAPPING = {
+        "Research Guides": "webpage",
+        "Blogs and Blog Posts": "post-weblog",
+        "Online Exhibits": "webpage",
+        "Specialty Sites": "webpage",
+    }
+
+    def __init__(self, solr_doc):
+        self.doc = solr_doc
+
+    @property
+    def id(self):
+        return self.doc.get("id")
+
+    @property
+    def url(self):
+        return self.doc.get("url")
+
+    @property
+    def title(self):
+        return self.doc.get("title")
+
+    @property
+    def issued(self):
+        """Creation date
+
+        Using date parts as described here: https://citeproc-js.readthedocs.io/en/latest/csl-json/markup.html
+
+        """
+        result = self.doc.get("ssfield_date")
+        if result:
+            result = date.strptime(result, "%B %d, %Y")
+            return {"date_parts": [[result.year, result.month, result.day]]}
+
+    @property
+    def author(self):
+        author_string = self.doc.get("ssfield_author")
+        if author_string:
+            result = []
+            for person in author_string.split(", "):
+                parts = person.split(" ")
+                family = parts.pop()
+                given = " ".join(parts)
+                result.append({"family": family, "given": given})
+            return result
+
+    def _formats(self):
+        return [self.doc.get("ssfield_page_type")]
+
+
+class Citation:
+    def __init__(self, doc):
+        self.doc = doc
+
+    # @property
+    # def tagged(self):
+    # return TaggedCitation(self.doc).to_list()
+
+    @property
+    def csl(self):
+        return CSL(self.doc)

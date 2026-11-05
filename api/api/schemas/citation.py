@@ -96,5 +96,5 @@ class DatabasesCitation(BaseModel):
 
 
 class GuidesandmoreCitation(BaseModel):
-    # tagged: list[TaggedCitation]
+    tagged: list[TaggedCitation]
     csl: GuidesandmoreCSL

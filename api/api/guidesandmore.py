@@ -120,6 +120,89 @@ class Record:
         return self.solr_processor.get_kind(field, kind)
 
 
+class TaggedCitation:
+    TAG_MAPPING = [
+        {"field": "id", "ris": ["ID"], "meta": ["id"]},
+        {"field": "title", "ris": ["T1", "TI"], "meta": ["title"]},
+        {"field": "url", "ris": ["L2", "UR"], "meta": ["fulltext_html_url"]},
+    ]
+
+    def __init__(self, doc):
+        self.doc = doc
+
+    def to_list(self, tag_mapping=TAG_MAPPING):
+        result = self._non_record_tags()
+        for element in tag_mapping:
+            contents = self.doc.get(element["field"])
+            if contents is None:
+                continue
+            elif type(contents) is str:
+                contents = [contents]
+            for content in contents:
+                result.append(
+                    {
+                        "content": content,
+                        "ris": element.get("ris", []),
+                        "meta": element.get("meta", []),
+                    }
+                )
+        result += self._formatted_record_tags()
+        result += self._end_record_tag()
+        return result
+
+    def _formatted_record_tags(self):
+        result = []
+        teaser = self.doc.get("teaser")
+        if teaser:
+            result.append({"content": teaser.strip(), "ris": ["N2"], "meta": []})
+
+        publication_date = self.doc.get("ssfield_date")
+        if publication_date:
+            publication_date = date.strptime(publication_date, "%B %d, %Y")
+            result.append(
+                {
+                    "content": publication_date.isoformat(),
+                    "ris": ["Y1", "PY"],
+                    "meta": ["date"],
+                }
+            )
+
+        return result
+
+    def _non_record_tags(self):
+        return [
+            {
+                "content": "WEB",
+                "ris": ["TY"],
+                "meta": [],
+            },
+            {
+                "content": "U-M Guides And More Search",
+                "ris": ["DB"],
+                "meta": [],
+            },
+            {
+                "content": "University of Michigan Library",
+                "ris": ["DP"],
+                "meta": [],
+            },
+            {
+                "content": date.today().isoformat(),
+                "ris": ["Y2"],
+                "meta": ["online_date"],
+            },
+        ]
+
+    def _end_record_tag(self):
+        return [
+            {
+                "content": "",
+                "ris": ["ER"],
+                "meta": [],
+            },
+        ]
+
+
 class CSL(BaseCSL):
     TYPE_MAPPING = {
         "Research Guides": "webpage",
@@ -175,9 +258,9 @@ class Citation:
     def __init__(self, doc):
         self.doc = doc
 
-    # @property
-    # def tagged(self):
-    # return TaggedCitation(self.doc).to_list()
+    @property
+    def tagged(self):
+        return TaggedCitation(self.doc).to_list()
 
     @property
     def csl(self):

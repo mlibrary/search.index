@@ -15,6 +15,7 @@ from .citation import (
     DatabasesCitation,
     ArticlesCitation,
     CatalogCitation,
+    GuidesandmoreCitation,
 )
 import datetime
 from enum import Enum
@@ -286,15 +287,26 @@ class DatabasesResultRecord(BaseModel):
     citation: DatabasesCitation
 
 
+class GuidesandmoreRecord(BaseModel):
+    id: str
+    title: list[BareTextField]
+    type: list[BareTextField] = []
+    author: list[BareTextField] = []
+    published: datetime.date | None
+    description: list[BareTextField] = []
+    url: str
+    citation: GuidesandmoreCitation
+
+
 ###############
 # Specialists #
 ###############
 class Specialist(BaseModel):
     name: str
     uniqname: str
-    title: Optional[str] = None
+    title: str | None
     email: str
-    phone: Optional[str] = None
+    phone: str | None
     academic_disciplines: list[str]
 
 
@@ -344,6 +356,10 @@ class DatabasesResults(Results):
     records: list[DatabasesResultRecord]
 
 
+class GuidesandmoreResults(Results):
+    records: list[GuidesandmoreRecord]
+
+
 ###########
 # Browse  #
 ###########
@@ -383,6 +399,14 @@ class DatabasesSort(str, Enum):
     relevance = "relevance"
     title_asc = "title_asc"
     title_desc = "title_desc"
+
+
+class GuidesandmoreSort(str, Enum):
+    relevance = "relevance"
+    title_asc = "title_asc"
+    title_desc = "title_desc"
+    date_asc = "date_asc"
+    date_desc = "date_desc"
 
 
 #############

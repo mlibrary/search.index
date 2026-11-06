@@ -4,13 +4,14 @@ import json
 from api.entities import LinkField
 from datetime import datetime, timedelta
 from api.results import BaseResults, FilterHandler, BaseFilter, SolrFilterQuery
+from api.csl import BaseCSL
 from api.services import S
 import re
 import httpx
 
 
 async def record_for(id: str):
-    data = await WebsiteSolrClient().get_databases_record(id)
+    data = await WebsiteSolrClient().get_record(id)
     return Record(data)
 
 
@@ -274,7 +275,7 @@ class TaggedCitation:
         ]
 
 
-class CSL:
+class CSL(BaseCSL):
     def __init__(self, doc):
         self.doc = doc
 

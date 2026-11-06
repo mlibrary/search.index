@@ -63,8 +63,8 @@ class WebsiteSolrClient:
     def __init__(self) -> None:
         self.url = f"{S.website_solr_url}/solr/www.lib/select"
 
-    async def get_databases_record(self, id: str):
-        params = {"q": f"id:{id} AND type:database", "wt": "json"}
+    async def get_record(self, id: str):
+        params = {"q": f'id:"{id}"', "wt": "json"}
         async with httpx.AsyncClient() as client:
             try:
                 response = await client.get(self.url, params=params)

@@ -284,7 +284,7 @@
 - collection_name: Early Arabic Printed Books from the British Library
   interface_name: Gale
   note: Gale. Authorized U-M users (+ guests in U-M Libraries)
-  link: https://infotrac.galegroup.com/itweb/umuser?db=EAPB
+  link: https://link.gale.com/apps/EAPB?u=umuser
   status: Available
   campuses:
   - ann_arbor
@@ -313,7 +313,7 @@
   institution_codes:
   - MIU
 '990103594710106381':
-- collection_name: SciFinder-n
+- collection_name: SciFinder
   interface_name: University of Michigan Library
   note: University of Michigan Library. Library research guide.
   link: https://guides.lib.umich.edu/scifinder
@@ -324,7 +324,7 @@
   institution_codes:
   - MIU
   - MIFLIC
-- collection_name: SciFinder-n
+- collection_name: SciFinder
   interface_name: Chemical Abstracts Service
   note: Chemical Abstracts Service. Access requires personal registration. Authorized U-M users (+ guests in U-M Libraries)
   link: https://scifinder-n.cas.org/
@@ -1070,7 +1070,7 @@
   - MIU
   - MIFLIC
 '990056371390106381':
-- collection_name: PEP Web
+- collection_name: PEP-Web Psychoanalytic Library
   interface_name: Psychoanalytic Electronic Publishing
   note: Psychoanalytic Electronic Publishing. Authorized U-M users (+ guests in U-M Libraries)
   link: https://pep-web.org/
@@ -1425,8 +1425,8 @@
   - MIFLIC
 '990060805180106381':
 - collection_name: Social Explorer
-  interface_name: Oxford University Press
-  note: Oxford University Press. Authorized U-M users (+ guests in U-M Libraries)
+  interface_name: Social Explorer
+  note: Social Explorer. Authorized U-M users (+ guests in U-M Libraries)
   link: https://www.socialexplorer.com/explore-maps
   status: Available
   campuses:
@@ -1988,7 +1988,7 @@
 - collection_name: Stalin Digital Archive
   interface_name: Yale University Press
   note: Yale University Press. Authorized U-M users (+ guests in U-M Libraries)
-  link: http://www.stalindigitalarchive.com
+  link: https://www.stalindigitalarchive.com
   status: Available
   campuses:
   - ann_arbor
@@ -2460,9 +2460,9 @@
   - MIU
   - MIFLIC
 '990055809260106381':
-- collection_name: Anatomy.tv
-  interface_name: STAT!Ref
-  note: STAT!Ref. Authorized U-M users (+ guests in U-M Libraries)
+- collection_name: Anatomy.TV
+  interface_name: Anatomy.tv
+  note: Anatomy.tv. Authorized U-M users (+ guests in U-M Libraries)
   link: https://www.anatomy.tv/titles
   status: Available
   campuses:
@@ -5466,6 +5466,18 @@
   institution_codes:
   - MIU
   - MIFLIC
+'99187252471506381':
+- collection_name: NCBI Bookshelf
+  interface_name: NCBI
+  note: NCBI. Open access for all users.
+  link: https://www.ncbi.nlm.nih.gov/books/
+  status: Available
+  campuses:
+  - ann_arbor
+  - flint
+  institution_codes:
+  - MIU
+  - MIFLIC
 '99187252471906381':
 - collection_name: DOAJ
   interface_name: DOAJ Directory of Open Access Journals
@@ -5530,7 +5542,7 @@
 - collection_name: Making Of America Cornell Journal
   interface_name: Making of America (Cornell)
   note: Making of America (Cornell) Open access for all users.
-  link: http://ebooks.library.cornell.edu
+  link: https://babel.hathitrust.org/cgi/mb?a=listis;c=1930843488
   status: Available
   campuses:
   - ann_arbor
@@ -6109,9 +6121,9 @@
   - MIFLIC
 '99187252626506381':
 - collection_name: OpinionArchives
-  interface_name: OpinionArchives
-  note: OpinionArchives. Authorized U-M users (+ guests in U-M Libraries)
-  link: https://metasearch.opinionarchives.com/
+  interface_name: Coherent Digital
+  note: Coherent Digital. Authorized U-M users (+ guests in U-M Libraries)
+  link: https://policycommons.net/magazines/
   status: Available
   campuses:
   - ann_arbor
@@ -6123,7 +6135,7 @@
 - collection_name: GeoScienceWorld eBooks Collection
   interface_name: GeoScienceWorld
   note: GeoScienceWorld. Authorized U-M users (+ guests in U-M Libraries)
-  link: http://ebooks.geoscienceworld.org/
+  link: https://pubs.geoscienceworld.org/books
   status: Available
   campuses:
   - ann_arbor
@@ -7503,18 +7515,6 @@
   interface_name: Google.com
   note: Google.com.
   link: http://www.google.com
-  status: Available
-  campuses:
-  - ann_arbor
-  - flint
-  institution_codes:
-  - MIU
-  - MIFLIC
-'99187252732706381':
-- collection_name: Electronic Books
-  interface_name: OCLC
-  note: OCLC.
-  link: http://firstsearch.oclc.org/
   status: Available
   campuses:
   - ann_arbor
@@ -9619,8 +9619,8 @@
 '99187252556606381':
 - collection_name: NLM Gateway
   interface_name: National Library of Medicine
-  note: National Library of Medicine.
-  link: https://wwwcf.nlm.nih.gov/hsr_project/home_proj.cfm
+  note: National Library of Medicine. Open access for all users.
+  link: https://www.nlm.nih.gov/
   status: Available
   campuses:
   - ann_arbor
@@ -9688,18 +9688,6 @@
   institution_codes:
   - MIU
   - MIFLIC
-'99187252557306381':
-- collection_name: Entrez
-  interface_name: National Library of Medicine
-  note: National Library of Medicine.
-  link: http://www.ncbi.nlm.nih.gov/gquery/gquery.fcgi
-  status: Available
-  campuses:
-  - ann_arbor
-  - flint
-  institution_codes:
-  - MIU
-  - MIFLIC
 '99187252557406381':
 - collection_name: Africa Development Indicators
   interface_name: World Bank
@@ -9752,7 +9740,7 @@
 - collection_name: American National Biography Online
   interface_name: Oxford University Press
   note: Oxford University Press. Authorized U-M users (+ guests in U-M Libraries)
-  link: http://www.anb.org/articles/index.html
+  link: https://academic.oup.com/american-national-biography
   status: Available
   campuses:
   - ann_arbor
@@ -9840,6 +9828,18 @@
   - ann_arbor
   institution_codes:
   - MIU
+'99187252558706381':
+- collection_name: Family Studies Abstracts
+  interface_name: EBSCOhost
+  note: EBSCOhost. Authorized U-M users (+ guests in U-M Libraries)
+  link: http://search.ebscohost.com/login.aspx?authtype=ip,uid&profile=ehost&defaultdb=26h
+  status: Available
+  campuses:
+  - ann_arbor
+  - flint
+  institution_codes:
+  - MIU
+  - MIFLIC
 '99187252558806381':
 - collection_name: American Bibliography of Slavic, East European & Eurasian Studies (ABSEEES)
   interface_name: EBSCOhost
@@ -10019,8 +10019,8 @@
 '99187252561106381':
 - collection_name: AREAER Online (Annual report on exchange arrangements and exchange restrictions data)
   interface_name: International Monetary Fund
-  note: International Monetary Fund.
-  link: http://imfareaer.org/Areaer/Pages/Home.aspx
+  note: International Monetary Fund. Open access to all users.
+  link: https://www.elibrary-areaer.imf.org/
   status: Available
   campuses:
   - ann_arbor
@@ -11330,7 +11330,7 @@
 - collection_name: Psychoanalytic Electronic Publishing Archive
   interface_name: Psychoanalytic Electronic Publishing
   note: Psychoanalytic Electronic Publishing. Authorized U-M users (+ guests in U-M Libraries)
-  link: http://www.pep-web.org/
+  link: https://pep-web.org/
   status: Available
   campuses:
   - ann_arbor
@@ -11472,7 +11472,7 @@
   institution_codes:
   - MIU
   - MIFLIC
-'99187252700106381':
+'990159364620106381':
 - collection_name: International Herald Tribune Historical Archive 1887-2013
   interface_name: Gale
   note: Gale. Authorized U-M users (+ guests in U-M Libraries)
@@ -12455,7 +12455,7 @@
 - collection_name: Berliner Philharmoniker Digital Concert Hall
   interface_name: Berliner Philharmoniker
   note: Berliner Philharmoniker. 5 concurrent user limit. Access requires personal registration. Authorized U-M users (+ guests in U-M Libraries)
-  link: http://www.digitalconcerthall.com/en/tickets
+  link: https://www.digitalconcerthall.com/
   status: Available
   campuses:
   - ann_arbor
@@ -14269,7 +14269,7 @@
 - collection_name: HeinOnline Gun Regulation and Legislation in America
   interface_name: Hein Online
   note: Hein Online. Authorized U-M users (+ guests in U-M Libraries)
-  link: https://heinonline.org/HOL/Index?collection=gun
+  link: https://heinonline.com/content/gun-regulation-and-legislation-in-america/
   status: Available
   campuses:
   - ann_arbor
@@ -15982,29 +15982,6 @@
   interface_name: Gale
   note: Gale. Authorized U-M users (+ guests in U-M Libraries)
   link: https://link.gale.com/apps/collection/6scr/gdsc?u=umuser&sid=gdsc
-  status: Available
-  campuses:
-  - ann_arbor
-  - flint
-  institution_codes:
-  - MIU
-  - MIFLIC
-'99187570033906381':
-- collection_name: Drama Criticism
-  interface_name: Gale
-  note: Gale. Authorized U-M users (+ guests in U-M Libraries)
-  link: https://go.gale.com/ps/dynamicAboutSeries?p=LCO&u=umuser&seriesId=0XUS
-  status: Available
-  campuses:
-  - ann_arbor
-  - flint
-  institution_codes:
-  - MIU
-  - MIFLIC
-- collection_name: Drama Criticism
-  interface_name: Gale
-  note: Gale. Authorized U-M users (+ guests in U-M Libraries)
-  link: https://link.gale.com/apps/lco?u=umuser
   status: Available
   campuses:
   - ann_arbor
@@ -18789,7 +18766,7 @@
 '99187857326806381':
 - collection_name: Digital General Collection
   interface_name: University of Michigan Library
-  note: University of Michigan Library. Open access for all users.
+  note: University of Michigan Library. Authorized U-M users (+ guests in U-M Libraries)
   link: https://quod.lib.umich.edu/g/genpub/
   status: Available
   campuses:
@@ -19243,7 +19220,7 @@
 - collection_name: Oxford Dictionary of National Biography
   interface_name: Oxford University Press
   note: Oxford University Press. Authorized U-M users (+ guests in U-M Libraries)
-  link: https://www.oxforddnb.com/
+  link: https://academic.oup.com/oxford-dictionary-of-national-biography
   status: Available
   campuses:
   - ann_arbor
@@ -19442,8 +19419,8 @@
 '99187925900406381':
 - collection_name: Drugs and Lactation Database (LactMed)
   interface_name: National Library of Medicine
-  note: National Library of Medicine.
-  link: https://www.ncbi.nlm.nih.gov/books/NBK501922/
+  note: National Library of Medicine. Open access for all users.
+  link: https://www.ncbi.nlm.nih.gov/sites/books/NBK501922/
   status: Available
   campuses:
   - ann_arbor
@@ -21013,7 +20990,7 @@
 - collection_name: HeinOnline Index to Foreign Legal Periodicals (IFLP)
   interface_name: Hein Online
   note: Hein Online. Authorized U-M users (+ guests in U-M Libraries)
-  link: https://heinonline.org/hol/index?collection=iflp
+  link: https://heinonline.com/content/index-to-foreign-legal-periodicals/
   status: Available
   campuses:
   - ann_arbor
@@ -24939,18 +24916,6 @@
   institution_codes:
   - MIU
   - MIFLIC
-'99188909709806381':
-- collection_name: Illiustrirovannaia Rossiia Archive-to be replaced by full text
-  interface_name: East View Information Services
-  note: East View Information Services. Authorized U-M users (+ guests in U-M Libraries)
-  link: https://online.infoteka.com/browse/udb/3671
-  status: Available
-  campuses:
-  - ann_arbor
-  - flint
-  institution_codes:
-  - MIU
-  - MIFLIC
 '99188909825206381':
 - collection_name: 'Public Housing, Racial Policies, and Civil Rights: The Intergroup Relations Branch of the Federal Public Housing Administration, 1936-1963'
   interface_name: Gale
@@ -26456,18 +26421,6 @@
   interface_name: Bloomsbury Publishing Plc
   note: Bloomsbury Publishing Plc. Authorized U-M users (+ guests in U-M Libraries)
   link: https://www.dramaonlinelibrary.com/shakespeares-globe-on-screen
-  status: Available
-  campuses:
-  - ann_arbor
-  - flint
-  institution_codes:
-  - MIU
-  - MIFLIC
-'99189018199306381':
-- collection_name: EBSCOhost APA PsycEXTRA
-  interface_name: EBSCOhost
-  note: EBSCOhost. Authorized U-M users (+ guests in U-M Libraries)
-  link: https://research.ebsco.com/c/mqk2bj?db=pxh
   status: Available
   campuses:
   - ann_arbor
@@ -28836,29 +28789,6 @@
   institution_codes:
   - MIU
   - MIFLIC
-'99189138034106381':
-- collection_name: 'Oxford Bibliographies Online: Linguistics'
-  interface_name: ''
-  note: ''
-  link: https://academic.oup.com/reference/62381
-  status: Available
-  campuses:
-  - ann_arbor
-  - flint
-  institution_codes:
-  - MIU
-  - MIFLIC
-- collection_name: 'Oxford Bibliographies Online: Linguistics'
-  interface_name: Oxford University Press
-  note: Oxford University Press.
-  link: https://academic.oup.com/reference/62381
-  status: Available
-  campuses:
-  - ann_arbor
-  - flint
-  institution_codes:
-  - MIU
-  - MIFLIC
 '99189150018006381':
 - collection_name: 'Bloomsbury Open Collections: Gender & Sexuality 2026 (Frontlist)'
   interface_name: Bloomsbury Publishing Plc
@@ -30035,6 +29965,18 @@
   institution_codes:
   - MIU
   - MIFLIC
+'99189138034106381':
+- collection_name: 'Oxford Bibliographies Online: Linguistics'
+  interface_name: Oxford University Press
+  note: Oxford University Press. Authorized U-M users (+ guests in U-M Libraries)
+  link: https://academic.oup.com/reference/62381
+  status: Available
+  campuses:
+  - ann_arbor
+  - flint
+  institution_codes:
+  - MIU
+  - MIFLIC
 '99189201146306381':
 - collection_name: Yizkor Books
   interface_name: New York Public Library
@@ -30276,7 +30218,7 @@
   - MIU
   - MIFLIC
 '99189212987406381':
-- collection_name: City University of Hong Kong Press Complete eBook-Package 2025
+- collection_name: De Gruyter City University of Hong Kong Press Complete eBook_Package 2025
   interface_name: Walter De Gruyter Publishing
   note: Walter De Gruyter Publishing. Authorized U-M users (+ guests in U-M Libraries)
   link: https://www.degruyterbrill.com
@@ -30288,7 +30230,7 @@
   - MIU
   - MIFLIC
 '99189212987506381':
-- collection_name: City University of Hong Kong Press Complete eBook-Package 2024
+- collection_name: De Gruyter City University of Hong Kong Press Complete eBook_Package 2024
   interface_name: Walter De Gruyter Publishing
   note: Walter De Gruyter Publishing. Authorized U-M users (+ guests in U-M Libraries)
   link: https://www.degruyterbrill.com
@@ -30300,7 +30242,7 @@
   - MIU
   - MIFLIC
 '99189212987706381':
-- collection_name: City University of Hong Kong Press Complete eBook-Package 2023
+- collection_name: De Gruyter City University of Hong Kong Press Complete eBook_Package 2023
   interface_name: Walter De Gruyter Publishing
   note: Walter De Gruyter Publishing. Authorized U-M users (+ guests in U-M Libraries)
   link: https://www.degruyterbrill.com
@@ -30312,7 +30254,7 @@
   - MIU
   - MIFLIC
 '99189212987906381':
-- collection_name: City University of Hong Kong Press Complete eBook-Package 2022
+- collection_name: De Gruyter City University of Hong Kong Press Complete eBook_Package 2022
   interface_name: Walter De Gruyter Publishing
   note: Walter De Gruyter Publishing. Authorized U-M users (+ guests in U-M Libraries)
   link: https://www.degruyterbrill.com
@@ -30324,7 +30266,7 @@
   - MIU
   - MIFLIC
 '99189212988606381':
-- collection_name: City University of Hong Kong Press Complete eBook-Package 2021
+- collection_name: De Gruyter City University of Hong Kong Press Complete eBook_Package 2021
   interface_name: Walter De Gruyter Publishing
   note: Walter De Gruyter Publishing. Authorized U-M users (+ guests in U-M Libraries)
   link: https://www.degruyterbrill.com
@@ -30336,7 +30278,7 @@
   - MIU
   - MIFLIC
 '99189212988706381':
-- collection_name: City University of Hong Kong Press Complete eBook-Package 2020
+- collection_name: De Gruyter City University of Hong Kong Press Complete eBook_Package 2020
   interface_name: Walter De Gruyter Publishing
   note: Walter De Gruyter Publishing. Authorized U-M users (+ guests in U-M Libraries)
   link: https://www.degruyterbrill.com
@@ -30348,7 +30290,7 @@
   - MIU
   - MIFLIC
 '99189212988906381':
-- collection_name: City University of Hong Kong Press Complete eBook-Package 2019
+- collection_name: De Gruyter City University of Hong Kong Press Complete eBook_Package 2019
   interface_name: Walter De Gruyter Publishing
   note: Walter De Gruyter Publishing. Authorized U-M users (+ guests in U-M Libraries)
   link: https://www.degruyterbrill.com
@@ -30360,7 +30302,7 @@
   - MIU
   - MIFLIC
 '99189212989006381':
-- collection_name: City University of Hong Kong Press Complete eBook-Package 2018
+- collection_name: De Gruyter City University of Hong Kong Press Complete eBook_Package 2018
   interface_name: Walter De Gruyter Publishing
   note: Walter De Gruyter Publishing. Authorized U-M users (+ guests in U-M Libraries)
   link: https://www.degruyterbrill.com
@@ -30372,7 +30314,7 @@
   - MIU
   - MIFLIC
 '99189212989206381':
-- collection_name: City University of Hong Kong Press Complete eBook-Package 2017
+- collection_name: De Gruyter City University of Hong Kong Press Complete eBook_Package 2017
   interface_name: Walter De Gruyter Publishing
   note: Walter De Gruyter Publishing. Authorized U-M users (+ guests in U-M Libraries)
   link: https://www.degruyterbrill.com
@@ -30384,7 +30326,7 @@
   - MIU
   - MIFLIC
 '99189212989506381':
-- collection_name: City University of Hong Kong Press Complete eBook-Package 2016
+- collection_name: De Gruyter City University of Hong Kong Press Complete eBook_Package 2016
   interface_name: Walter De Gruyter Publishing
   note: Walter De Gruyter Publishing. Authorized U-M users (+ guests in U-M Libraries)
   link: https://www.degruyterbrill.com
@@ -30396,7 +30338,7 @@
   - MIU
   - MIFLIC
 '99189212989606381':
-- collection_name: City University of Hong Kong Press Complete eBook-Package 2014-2015
+- collection_name: De Gruyter City University of Hong Kong Press Complete eBook_Package 2014_2015
   interface_name: Walter De Gruyter Publishing
   note: Walter De Gruyter Publishing. Authorized U-M users (+ guests in U-M Libraries)
   link: https://www.degruyterbrill.com
@@ -30408,7 +30350,7 @@
   - MIU
   - MIFLIC
 '99189212989806381':
-- collection_name: City University of Hong Kong Press Backlist eBook-Package 2000-2013
+- collection_name: De Gruyter City University of Hong Kong Press Backlist eBook_Package 2000_2013
   interface_name: Walter De Gruyter Publishing
   note: Walter De Gruyter Publishing. Authorized U-M users (+ guests in U-M Libraries)
   link: https://www.degruyterbrill.com
@@ -30516,6 +30458,162 @@
   interface_name: International Information and Engineering Technology Association (IIETA)
   note: International Information and Engineering Technology Association (IIETA) Open access for all users.
   link: https://iieta.org/journals
+  status: Available
+  campuses:
+  - ann_arbor
+  - flint
+  institution_codes:
+  - MIU
+  - MIFLIC
+'99189226516006381':
+- collection_name: De Gruyter University of Minnesota Press Complete eBook-Package 2026
+  interface_name: Walter De Gruyter Publishing
+  note: Walter De Gruyter Publishing. Authorized U-M users (+ guests in U-M Libraries)
+  link: https://www.degruyterbrill.com
+  status: Available
+  campuses:
+  - ann_arbor
+  - flint
+  institution_codes:
+  - MIU
+  - MIFLIC
+'99189226516106381':
+- collection_name: De Gruyter University of Minnesota Press Complete eBook-Package 2025
+  interface_name: Walter De Gruyter Publishing
+  note: Walter De Gruyter Publishing. Authorized U-M users (+ guests in U-M Libraries)
+  link: https://www.degruyterbrill.com
+  status: Available
+  campuses:
+  - ann_arbor
+  - flint
+  institution_codes:
+  - MIU
+  - MIFLIC
+'99189226516206381':
+- collection_name: De Gruyter University of Minnesota Press Complete eBook-Package 2024
+  interface_name: Walter De Gruyter Publishing
+  note: Walter De Gruyter Publishing. Authorized U-M users (+ guests in U-M Libraries)
+  link: https://www.degruyterbrill.com
+  status: Available
+  campuses:
+  - ann_arbor
+  - flint
+  institution_codes:
+  - MIU
+  - MIFLIC
+'99189226516306381':
+- collection_name: De Gruyter University of Minnesota Press Complete eBook-Package 2023
+  interface_name: Walter De Gruyter Publishing
+  note: Walter De Gruyter Publishing. Authorized U-M users (+ guests in U-M Libraries)
+  link: https://www.degruyterbrill.com
+  status: Available
+  campuses:
+  - ann_arbor
+  - flint
+  institution_codes:
+  - MIU
+  - MIFLIC
+'99189226613506381':
+- collection_name: 'Girlhood: Magazines and Print Culture Module II'
+  interface_name: AM (Adam Matthew)
+  note: AM (Adam Matthew) Authorized U-M users (+ guests in U-M Libraries)
+  link: https://www.girlhood.amdigital.co.uk
+  status: Available
+  campuses:
+  - ann_arbor
+  - flint
+  institution_codes:
+  - MIU
+  - MIFLIC
+'99189227603306381':
+- collection_name: 'Gale Primary Sources: Telegraph Historical Archive, 1855-2016'
+  interface_name: Gale
+  note: Gale. Authorized U-M users (+ guests in U-M Libraries)
+  link: https://link.gale.com/apps/TGRH?u=umuser
+  status: Available
+  campuses:
+  - ann_arbor
+  - flint
+  institution_codes:
+  - MIU
+  - MIFLIC
+'99189228511406381':
+- collection_name: Verretaal - Chinese Literature in Dutch Translation
+  interface_name: Universiteit Leiden
+  note: Universiteit Leiden. Open access for all users.
+  link: https://unileiden.net/verretaal/
+  status: Available
+  campuses:
+  - ann_arbor
+  - flint
+  institution_codes:
+  - MIU
+  - MIFLIC
+'99189228513906381':
+- collection_name: National Library of Medicine Databases & Electronic Resources
+  interface_name: National Library of Medicine
+  note: National Library of Medicine. Open access for all users.
+  link: https://datadiscovery.nlm.nih.gov/browse
+  status: Available
+  campuses:
+  - ann_arbor
+  - flint
+  institution_codes:
+  - MIU
+  - MIFLIC
+'99189232616306381':
+- collection_name: 'BAR: British Archaeological Reports 2026'
+  interface_name: Fulcrum
+  note: Fulcrum. Authorized U-M users (+ guests in U-M Libraries)
+  link: https://www.fulcrum.org/barpublishing
+  status: Available
+  campuses:
+  - ann_arbor
+  - flint
+  institution_codes:
+  - MIU
+  - MIFLIC
+'99189235781506381':
+- collection_name: 'Foreign Office, Consulate and Legation Files, China: 1830-1895'
+  interface_name: AM (Adam Matthew)
+  note: AM (Adam Matthew) Authorized U-M users (+ guests in U-M Libraries)
+  link: https://www.foreignofficeconsulatelegationchina.amdigital.co.uk/
+  status: Available
+  campuses:
+  - ann_arbor
+  - flint
+  institution_codes:
+  - MIU
+  - MIFLIC
+'99189235781606381':
+- collection_name: 'Foreign Office, Consulate and Legation Files, China: Section III, 1912-1919'
+  interface_name: AM (Adam Matthew)
+  note: AM (Adam Matthew) Authorized U-M users (+ guests in U-M Libraries)
+  link: https://www.foreignofficeconsulatelegationchina.amdigital.co.uk
+  status: Available
+  campuses:
+  - ann_arbor
+  - flint
+  institution_codes:
+  - MIU
+  - MIFLIC
+'99189238329206381':
+- collection_name: Georgia Historic Newspapers
+  interface_name: Digital Library of Georgia
+  note: Digital Library of Georgia. Open access for all users.
+  link: https://gahistoricnewspapers.galileo.usg.edu/newspapers/
+  status: Available
+  campuses:
+  - ann_arbor
+  - flint
+  institution_codes:
+  - MIU
+  - MIFLIC
+'99189238626906381':
+- collection_name: ISEAS Institute of Southeast Asian Studies
+  interface_name: ISEAS - Yusof Ishak Institute
+  note: ISEAS - Yusof Ishak Institute. Open access for all users.
+  link: https://www.iseas.edu.sg/
   status: Available
   campuses:
   - ann_arbor

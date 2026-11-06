@@ -291,7 +291,8 @@ class GuidesandmoreRecord(BaseModel):
     id: str
     title: list[BareTextField]
     type: list[BareTextField] = []
-    date: datetime.date | None
+    author: list[BareTextField] = []
+    published: datetime.date | None
     description: list[BareTextField] = []
     url: str
     citation: GuidesandmoreCitation

@@ -90,10 +90,10 @@ class Record:
 
     @property
     def type(self):
-        return self._get("type_name")
+        return self._get("ssfield_page_type")
 
     @property
-    def date(self):
+    def published(self):
         result = self._get("ssfield_date", kind="plain")
         if result:
             return date.strptime(result, "%B %d, %Y")
@@ -106,7 +106,12 @@ class Record:
 
     @property
     def author(self):
-        return self._get("ssfield_author")
+        raw_string = self._get("ssfield_author", "plain")
+        if raw_string:
+            return [
+                TextField(author_string) for author_string in raw_string.split(", ")
+            ]
+        return []
 
     @property
     def url(self):

@@ -11,7 +11,7 @@ import httpx
 
 
 async def record_for(id: str):
-    data = await WebsiteSolrClient().get_databases_record(id)
+    data = await WebsiteSolrClient().get_record(id)
     return Record(data)
 
 

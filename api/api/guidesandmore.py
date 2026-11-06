@@ -1,10 +1,17 @@
 from api.solr import SolrDocProcessor
 from api.results import BaseResults, FilterHandler, BaseFilter, SolrFilterQuery
 from api.services import S
+from api.clients.solr_client import WebsiteSolrClient
 from api.csl import BaseCSL
 from api.entities import TextField
 import httpx
 from datetime import date
+import base64
+
+
+async def record_for(id: str):
+    data = await WebsiteSolrClient().get_record(decode_id(id))
+    return Record(data)
 
 
 async def get_results(query_params: dict):
@@ -23,6 +30,15 @@ async def get_results(query_params: dict):
 
 
 filter_handler = FilterHandler({"page_type": "ssfield_page_type"})
+
+
+def encode_id(id: str):
+    return base64.urlsafe_b64encode(id.encode("ascii")).decode("ascii").split("=")[0]
+
+
+def decode_id(id: str):
+    id = id + "=" * (len(id) % 4)
+    return base64.urlsafe_b64decode(id.encode("ascii")).decode("ascii")
 
 
 class Results(BaseResults):
@@ -82,7 +98,7 @@ class Record:
 
     @property
     def id(self):
-        return self._get("id", kind="plain")
+        return encode_id(self._get("id", kind="plain"))
 
     @property
     def title(self):

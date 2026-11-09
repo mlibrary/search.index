@@ -119,6 +119,7 @@ class Record:
         teaser = self._get("teaser", kind="plain")
         if teaser:
             return [TextField(teaser.strip())]
+        return []
 
     @property
     def author(self):

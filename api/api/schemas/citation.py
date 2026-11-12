@@ -16,6 +16,16 @@ class CSLLiteral(BaseModel):
     literal: str
 
 
+class CSLDateParts(BaseModel):
+    model_config = ConfigDict(
+        # CSL has kebab case JSON keys
+        alias_generator=AliasGenerator(
+            serialization_alias=lambda field_name: to_kebab_case(field_name)
+        )
+    )
+    date_parts: list[list] | None
+
+
 class CSLName(BaseModel):
     family: Optional[str]
     given: Optional[str]
@@ -61,6 +71,15 @@ class DatabasesCSL(BaseModel):
     title: str
 
 
+class GuidesandmoreCSL(BaseModel):
+    id: str
+    type: str
+    title: str
+    author: Optional[list[CSLName | CSLLiteral]]
+    issued: Optional[CSLDateParts]
+    url: str | None = Field(serialization_alias="URL")
+
+
 class CatalogCitation(BaseModel):
     tagged: list[TaggedCitation]
     csl: CatalogCSL
@@ -74,3 +93,8 @@ class ArticlesCitation(BaseModel):
 class DatabasesCitation(BaseModel):
     tagged: list[TaggedCitation]
     csl: DatabasesCSL
+
+
+class GuidesandmoreCitation(BaseModel):
+    tagged: list[TaggedCitation]
+    csl: GuidesandmoreCSL

@@ -1,0 +1,38 @@
+{
+  "responseHeader":{
+    "status":0,
+    "QTime":0,
+    "params":{
+      "q":"id:\"https://blogs.lib.umich.edu/eaten-grue/video-game-music-non-music-majors\"",
+      "indent":"true",
+      "wt":"json"}},
+  "response":{"numFound":1,"start":0,"docs":[
+      {
+        "title":"Video Game Music for Non-Music Majors",
+        "title_l":["Video Game Music for Non-Music Majors"],
+        "title_lj":["Video Game Music for Non-Music Majors"],
+        "title_ngram":["Video Game Music for Non-Music Majors"],
+        "title_unstemmed":"Video Game Music for Non-Music Majors",
+        "all_titles":["Video Game Music for Non-Music Majors"],
+        "all_titles_unstemmed":["Video Game Music for Non-Music Majors"],
+        "ssfield_date":"March 22, 2016",
+        "ssfield_author":"Emily C. Card",
+        "id":"https://blogs.lib.umich.edu/eaten-grue/video-game-music-non-music-majors",
+        "url":"https://blogs.lib.umich.edu/eaten-grue/video-game-music-non-music-majors",
+        "status":true,
+        "promote":true,
+        "content":"\n\nLooking for an interesting elective to take next Fall? This course has received high praise from several regulars at the CVGA, and is designed for non-music majors. Hope you get the chance to check it out! \n  \n  \n             \n      \n    \n\n\n",
+        "content_unstemmed":["\n\nLooking for an interesting elective to take next Fall? This course has received high praise from several regulars at the CVGA, and is designed for non-music majors. Hope you get the chance to check it out! \n  \n  \n             \n      \n    \n\n\n"],
+        "source":"drupal",
+        "segment":"blogs",
+        "ssfield_page_type":"Blogs and Blog Posts",
+        "body":"\n\nLooking for an interesting elective to take next Fall? This course has received high praise from several regulars at the CVGA, and is designed for non-music majors. Hope you get the chance to check it out! \n  \n  \n             \n      \n    \n\n\n",
+        "teaser":"\n\nLooking for an interesting elective to take next Fall? This course has received high praise from several regulars at the CVGA, and is designed for non-music majors. Hope you get the chance to check it out! \n  \n  \n             \n      \n    \n\n\n",
+        "type":"blog_post",
+        "type_name":"Blog Post",
+        "created":"2016-03-22T00:00:00Z",
+        "changed":"2016-03-22T00:00:00Z",
+        "_version_":1880921217597177857,
+        "timestamp":"2026-11-04T09:57:35.41Z"}]
+  }}
+

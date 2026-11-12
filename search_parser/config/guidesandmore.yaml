@@ -1,0 +1,54 @@
+name: guidesandmore
+transformer: MLibrarySearchParser::Transformer::Solr::LocalParams
+solr_name: website
+facets:
+  - ssfield_page_type
+# for MLibrarySearchParser
+search_field_default: all_fields
+solr_params:
+  # default
+  qt: edismax
+  qf: title_unstemmed^10 title^7 all_titles_unstemmed^8 all_titles^6 content^2 keywords^10
+  bq:
+    - "important:true^500"
+  mm: 25%
+  pf: title all_titles content
+  tie: 0.1
+  defType: edismax
+  f.title_starts_with.qf: title_ngram
+  f.title_starts_with.pf: title_ngram
+  f.title_starts_with.mm: 100%
+search_fields:
+  title:
+    qf: sort_title^12 stitle^12 title_unstemmed^6 all_titles_unstemmed^3 title^2 alt^1
+    pf: title alt
+    mm: 75%
+  title_starts_with:
+    pf: title_ngram
+    qf: title_ngram
+    mm: 100%
+  publisher:
+    qf: pvc_text
+    pf: pvc_text
+    mm: 50%
+  isn:
+    qf: issn
+    pf: issn
+    mm: 100%
+  academic_discipline:
+    qf: og_groups_both^5 tmfield_taxonomy_name
+    pf: og_groups_both^5 tmfield_taxonomy_name
+    mm: 50%
+  browse_starts_with:
+    qf: title_initial
+    pf: title_initial
+    mm: 100%
+  all_fields: &ALL_FIELDS
+    qf: title_unstemmed^10 title^7 all_titles_unstemmed^8 all_titles^6 issn^10 content^2
+    pf: title all_titles content
+    mm: 25%
+  allfields: *ALL_FIELDS
+  keyword: *ALL_FIELDS
+  keywords: *ALL_FIELDS
+  exact: *ALL_FIELDS
+  contains: *ALL_FIELDS

@@ -29,7 +29,7 @@ async def get_results(query_params: dict):
     return Results(data=response.json(), query_params=query_params)
 
 
-filter_handler = FilterHandler({"page_type": "ssfield_page_type"})
+filter_handler = FilterHandler({"type": "ssfield_page_type"})
 
 
 def encode_id(id: str):

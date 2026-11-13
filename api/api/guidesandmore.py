@@ -1,5 +1,6 @@
 import base64
 from datetime import date
+from types import MappingProxyType
 
 import httpx
 
@@ -145,11 +146,11 @@ class Record:
 
 
 class TaggedCitation:
-    TAG_MAPPING = [
+    TAG_MAPPING = (
         {"field": "id", "ris": ["ID"], "meta": ["id"]},
         {"field": "title", "ris": ["T1", "TI"], "meta": ["title"]},
         {"field": "url", "ris": ["L2", "UR"], "meta": ["fulltext_html_url"]},
-    ]
+    )
 
     def __init__(self, doc):
         self.doc = doc
@@ -228,12 +229,14 @@ class TaggedCitation:
 
 
 class CSL(BaseCSL):
-    TYPE_MAPPING = {
-        "Research Guides": "webpage",
-        "Blogs and Blog Posts": "post-weblog",
-        "Online Exhibits": "webpage",
-        "Specialty Sites": "webpage",
-    }
+    TYPE_MAPPING = MappingProxyType(
+        {
+            "Research Guides": "webpage",
+            "Blogs and Blog Posts": "post-weblog",
+            "Online Exhibits": "webpage",
+            "Specialty Sites": "webpage",
+        }
+    )
 
     def __init__(self, solr_doc):
         self.doc = solr_doc

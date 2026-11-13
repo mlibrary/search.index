@@ -4,6 +4,7 @@ import io
 import json
 import re
 import string
+from types import MappingProxyType
 
 import fastapi_structured_logging
 import pymarc
@@ -246,7 +247,7 @@ class MARC:
                 {"subfields": "st", "field": "title"},
             ],
         )
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def new_title_issn(self):
@@ -254,7 +255,7 @@ class MARC:
             tags=["785"],
             text_sfs="x",
         )
-        return self.processor.generate_unpaired_fields(tuple([ruleset]))
+        return self.processor.generate_unpaired_fields((ruleset,))
 
     @property
     def previous_title(self):
@@ -266,7 +267,7 @@ class MARC:
                 {"subfields": "st", "field": "title"},
             ],
         )
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def previous_title_issn(self):
@@ -274,7 +275,7 @@ class MARC:
             tags=["780"],
             text_sfs="x",
         )
-        return self.processor.generate_unpaired_fields(tuple([ruleset]))
+        return self.processor.generate_unpaired_fields((ruleset,))
 
     @property
     def contributors(self):
@@ -359,17 +360,17 @@ class MARC:
     @property
     def series(self):
         ruleset = FieldRuleset(tags=["400", "410", "411", "440", "490"])
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def series_statement(self):
         ruleset = FieldRuleset(tags=["440", "800", "810", "811", "830"])
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def biography_history(self):
         ruleset = FieldRuleset(tags=["545"], text_sfs="a")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def summary(self):
@@ -378,7 +379,7 @@ class MARC:
             text_sfs="abc3",
             filter=lambda field: field.indicator1 != "4",
         )
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def in_collection(self):
@@ -401,7 +402,7 @@ class MARC:
     @property
     def access(self):
         ruleset = FieldRuleset(tags=["506"], text_sfs="abc")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def finding_aids(self):
@@ -410,92 +411,92 @@ class MARC:
             text_sfs="abcd3",
             filter=lambda field: not field.get("u"),
         )
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def terms_of_use(self):
         ruleset = FieldRuleset(tags=["540"])
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def language_note(self):
         ruleset = FieldRuleset(tags=["546"])
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def performers(self):
         ruleset = FieldRuleset(tags=["511"], text_sfs="a")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def date_place_of_event(self):
         ruleset = FieldRuleset(tags=["518"], text_sfs="adop23")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def preferred_citation(self):
         ruleset = FieldRuleset(tags=["524"], text_sfs="a")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def location_of_originals(self):
         ruleset = FieldRuleset(tags=["535"], text_sfs=f"{string.ascii_lowercase}3")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def funding_information(self):
         ruleset = FieldRuleset(tags=["536"], text_sfs="a")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def source_of_acquisition(self):
         ruleset = FieldRuleset(tags=["541"], text_sfs="a")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def related_items(self):
         ruleset = FieldRuleset(tags=["580"], text_sfs="a")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def numbering(self):
         ruleset = FieldRuleset(tags=["362"], text_sfs="a")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def current_publication_frequency(self):
         ruleset = FieldRuleset(tags=["310"], text_sfs="ab")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def former_publication_frequency(self):
         ruleset = FieldRuleset(tags=["321"], text_sfs="ab")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def numbering_notes(self):
         ruleset = FieldRuleset(tags=["515"], text_sfs="a")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def source_of_description_note(self):
         ruleset = FieldRuleset(tags=["588"], text_sfs="a")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def copy_specific_note(self):
         ruleset = FieldRuleset(tags=["590"], text_sfs="a")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def references(self):
         ruleset = FieldRuleset(tags=["510"])
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def copyright_status_information(self):
         ruleset = FieldRuleset(tags=["542"])
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def note(self):
@@ -517,12 +518,12 @@ class MARC:
             ],
             text_sfs="a",
         )
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def arrangement(self):
         ruleset = FieldRuleset(tags=["351"], text_sfs="ab3")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def copyright(self):
@@ -530,42 +531,42 @@ class MARC:
             tags=["264"], filter=lambda field: field.indicator2 == "4"
         )
 
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def physical_description(self):
         ruleset = FieldRuleset(tags=["300"])
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def map_scale(self):
         ruleset = FieldRuleset(tags=["255"], text_sfs="a")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def reproduction_note(self):
         ruleset = FieldRuleset(tags=["533"], text_sfs=f"{string.ascii_lowercase}35")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def original_version_note(self):
         ruleset = FieldRuleset(tags=["534"], text_sfs=f"{string.ascii_lowercase}35")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def playing_time(self):
         ruleset = FieldRuleset(tags=["306"], text_sfs="a")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def media_format(self):
         ruleset = FieldRuleset(tags=["538"], text_sfs="a")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def audience(self):
         ruleset = FieldRuleset(tags=["521"], text_sfs="a")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def content_advice(self):
@@ -574,32 +575,32 @@ class MARC:
             text_sfs="abc3",
             filter=lambda field: field.indicator1 == "4",
         )
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def awards(self):
         ruleset = FieldRuleset(tags=["586"], text_sfs="a")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def production_credits(self):
         ruleset = FieldRuleset(tags=["508"], text_sfs="a")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def bibliography(self):
         ruleset = FieldRuleset(tags=["504"], text_sfs="a")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def publisher_number(self):
         ruleset = FieldRuleset(tags=["028"], text_sfs="ab")
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
     @property
     def contents(self):
         ruleset = FieldRuleset(tags=["505"])
-        return self.processor.generate_paired_fields(tuple([ruleset]))
+        return self.processor.generate_paired_fields((ruleset,))
 
 
 class BaseRecord(SolrDoc, MARC):
@@ -615,7 +616,7 @@ class BaseRecord(SolrDoc, MARC):
 
 
 class TaggedCitation:
-    TAG_MAPPING = [
+    TAG_MAPPING = (
         {
             "kind": "solr",
             "field": "id",
@@ -771,78 +772,80 @@ class TaggedCitation:
             "meta": ["journal_title", "book_title", "conference", "conference_title"],
         },
         {"kind": "base", "field": "series", "ris": ["T3"], "meta": ["series_title"]},
-    ]
+    )
 
-    TYPE_MAPPING = {
-        "archival material manuscript": "MANSCPT",
-        "article": "JOUR",
-        "atlas": "MAP",
-        "audio": "SOUND",
-        "audio (music)": "MUSIC",
-        "audio (spoken word)": "SOUND",
-        "audio cd": "SOUND",
-        "audio lp": "SOUND",
-        "audio recording": "SOUND",
-        "book": "BOOK",
-        "book / ebook": "BOOK",
-        "book chapter": "CHAP",
-        "cdrom": "DBASE",
-        "computer file": "DBASE",
-        "conference": "CONF",
-        "conference proceeding": "CONF",
-        "data file": "DBASE",
-        "data set": "DBASE",
-        "dictionaries": "DICT",
-        "dissertation": "THES",
-        "ebook": "EBOOK",
-        "electronic resource": "WEB",
-        "encyclopedias": "ENCYC",
-        "gen": "GEN",
-        "government document": "GOVDOC",
-        "image": "ADVS",
-        "internet communication": "ICOMM",
-        "journal": "JFULL",
-        "journal / ejournal": "JFULL",
-        "journal article": "JOUR",
-        "magazine": "MGZN",
-        "magazine article": "MGZN",
-        "map": "MAP",
-        "maps-atlas": "MAP",
-        "motion picture": "VIDEO",
-        "music": "MUSIC",
-        "music recording": "MUSIC",
-        "musical score": "MUSIC",
-        "music score": "MUSIC",
-        "newsletter": "NEWS",
-        "newsletter article": "NEWS",
-        "newsletter articles": "NEWS",
-        "newspaper": "NEWS",
-        "newspaper article": "NEWS",
-        "newspaper articles": "NEWS",
-        "paper": "CPAPER",
-        "patent": "PAT",
-        "publication article": "JOUR",
-        "reference entry": "JOUR",
-        "report": "RPRT",
-        "review": "JOUR",
-        "serial": "SER",
-        "sheet music": "MUSIC",
-        "software": "DBASE",
-        "spoken word recording": "SOUND",
-        "streaming audio": "SOUND",
-        "streaming video": "VIDEO",
-        "student thesis": "THES",
-        "text resource": "JOUR",
-        "thesis": "THES",
-        "trade publication article": "JOUR",
-        "video": "VIDEO",
-        "video recording": "VIDEO",
-        "video (blu-ray)": "VIDEO",
-        "video (dvd)": "VIDEO",
-        "video (vhs)": "VIDEO",
-        "video games": "VIDEO",
-        "web resource": "WEB",
-    }
+    TYPE_MAPPING = MappingProxyType(
+        {
+            "archival material manuscript": "MANSCPT",
+            "article": "JOUR",
+            "atlas": "MAP",
+            "audio": "SOUND",
+            "audio (music)": "MUSIC",
+            "audio (spoken word)": "SOUND",
+            "audio cd": "SOUND",
+            "audio lp": "SOUND",
+            "audio recording": "SOUND",
+            "book": "BOOK",
+            "book / ebook": "BOOK",
+            "book chapter": "CHAP",
+            "cdrom": "DBASE",
+            "computer file": "DBASE",
+            "conference": "CONF",
+            "conference proceeding": "CONF",
+            "data file": "DBASE",
+            "data set": "DBASE",
+            "dictionaries": "DICT",
+            "dissertation": "THES",
+            "ebook": "EBOOK",
+            "electronic resource": "WEB",
+            "encyclopedias": "ENCYC",
+            "gen": "GEN",
+            "government document": "GOVDOC",
+            "image": "ADVS",
+            "internet communication": "ICOMM",
+            "journal": "JFULL",
+            "journal / ejournal": "JFULL",
+            "journal article": "JOUR",
+            "magazine": "MGZN",
+            "magazine article": "MGZN",
+            "map": "MAP",
+            "maps-atlas": "MAP",
+            "motion picture": "VIDEO",
+            "music": "MUSIC",
+            "music recording": "MUSIC",
+            "musical score": "MUSIC",
+            "music score": "MUSIC",
+            "newsletter": "NEWS",
+            "newsletter article": "NEWS",
+            "newsletter articles": "NEWS",
+            "newspaper": "NEWS",
+            "newspaper article": "NEWS",
+            "newspaper articles": "NEWS",
+            "paper": "CPAPER",
+            "patent": "PAT",
+            "publication article": "JOUR",
+            "reference entry": "JOUR",
+            "report": "RPRT",
+            "review": "JOUR",
+            "serial": "SER",
+            "sheet music": "MUSIC",
+            "software": "DBASE",
+            "spoken word recording": "SOUND",
+            "streaming audio": "SOUND",
+            "streaming video": "VIDEO",
+            "student thesis": "THES",
+            "text resource": "JOUR",
+            "thesis": "THES",
+            "trade publication article": "JOUR",
+            "video": "VIDEO",
+            "video recording": "VIDEO",
+            "video (blu-ray)": "VIDEO",
+            "video (dvd)": "VIDEO",
+            "video (vhs)": "VIDEO",
+            "video games": "VIDEO",
+            "web resource": "WEB",
+        }
+    )
 
     def __init__(
         self, marc_record, base_record, solr_doc={}, type_mapping=TYPE_MAPPING
@@ -953,121 +956,123 @@ class TaggedCitation:
 
 
 class CSL(BaseCSL):
-    TYPE_MAPPING = {
-        "Article": "article-journal",
-        "Archival Material": "article-journal",
-        "Archive": "article-journal",
-        "Audio Recording": "article",
-        "Clothing": "article",
-        "Furnishing": "article",
-        "Serial": "article-journal",
-        "Government Document": "article",
-        "Journal / eJournal": "article-journal",
-        "Journal": "article-journal",
-        "Magazine": "article-magazine",
-        "Market Research": "article-journal",
-        "Model": "article",
-        "Microform": "article",
-        "Mixed Material": "article",
-        "Publication": "article-journal",
-        "Publication Article": "article-journal",
-        "Reference": "article-journal",
-        "Spoken Word Recoding": "article",
-        "Audio (spoken word)": "article",
-        "Standard": "article",
-        "Unknown": "article",
-        "Trade Publication Article": "article-journal",
-        "Transcript": "article",
-        "Artifact": "article",
-        "Reference Entry": "article-journal",
-        "Magazine Article": "article-magazine",
-        "Newspaper Article": "article-newspaper",
-        "Journal Article": "article-journal",
-        "bill": "bill",
-        "Biography": "book",
-        "Book / eBook": "book",
-        "Book": "book",
-        "Dictionaries": "book",
-        "Directories": "book",
-        "Encyclopedias": "book",
-        "broadcast": "broadcast",
-        "Book Chapter": "chapter",
-        "CDROM": "dataset",
-        "Computer File": "dataset",
-        "Data File": "dataset",
-        "Data Set": "dataset",
-        "Software": "dataset",
-        "Statistics": "dataset",
-        "Dataset": "dataset",
-        "entry": "entry",
-        "entry-dictionary": "entry-dictionary",
-        "entry-encyclopedia": "entry-encyclopedia",
-        "figure": "figure",
-        "Image": "graphic",
-        "Photographs and Pictorial Works": "graphic",
-        "Photographs & Pictorial Works": "graphic",
-        "Photograph": "graphic",
-        "Drawing": "graphic",
-        "Painting": "graphic",
-        "Graphic Arts": "graphic",
-        "Visual Material": "graphic",
-        "Board Games": "graphic",
-        "interview": "interview",
-        "legislation": "legislation",
-        "Case": "legal_case",
-        "Manuscript": "manuscript",
-        "Newsletter": "article-newspaper",
-        "Newspaper": "article-newspaper",
-        "Play": "book",
-        "Poem": "book",
-        "Postcard": "graphic",
-        "Archival Material Manuscript": "manuscript",
-        "Atlas": "map",
-        "Map": "map",
-        "Map-Atlas": "map",
-        "Maps-Atlas": "map",
-        "Video Recording": "motion_picture",
-        "Video (Blu-ray)": "motion_picture",
-        "Video (DVD)": "motion_picture",
-        "Video (VHS)": "motion_picture",
-        "Video Games": "motion_picture",
-        "Sheet Music": "musical_score",
-        "Music Score": "musical_score",
-        "Musical Score": "musical_score",
-        "Pamphlet": "pamphlet",
-        "Conference": "paper-conference",
-        "Conference Proceeding": "paper-conference",
-        "Paper": "paper-conference",
-        "Patent": "patent",
-        "Audio CD": "song",
-        "Audio LP": "song",
-        "Streaming Audio": "song",
-        "Music Recording": "song",
-        "Audio": "song",
-        "Music": "song",
-        "Audio (music)": "song",
-        "Motion Picture": "motion_picture",
-        "Streaming Video": "motion_picture",
-        "Video Game": "motion_picture",
-        "Video": "motion_picture",
-        "post": "post",
-        "post-weblog": "post-weblog",
-        "Personal Narrative": "personal_communication",
-        "Report": "report",
-        "Technical Report": "report",
-        "review": "review",
-        "Book Review": "review-book",
-        "Review": "review-book",
-        "Presentation": "speech",
-        "Dissertation": "thesis",
-        "Student Thesis": "thesis",
-        "treaty": "treaty",
-        "Electronic Resource": "webpage",
-        "Finding Aid": "webpage",
-        "Web Resource": "webpage",
-        "Text Resource": "article",
-        "Newsletter Article": "article",
-    }
+    TYPE_MAPPING = MappingProxyType(
+        {
+            "Article": "article-journal",
+            "Archival Material": "article-journal",
+            "Archive": "article-journal",
+            "Audio Recording": "article",
+            "Clothing": "article",
+            "Furnishing": "article",
+            "Serial": "article-journal",
+            "Government Document": "article",
+            "Journal / eJournal": "article-journal",
+            "Journal": "article-journal",
+            "Magazine": "article-magazine",
+            "Market Research": "article-journal",
+            "Model": "article",
+            "Microform": "article",
+            "Mixed Material": "article",
+            "Publication": "article-journal",
+            "Publication Article": "article-journal",
+            "Reference": "article-journal",
+            "Spoken Word Recoding": "article",
+            "Audio (spoken word)": "article",
+            "Standard": "article",
+            "Unknown": "article",
+            "Trade Publication Article": "article-journal",
+            "Transcript": "article",
+            "Artifact": "article",
+            "Reference Entry": "article-journal",
+            "Magazine Article": "article-magazine",
+            "Newspaper Article": "article-newspaper",
+            "Journal Article": "article-journal",
+            "bill": "bill",
+            "Biography": "book",
+            "Book / eBook": "book",
+            "Book": "book",
+            "Dictionaries": "book",
+            "Directories": "book",
+            "Encyclopedias": "book",
+            "broadcast": "broadcast",
+            "Book Chapter": "chapter",
+            "CDROM": "dataset",
+            "Computer File": "dataset",
+            "Data File": "dataset",
+            "Data Set": "dataset",
+            "Software": "dataset",
+            "Statistics": "dataset",
+            "Dataset": "dataset",
+            "entry": "entry",
+            "entry-dictionary": "entry-dictionary",
+            "entry-encyclopedia": "entry-encyclopedia",
+            "figure": "figure",
+            "Image": "graphic",
+            "Photographs and Pictorial Works": "graphic",
+            "Photographs & Pictorial Works": "graphic",
+            "Photograph": "graphic",
+            "Drawing": "graphic",
+            "Painting": "graphic",
+            "Graphic Arts": "graphic",
+            "Visual Material": "graphic",
+            "Board Games": "graphic",
+            "interview": "interview",
+            "legislation": "legislation",
+            "Case": "legal_case",
+            "Manuscript": "manuscript",
+            "Newsletter": "article-newspaper",
+            "Newspaper": "article-newspaper",
+            "Play": "book",
+            "Poem": "book",
+            "Postcard": "graphic",
+            "Archival Material Manuscript": "manuscript",
+            "Atlas": "map",
+            "Map": "map",
+            "Map-Atlas": "map",
+            "Maps-Atlas": "map",
+            "Video Recording": "motion_picture",
+            "Video (Blu-ray)": "motion_picture",
+            "Video (DVD)": "motion_picture",
+            "Video (VHS)": "motion_picture",
+            "Video Games": "motion_picture",
+            "Sheet Music": "musical_score",
+            "Music Score": "musical_score",
+            "Musical Score": "musical_score",
+            "Pamphlet": "pamphlet",
+            "Conference": "paper-conference",
+            "Conference Proceeding": "paper-conference",
+            "Paper": "paper-conference",
+            "Patent": "patent",
+            "Audio CD": "song",
+            "Audio LP": "song",
+            "Streaming Audio": "song",
+            "Music Recording": "song",
+            "Audio": "song",
+            "Music": "song",
+            "Audio (music)": "song",
+            "Motion Picture": "motion_picture",
+            "Streaming Video": "motion_picture",
+            "Video Game": "motion_picture",
+            "Video": "motion_picture",
+            "post": "post",
+            "post-weblog": "post-weblog",
+            "Personal Narrative": "personal_communication",
+            "Report": "report",
+            "Technical Report": "report",
+            "review": "review",
+            "Book Review": "review-book",
+            "Review": "review-book",
+            "Presentation": "speech",
+            "Dissertation": "thesis",
+            "Student Thesis": "thesis",
+            "treaty": "treaty",
+            "Electronic Resource": "webpage",
+            "Finding Aid": "webpage",
+            "Web Resource": "webpage",
+            "Text Resource": "article",
+            "Newsletter Article": "article",
+        }
+    )
 
     def __init__(self, base_record=None, marc_record=None, solr_doc={}):
         self.solr_processor = SolrDocProcessor(solr_doc)

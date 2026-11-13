@@ -33,9 +33,9 @@ def academic_disciplines_for(
 
     root = AcademicDiscipline(name="root", count=0)
 
-    for delimited_ads in delimited_ads:
+    for delimited_ad in delimited_ads:
         current = root
-        for ad in delimited_ads:
+        for ad in delimited_ad:
             if ad not in current.disciplines:
                 new_ad = AcademicDiscipline(name=ad, count=counts[ad])
                 current.disciplines.append(new_ad)

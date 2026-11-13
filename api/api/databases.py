@@ -1,6 +1,7 @@
 import json
 import re
 from datetime import datetime, timedelta
+from types import MappingProxyType
 
 import httpx
 
@@ -60,11 +61,13 @@ filter_handler = FilterHandler(
 
 
 class Results(BaseResults):
-    sort_map = {
-        "relevance": "score desc",
-        "title_asc": "sort_title asc",
-        "title_desc": "sort_title desc",
-    }
+    sort_map = MappingProxyType(
+        {
+            "relevance": "score desc",
+            "title_asc": "sort_title asc",
+            "title_desc": "sort_title desc",
+        }
+    )
     fh = filter_handler
 
     def __init__(
@@ -89,9 +92,9 @@ class Results(BaseResults):
         facet_fields = self.data["facet_counts"]["facet_fields"]
 
         result = []
-        for f in facet_fields.keys():
+        for f, v in facet_fields.items():
             if f in self.fh.facet_to_filter:
-                result.append(Filter(field=f, values=facet_fields[f]))
+                result.append(Filter(field=f, values=v))
 
         return result
 
@@ -169,7 +172,7 @@ class Record:
                 end = datetime.now() + timedelta(days=1)
 
             now = datetime.now()
-            if start < now and now < end:
+            if start < now < end:
                 return special_message
         return []
 
@@ -210,7 +213,7 @@ class Record:
 
 
 class TaggedCitation:
-    TAG_MAPPING = [
+    TAG_MAPPING = (
         {"field": "id", "ris": ["ID"], "meta": ["id"]},
         {"field": "title", "ris": ["T1", "TI"], "meta": ["title"]},
         {"field": "ssfield_special_message", "ris": ["N2"], "meta": []},
@@ -219,7 +222,7 @@ class TaggedCitation:
         {"field": "teaser", "ris": ["N2"], "meta": []},
         {"field": "body", "ris": ["N2"], "meta": []},
         {"field": "taxonomy_name", "ris": ["KY"], "meta": ["keywords"]},
-    ]
+    )
 
     def __init__(self, doc):
         self.doc = doc
@@ -308,8 +311,8 @@ class FilterQuery(SolrFilterQuery):
 
     def query(self):
         result = []
-        for field in self.facets.keys():
-            result.append(self.basic_facet(field, self.facets[field]))
+        for field, values in self.facets.items():
+            result.append(self.basic_facet(field, values))
 
         return result
 

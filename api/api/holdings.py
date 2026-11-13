@@ -118,9 +118,9 @@ class PhysicalItem:
         physical_item_data: dict,
         bib_id: str,
         record=None,
-        loan={},
+        loan=None,
     ):
-        self.loan = loan
+        self.loan = loan or {}
         self.data = physical_item_data
         self.bib_id = bib_id
         self.record = record
@@ -539,8 +539,8 @@ async def get_alma_loans(mms_id, holdings_data: list):
 
 
 class AlmaLoans:
-    def __init__(self, data={}):
-        self.loans = data.get("item_loan", [])
+    def __init__(self, data: dict | None = None):
+        self.loans = data.get("item_loan", []) if data else []
 
     def find(self, item_id: str):
         return next(

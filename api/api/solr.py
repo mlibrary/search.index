@@ -1,17 +1,21 @@
+from types import MappingProxyType
+
 from api.entities import PairedField, TextField
 
 
 class SolrDocProcessor:
-    kinds = {
-        "plain": "get",
-        "paired_field": "get_paired_field",
-        "text_field": "get_text_field",
-        "list": "get_list",
-        "academic_discipline": "get_academic_discipline",
-    }
+    kinds = MappingProxyType(
+        {
+            "plain": "get",
+            "paired_field": "get_paired_field",
+            "text_field": "get_text_field",
+            "list": "get_list",
+            "academic_discipline": "get_academic_discipline",
+        }
+    )
 
-    def __init__(self, data: dict):
-        self.data = data
+    def __init__(self, data: dict | None):
+        self.data = data or {}
 
     def get(self, key):
         return self.data.get(key)

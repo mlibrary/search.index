@@ -577,8 +577,8 @@ class TestReservableItem:
     ):
         url_parts = urlparse(base_reservable_item.url)
         subject = parse_qs(url_parts.query)
-        for key in base_reservable_item_fields.keys():
-            assert subject[key][0] == base_reservable_item_fields[key]
+        for key, value in base_reservable_item_fields.items():
+            assert subject[key][0] == value
 
     def test_clements_restricted(self, record, physical_item):
         record.add_field(

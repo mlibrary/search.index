@@ -50,11 +50,9 @@ class SpecialistFetcher:
                         term_counts[term] = 1
 
         result = []
-        for term in term_counts.keys():
-            if term_counts[term] >= term_threshold:
-                result.append(
-                    {"discipline": solr_escape(term), "count": term_counts[term]}
-                )
+        for term, count in term_counts.items():
+            if count >= term_threshold:
+                result.append({"discipline": solr_escape(term), "count": count})
         return result
 
     def website_solr_query_params(self, top_academic_disciplines, query_params):

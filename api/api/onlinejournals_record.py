@@ -37,14 +37,14 @@ class Record(BaseRecord):
     def __init__(
         self,
         data: dict,
-        holdings=EmptyHoldings(),
+        holdings=None,
         recommended_academic_discipline=None,
     ):
         self.data = data
         BaseRecord.__init__(self, data)
         self.record = pymarc.parse_xml_to_array(io.StringIO(data["fullrecord"]))[0]
         self.recommended_academic_discipline = recommended_academic_discipline
-        self.holdings = holdings
+        self.holdings = holdings or EmptyHoldings()
 
     @property
     def recommended_resource(self):

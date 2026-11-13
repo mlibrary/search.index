@@ -848,7 +848,11 @@ class TaggedCitation:
     )
 
     def __init__(
-        self, marc_record, base_record, solr_doc={}, type_mapping=TYPE_MAPPING
+        self,
+        marc_record,
+        base_record,
+        solr_doc: dict | None = None,
+        type_mapping=TYPE_MAPPING,
     ):
         self.solr_processor = SolrDocProcessor(solr_doc)
         self.processor = Processor(marc_record)
@@ -1074,7 +1078,12 @@ class CSL(BaseCSL):
         }
     )
 
-    def __init__(self, base_record=None, marc_record=None, solr_doc={}):
+    def __init__(
+        self,
+        base_record=None,
+        marc_record=None,
+        solr_doc: dict | None = None,
+    ):
         self.solr_processor = SolrDocProcessor(solr_doc)
         self.processor = Processor(marc_record)
         self.base_record = base_record
@@ -1278,10 +1287,15 @@ class CSL(BaseCSL):
 
 
 class Citation:
-    def __init__(self, marc_record, base_record, solr_doc={}):
+    def __init__(
+        self,
+        marc_record,
+        base_record,
+        solr_doc: dict | None = None,
+    ):
         self.marc_record = marc_record
         self.base_record = base_record
-        self.solr_doc = solr_doc
+        self.solr_doc = solr_doc or {}
 
     @property
     def tagged(self):
@@ -1319,7 +1333,7 @@ class Record(BaseRecord):
     def __init__(
         self,
         data: dict,
-        holdings=EmptyHoldings(),
+        holdings=None,
         record=None,
     ):
         self.data = data
@@ -1327,7 +1341,7 @@ class Record(BaseRecord):
         self.record = (
             record or pymarc.parse_xml_to_array(io.StringIO(data["fullrecord"]))[0]
         )
-        self.holdings = holdings
+        self.holdings = holdings or EmptyHoldings()
 
     @property
     def citation(self):
@@ -1340,13 +1354,13 @@ class Holdings:
         holdings_data: list,
         bib_id: str | None = None,
         record: pymarc.Record | None = None,
-        loans: AlmaLoans = AlmaLoans(),
+        loans: AlmaLoans | None = None,
         ht_search_only: bool = False,
     ):
         self.data = holdings_data
         self.bib_id = bib_id
         self.record = record
-        self.loans = loans
+        self.loans = loans or AlmaLoans()
         self.ht_search_only = ht_search_only
 
     @property

@@ -45,13 +45,15 @@ def decode_id(id: str):
 
 
 class Results(BaseResults):
-    sort_map = {
-        "relevance": "score desc",
-        "title_asc": "sort_title asc",
-        "title_desc": "sort_title desc",
-        "date_asc": "created asc",
-        "date_desc": "created desc",
-    }
+    sort_map = MappingProxyType(
+        {
+            "relevance": "score desc",
+            "title_asc": "sort_title asc",
+            "title_desc": "sort_title desc",
+            "date_asc": "created asc",
+            "date_desc": "created desc",
+        }
+    )
     fh = filter_handler
 
     def __init__(self, data: dict, query_params: dict):
@@ -72,9 +74,9 @@ class Results(BaseResults):
         facet_fields = self.data["facet_counts"]["facet_fields"]
 
         result = []
-        for f in facet_fields.keys():
+        for f, v in facet_fields.items():
             if f in self.fh.facet_to_filter:
-                result.append(Filter(field=f, values=facet_fields[f]))
+                result.append(Filter(field=f, values=v))
 
         return result
 

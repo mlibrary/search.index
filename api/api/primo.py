@@ -159,10 +159,10 @@ class Results:
         records = await asyncio.gather(*map(fetch_record, data["docs"]))
         return Results(data=data, query_params=query_params, records=records)
 
-    def __init__(self, data: dict, query_params: dict, records: list = []):
+    def __init__(self, data: dict, query_params: dict, records: list | None = None):
         self.data = data
         self.query_params = query_params
-        self.records = records
+        self.records = records or []
 
     @property
     def total(self):
@@ -201,6 +201,13 @@ class Results:
 
 class ArticlesFilterQuery(BaseFilterQuery):
     fh = articles_filter_handler
+    tlevel_map = MappingProxyType(
+        {
+            "open_access": "open_access",
+            "online": "online_resources",
+            "peer_reviewed": "peer_reviewed",
+        }
+    )
 
     def query_params(self):
         result = {}
@@ -243,29 +250,15 @@ class ArticlesFilterQuery(BaseFilterQuery):
                             upto = parts[1]
                         normalized = f"[{start} TO {upto}]"
                         result.append(f"facet_search{field},exact,{normalized}")
-        tlevel_map = {
-            "open_access": "open_access",
-            "online": "online_resources",
-            "peer_reviewed": "peer_reviewed",
-        }
-        for key in tlevel_map.keys():
+        for key, value in self.tlevel_map.items():
             if self.data.get(key, False):
-                result.append(f"facet_tlevel,exact,{tlevel_map[key]}")
+                result.append(f"facet_tlevel,exact,{value}")
 
         return "|,|".join(result)
 
     def qExclude(self):
         if self.data.get("exclude_newspapers", False):
             return "facet_rtype,exact,newspaper_articles"
-
-
-# parser_params = {
-# "q": query_params["query"],
-# "limit": query_params["limit"],
-# "offset": query_params["offset"],
-# "sort": sort_map[query_params["sort"]],
-# }
-# qInclude = get_qInclude(query_params["filters"])
 
 
 class PrimoDoc:

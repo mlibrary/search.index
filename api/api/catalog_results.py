@@ -65,16 +65,16 @@ class Results(BaseResults):
         facet_fields = self.data["facet_counts"]["facet_fields"]
 
         result = []
-        for f in facet_fields.keys():
+        for f, v in facet_fields.items():
             if f in self.fh.facet_to_filter:
                 if f == "availability":
                     r = AvailabilityFilter(
                         field=f,
-                        values=facet_fields[f],
+                        values=v,
                         ht_search_only=self.query_params["ht_search_only"],
                     )
                 else:
-                    r = Filter(field=f, values=facet_fields[f])
+                    r = Filter(field=f, values=v)
                 result.append(r)
 
         return result
@@ -88,9 +88,9 @@ class FilterQuery(SolrFilterQuery):
         for field in self.facets.keys():
             match field:
                 case "availability":
-                    next
+                    continue
                 case "institution":
-                    next
+                    continue
                 case _:
                     result.append(self.basic_facet(field, self.facets[field]))
 
@@ -111,7 +111,7 @@ class FilterQuery(SolrFilterQuery):
             filtered = filter(
                 lambda v: v in institution_map.keys(), self.facets["institution"]
             )
-            mapped = list(map(lambda v: institution_map[v], filtered))
+            mapped = [institution_map[v] for v in filtered]
             if "all" in mapped or not mapped:
                 return None
             return self.basic_facet("institution", mapped)
@@ -134,7 +134,7 @@ class FilterQuery(SolrFilterQuery):
             filtered = filter(
                 lambda v: v in options.keys(), self.facets["availability"]
             )
-            mapped = list(map(lambda v: options[v], filtered))
+            mapped = [options[v] for v in filtered]
 
             if len(mapped) > 0:
                 result = " AND ".join(mapped)

@@ -1,9 +1,11 @@
-from fastapi import APIRouter, HTTPException, Query
 from typing import Annotated
-from api.metrics import REQUEST_HISTOGRAM
-from api.schemas import main as schemas
+
+from fastapi import APIRouter, HTTPException, Query
+
 from api.clients.exlibris_client import NotFoundError
-from api.primo import record_for, get_results
+from api.metrics import REQUEST_HISTOGRAM
+from api.primo import get_results, record_for
+from api.schemas import main as schemas
 
 router = APIRouter(prefix="/articles", tags=["articles"])
 

@@ -1,5 +1,7 @@
-import httpx
 from urllib.parse import quote
+
+import httpx
+
 from api.services import S
 
 

@@ -1,11 +1,13 @@
 from typing import Annotated
+
 from fastapi import APIRouter, HTTPException, Query
-from api.metrics import REQUEST_HISTOGRAM
-from api.schemas import main as schemas
-from api.clients.solr_client import NotFoundError
+
+from api import specialists
 from api.catalog_record import record_for
 from api.catalog_results import get_results
-from api import specialists
+from api.clients.solr_client import NotFoundError
+from api.metrics import REQUEST_HISTOGRAM
+from api.schemas import main as schemas
 
 router = APIRouter(prefix="/catalog", tags=["catalog"])
 

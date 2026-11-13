@@ -1,9 +1,10 @@
 import httpx
-from api.services import S
-from api.results import solr_escape
+
 from api.catalog_results import FilterQuery as CatalogFilterQuery
-from api.onlinejournals_results import FilterQuery as OnlinejournalsFilterQuery
 from api.databases import FilterQuery as DatabasesFilterQuery
+from api.onlinejournals_results import FilterQuery as OnlinejournalsFilterQuery
+from api.results import solr_escape
+from api.services import S
 
 
 class SpecialistFetcher:

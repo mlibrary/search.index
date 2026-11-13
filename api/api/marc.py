@@ -1,9 +1,11 @@
-import pymarc
-from dataclasses import dataclass
 import re
 import string
 from collections.abc import Callable
-from api.entities import SearchField, FieldElement, PairedField
+from dataclasses import dataclass
+
+import pymarc
+
+from api.entities import FieldElement, PairedField, SearchField
 
 # used with rstrip_chars. When we want to trim the end of a string, these are
 # the ones that usually should be removed.

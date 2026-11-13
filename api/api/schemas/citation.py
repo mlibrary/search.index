@@ -1,5 +1,6 @@
-from pydantic import BaseModel, ConfigDict, Field, AliasGenerator
 from typing import Optional
+
+from pydantic import AliasGenerator, BaseModel, ConfigDict, Field
 
 
 def to_kebab_case(string: str) -> str:

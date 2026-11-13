@@ -1,11 +1,13 @@
 from typing import Annotated
+
 from fastapi import APIRouter, HTTPException, Query
+
+from api import specialists
+from api.academic_disciplines import get_databases_academic_disciplines
+from api.clients.solr_client import NotFoundError
+from api.databases import get_browse_academic_discipline, get_results, record_for
 from api.metrics import REQUEST_HISTOGRAM
 from api.schemas import main as schemas
-from api.clients.solr_client import NotFoundError
-from api.databases import record_for, get_results, get_browse_academic_discipline
-from api.academic_disciplines import get_databases_academic_disciplines
-from api import specialists
 
 router = APIRouter(prefix="/databases", tags=["databases"])
 

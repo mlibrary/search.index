@@ -1,16 +1,17 @@
-import pytest
-import json
-import pymarc
-import string
 import copy
-from httpx import Response
+import json
+import string
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from dataclasses import dataclass, field
-from api.catalog_record import Record, MARC, SolrDoc, TaggedCitation, CSL, BaseRecord
+
+import pymarc
+import pytest
+from httpx import Response
+
+from api.catalog_record import CSL, MARC, BaseRecord, Record, SolrDoc, TaggedCitation
 from api.entities import FieldElement, PairedField
 from api.marc import FieldRuleset, bidi
 from api.services import S
-from dataclasses import asdict
 
 
 @pytest.fixture()

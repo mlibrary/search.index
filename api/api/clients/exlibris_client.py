@@ -1,9 +1,11 @@
-import httpx
-from httpx_retries import RetryTransport, Retry
-from api.services import S
-from api.metrics import ALMA_LOAN_HISTOGRAM
 import xml.etree.ElementTree as ET
+
 import fastapi_structured_logging
+import httpx
+from httpx_retries import Retry, RetryTransport
+
+from api.metrics import ALMA_LOAN_HISTOGRAM
+from api.services import S
 
 logger = fastapi_structured_logging.get_logger()
 

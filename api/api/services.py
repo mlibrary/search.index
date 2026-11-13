@@ -1,5 +1,6 @@
-from dataclasses import dataclass
 import os
+from dataclasses import dataclass
+
 import fastapi_structured_logging
 
 fastapi_structured_logging.setup_logging()

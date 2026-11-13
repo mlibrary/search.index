@@ -1,24 +1,27 @@
 from __future__ import annotations
-import re
-import pymarc
+
 import io
-import string
 import json
+import re
+import string
+
 import fastapi_structured_logging
+import pymarc
+
 from api.clients.solr_client import SolrClient
-from api.solr import SolrDocProcessor
-from api.marc import Processor, FieldRuleset, TRIM_CHARS
+from api.csl import BaseCSL
 from api.holdings import (
-    get_alma_loans,
-    hathi_trust_items,
+    AlmaLoans,
+    EmptyHoldings,
     alma_digital_items,
     electronic_items,
     finding_aids,
+    get_alma_loans,
+    hathi_trust_items,
     physical_holdings,
-    EmptyHoldings,
-    AlmaLoans,
 )
-from api.csl import BaseCSL
+from api.marc import TRIM_CHARS, FieldRuleset, Processor
+from api.solr import SolrDocProcessor
 
 logger = fastapi_structured_logging.get_logger()
 

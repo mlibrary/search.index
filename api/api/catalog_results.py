@@ -1,13 +1,15 @@
-import httpx
 import asyncio
+
+import httpx
+
+from api.catalog_record import Record
 from api.results import (
+    BaseFilter,
+    BaseResults,
     FilterHandler,
     FilterValue,
-    BaseResults,
     SolrFilterQuery,
-    BaseFilter,
 )
-from api.catalog_record import Record
 from api.services import S
 
 

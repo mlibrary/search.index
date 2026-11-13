@@ -1,6 +1,7 @@
 import httpx
+
 from api.onlinejournals_record import Record
-from api.results import BaseResults, FilterHandler, BaseFilter, SolrFilterQuery
+from api.results import BaseFilter, BaseResults, FilterHandler, SolrFilterQuery
 from api.services import S
 
 

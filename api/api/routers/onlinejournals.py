@@ -1,15 +1,17 @@
 from typing import Annotated
+
 from fastapi import APIRouter, HTTPException, Query
-from api.metrics import REQUEST_HISTOGRAM
-from api.schemas import main as schemas
+
+from api import specialists
+from api.academic_disciplines import get_onlinejournals_academic_disciplines
 from api.clients.solr_client import NotFoundError
+from api.metrics import REQUEST_HISTOGRAM
 from api.onlinejournals_record import record_for
 from api.onlinejournals_results import (
-    get_onlinejournals_results,
     get_onlinejournals_browse_academic_discipline,
+    get_onlinejournals_results,
 )
-from api.academic_disciplines import get_onlinejournals_academic_disciplines
-from api import specialists
+from api.schemas import main as schemas
 
 router = APIRouter(prefix="/onlinejournals", tags=["onlinejournals"])
 

@@ -1,17 +1,19 @@
 from __future__ import annotations
-import re
-import pymarc
+
 import io
 import json
+import re
+
 import fastapi_structured_logging
-from api.clients.solr_client import SolrClient
-from api.solr import SolrDocProcessor
-from api.holdings import (
-    electronic_items,
-    EmptyHoldings,
-)
+import pymarc
 
 from api.catalog_record import BaseRecord, Citation
+from api.clients.solr_client import SolrClient
+from api.holdings import (
+    EmptyHoldings,
+    electronic_items,
+)
+from api.solr import SolrDocProcessor
 
 logger = fastapi_structured_logging.get_logger()
 

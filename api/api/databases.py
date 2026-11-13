@@ -1,13 +1,15 @@
-from api.solr import SolrDocProcessor
-from api.clients.solr_client import WebsiteSolrClient
 import json
-from api.entities import LinkField
-from datetime import datetime, timedelta
-from api.results import BaseResults, FilterHandler, BaseFilter, SolrFilterQuery
-from api.csl import BaseCSL
-from api.services import S
 import re
+from datetime import datetime, timedelta
+
 import httpx
+
+from api.clients.solr_client import WebsiteSolrClient
+from api.csl import BaseCSL
+from api.entities import LinkField
+from api.results import BaseFilter, BaseResults, FilterHandler, SolrFilterQuery
+from api.services import S
+from api.solr import SolrDocProcessor
 
 
 async def record_for(id: str):

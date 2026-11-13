@@ -1,23 +1,25 @@
-import pytest
-import pymarc
-import json
 import io
+import json
 from datetime import datetime
-from urllib.parse import urlparse, parse_qs
-from api.marc import bidi
-from api.holdings import (
-    PhysicalHolding,
-    ElectronicItem,
-    HathiTrustItem,
-    AlmaDigitalItem,
-    FindingAids,
-    FindingAidItem,
-    ReservableItem,
-    ClementsItem,
-    has_physical_holdings,
-    AlmaLoans,
-)
+from urllib.parse import parse_qs, urlparse
+
+import pymarc
+import pytest
+
 from api.catalog_record import Holdings
+from api.holdings import (
+    AlmaDigitalItem,
+    AlmaLoans,
+    ClementsItem,
+    ElectronicItem,
+    FindingAidItem,
+    FindingAids,
+    HathiTrustItem,
+    PhysicalHolding,
+    ReservableItem,
+    has_physical_holdings,
+)
+from api.marc import bidi
 
 
 @pytest.fixture

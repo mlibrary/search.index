@@ -1,24 +1,33 @@
-from pydantic import BaseModel, ConfigDict
-from typing import Optional
-from .holdings import Holdings, OnlinejournalsHoldings, ArticleHolding
-from .metadata import (
-    TextField,
-    PairedTextField,
-    PairedSearchField,
-    PairedBrowseField,
-    BareTextField,
-    BareSearchField,
-    AcademicDiscipline,
-    LinkField,
-)
-from .citation import (
-    DatabasesCitation,
-    ArticlesCitation,
-    CatalogCitation,
-    GuidesandmoreCitation,
-)
 import datetime
 from enum import Enum
+from typing import Optional
+
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+)
+
+from .citation import (
+    ArticlesCitation,
+    CatalogCitation,
+    DatabasesCitation,
+    GuidesandmoreCitation,
+)
+from .holdings import (
+    ArticleHolding,
+    Holdings,
+    OnlinejournalsHoldings,
+)
+from .metadata import (
+    AcademicDiscipline,
+    BareSearchField,
+    BareTextField,
+    LinkField,
+    PairedBrowseField,
+    PairedSearchField,
+    PairedTextField,
+    TextField,
+)
 
 
 ##########
@@ -420,11 +429,5 @@ class Response(BaseModel):
 
 class Response404(Response):
     model_config = ConfigDict(
-        json_schema_extra={
-            "examples": [
-                {
-                    "detail": "Record not found",
-                }
-            ]
-        }
+        json_schema_extra={"examples": [{"detail": "Record not found"}]}
     )

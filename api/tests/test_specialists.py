@@ -1,5 +1,7 @@
-import pytest
 import json
+
+import pytest
+
 from api.services import S
 from api.specialists import (
     fetchers,

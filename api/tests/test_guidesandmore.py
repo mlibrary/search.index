@@ -1,6 +1,8 @@
-import pytest
 import json
-from api.guidesandmore import CSL, encode_id, decode_id
+
+import pytest
+
+from api.guidesandmore import CSL, decode_id, encode_id
 
 
 @pytest.fixture()

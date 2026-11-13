@@ -1,5 +1,7 @@
-import pytest
 import json
+
+import pytest
+
 from api.catalog_results import Filter, FilterQuery, Results
 
 

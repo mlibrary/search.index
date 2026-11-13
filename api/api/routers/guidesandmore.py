@@ -1,10 +1,11 @@
 from typing import Annotated
+
 from fastapi import APIRouter, HTTPException, Query
-from api.metrics import REQUEST_HISTOGRAM
-from api.schemas import main as schemas
-from api.guidesandmore import get_results, record_for
 
 from api.clients.solr_client import NotFoundError
+from api.guidesandmore import get_results, record_for
+from api.metrics import REQUEST_HISTOGRAM
+from api.schemas import main as schemas
 
 router = APIRouter(prefix="/guidesandmore", tags=["guidesandmore"])
 

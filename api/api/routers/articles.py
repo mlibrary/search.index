@@ -43,7 +43,7 @@ async def get_record(id: str) -> schemas.ArticlesRecord:
     response_model=schemas.ArticlesResults,
 )
 async def get_search_results(
-    query: str = "",
+    query: str = "*",
     offset: int = 0,
     limit: int = 10,
     include_citation_only: bool = False,
@@ -51,7 +51,7 @@ async def get_search_results(
     online: bool = False,
     exclude_newspapers: bool = False,
     peer_reviewed: bool = False,
-    filters: Annotated[list[str], Query()] = [],
+    filters: Annotated[list[str] | None, Query()] = None,
     sort: schemas.ArticlesSort = schemas.ArticlesSort.relevance,
 ):
     """
@@ -67,7 +67,7 @@ async def get_search_results(
             "online": online,
             "exclude_newspapers": exclude_newspapers,
             "peer_reviewed": peer_reviewed,
-            "filters": filters,
+            "filters": filters or [],
             "sort": sort,
         }
     )

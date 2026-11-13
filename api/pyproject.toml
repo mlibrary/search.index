@@ -12,7 +12,7 @@ packages = [{include = "api"}]
 exclude = [".venv",".vscode",".vscode-server", ".local", ".cache"]
 
 [tool.ruff.lint]
-select = ["I"]
+extend-select = ["F", "I", "UP"]
 ignore = ["E402"]
 
 [tool.poetry.dependencies]

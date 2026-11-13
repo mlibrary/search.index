@@ -43,7 +43,7 @@ async def get_search_results(
     query: str = "",
     offset: int = 0,
     limit: int = 10,
-    filters: Annotated[list[str], Query()] = [],
+    filters: Annotated[list[str] | None, Query()] = None,
     sort: schemas.GuidesandmoreSort = schemas.GuidesandmoreSort.relevance,
 ) -> schemas.GuidesandmoreResults:
     """
@@ -54,7 +54,7 @@ async def get_search_results(
             "query": query,
             "offset": offset,
             "limit": limit,
-            "filters": filters,
+            "filters": filters or [],
             "sort": sort,
         }
     )

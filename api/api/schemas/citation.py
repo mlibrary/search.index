@@ -1,5 +1,3 @@
-from typing import Optional
-
 from pydantic import AliasGenerator, BaseModel, ConfigDict, Field
 
 
@@ -28,8 +26,8 @@ class CSLDateParts(BaseModel):
 
 
 class CSLName(BaseModel):
-    family: Optional[str]
-    given: Optional[str]
+    family: str | None
+    given: str | None
 
 
 class CSL(BaseModel):
@@ -42,29 +40,29 @@ class CSL(BaseModel):
     id: str
     type: str
     title: str
-    author: Optional[list[CSLName | CSLLiteral]]
-    issued: Optional[CSLLiteral]
-    publisher: Optional[str]
-    isbn: Optional[list[str]] = Field(serialization_alias="ISBN")
-    issn: Optional[list[str]] = Field(serialization_alias="ISSN")
-    edition: Optional[str]
+    author: list[CSLName | CSLLiteral] | None
+    issued: CSLLiteral | None
+    publisher: str | None
+    isbn: list[str] | None = Field(serialization_alias="ISBN")
+    issn: list[str] | None = Field(serialization_alias="ISSN")
+    edition: str | None
 
 
 class CatalogCSL(CSL):
-    collection_title: Optional[str]
-    call_number: Optional[str]
-    publisher_place: Optional[str]
-    editor: Optional[list[CSLName | CSLLiteral]]
-    number: Optional[str]
+    collection_title: str | None
+    call_number: str | None
+    publisher_place: str | None
+    editor: list[CSLName | CSLLiteral] | None
+    number: str | None
 
 
 class ArticlesCSL(CSL):
-    page: Optional[str]
-    container_title: Optional[str]
-    volume: Optional[str]
-    issue: Optional[str]
-    genre: Optional[str]
-    doi: Optional[str]
+    page: str | None
+    container_title: str | None
+    volume: str | None
+    issue: str | None
+    genre: str | None
+    doi: str | None
 
 
 class DatabasesCSL(BaseModel):
@@ -76,8 +74,8 @@ class GuidesandmoreCSL(BaseModel):
     id: str
     type: str
     title: str
-    author: Optional[list[CSLName | CSLLiteral]]
-    issued: Optional[CSLDateParts]
+    author: list[CSLName | CSLLiteral] | None
+    issued: CSLDateParts | None
     url: str | None = Field(serialization_alias="URL")
 
 

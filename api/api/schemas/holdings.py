@@ -1,5 +1,4 @@
 import datetime
-from typing import Optional
 
 from pydantic import BaseModel
 
@@ -38,7 +37,7 @@ class LibLoc(BaseModel):
 class PhysicalLocation(BaseModel):
     url: str | None
     text: str | None
-    floor: Optional[str] = None
+    floor: str | None = None
     code: LibLoc
     temporary: bool
 

@@ -26,14 +26,14 @@ articles_filter_handler = FilterHandler(
 )
 
 
-with open(f"{S.project_root}/config/primo_languages.yaml", "r") as file:
+with open(f"{S.project_root}/config/primo_languages.yaml") as file:
     language_code_to_str = yaml.safe_load(file)
 
 language_str_to_code = {}
 for code in language_code_to_str:
     language_str_to_code[language_code_to_str[code]] = code
 
-with open(f"{S.project_root}/config/primo_formats.yaml", "r") as file:
+with open(f"{S.project_root}/config/primo_formats.yaml") as file:
     format_code_to_str = yaml.safe_load(file)
 
 format_str_to_code = {}
@@ -84,7 +84,7 @@ async def get_lib_key_holding(doi, pmid):
         return LibKeyHolding(data)
 
 
-async def get_results(query_params):
+async def get_results(query_params: dict):
     parser_params = {
         "q": query_params["query"],
         "offset": query_params["offset"],

@@ -1,9 +1,11 @@
-import pymarc
-from urllib.parse import urlencode
 from dataclasses import dataclass
 from datetime import datetime
-from api.marc import Processor, FieldRuleset
+from urllib.parse import urlencode
+
+import pymarc
+
 from api.clients.exlibris_client import AlmaClient
+from api.marc import FieldRuleset, Processor
 
 
 class AlmaDigitalItem:
@@ -116,9 +118,9 @@ class PhysicalItem:
         physical_item_data: dict,
         bib_id: str,
         record=None,
-        loan={},
+        loan=None,
     ):
-        self.loan = loan
+        self.loan = loan or {}
         self.data = physical_item_data
         self.bib_id = bib_id
         self.record = record
@@ -532,13 +534,13 @@ def has_physical_holdings(holdings_data: list):
 
 async def get_alma_loans(mms_id, holdings_data: list):
     if has_physical_holdings(holdings_data):
-        return AlmaLoans((await AlmaClient().get_loans(mms_id)))
+        return AlmaLoans(await AlmaClient().get_loans(mms_id))
     return AlmaLoans()
 
 
 class AlmaLoans:
-    def __init__(self, data={}):
-        self.loans = data.get("item_loan", [])
+    def __init__(self, data: dict | None = None):
+        self.loans = data.get("item_loan", []) if data else []
 
     def find(self, item_id: str):
         return next(

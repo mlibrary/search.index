@@ -1,5 +1,7 @@
-import pytest
 import json
+
+import pytest
+
 from api.academic_disciplines import academic_disciplines_for
 
 

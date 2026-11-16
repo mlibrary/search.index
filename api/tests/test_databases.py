@@ -1,7 +1,9 @@
-import pytest
 import json
-from api.databases import Record
 from datetime import datetime, timedelta
+
+import pytest
+
+from api.databases import Record
 
 
 @pytest.fixture()

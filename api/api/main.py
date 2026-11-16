@@ -6,17 +6,12 @@ if S.app_env != "test":
 
     initialize()
 
+import fastapi_structured_logging
 from fastapi import FastAPI
 from fastapi.middleware.gzip import GZipMiddleware
 from prometheus_fastapi_instrumentator import Instrumentator
-import fastapi_structured_logging
 
-from .routers import catalog
-from .routers import onlinejournals
-from .routers import articles
-from .routers import databases
-from .routers import guidesandmore
-
+from .routers import articles, catalog, databases, guidesandmore, onlinejournals
 
 app = FastAPI(
     title="Catalog Search API", description="REST API for Catalog Search Solr"

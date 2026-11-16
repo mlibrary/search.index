@@ -1,6 +1,7 @@
 import httpx
+
 from api.onlinejournals_record import Record
-from api.results import BaseResults, FilterHandler, BaseFilter, SolrFilterQuery
+from api.results import BaseFilter, BaseResults, FilterHandler, SolrFilterQuery
 from api.services import S
 
 
@@ -72,9 +73,9 @@ class Results(BaseResults):
         facet_fields = self.data["facet_counts"]["facet_fields"]
 
         result = []
-        for f in facet_fields.keys():
+        for f, v in facet_fields.items():
             if f in self.fh.facet_to_filter:
-                result.append(Filter(field=f, values=facet_fields[f]))
+                result.append(Filter(field=f, values=v))
 
         return result
 
@@ -84,8 +85,8 @@ class FilterQuery(SolrFilterQuery):
 
     def query(self):
         result = []
-        for field in self.facets.keys():
-            result.append(self.basic_facet(field, self.facets[field]))
+        for field, values in self.facets.items():
+            result.append(self.basic_facet(field, values))
 
         return result
 

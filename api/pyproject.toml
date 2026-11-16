@@ -12,7 +12,8 @@ packages = [{include = "api"}]
 exclude = [".venv",".vscode",".vscode-server", ".local", ".cache"]
 
 [tool.ruff.lint]
-ignore = ["E402"]
+extend-select = ["F", "I", "UP"]
+ignore = ["E402", "SIM118"]
 
 [tool.poetry.dependencies]
 python = "^3.11"

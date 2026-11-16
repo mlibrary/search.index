@@ -1,10 +1,9 @@
 from pydantic import BaseModel
-from typing import Optional
 
 
 class TextField(BaseModel):
     text: str
-    tag: Optional[str] = None
+    tag: str | None = None
 
 
 class BareTextField(BaseModel):
@@ -16,7 +15,7 @@ class LinkField(BareTextField):
 
 
 class PairedTextField(BaseModel):
-    transliterated: Optional[TextField] = None
+    transliterated: TextField | None = None
     original: TextField
 
 
@@ -34,17 +33,17 @@ class BareSearchField(BareTextField):
 
 
 class PairedSearchField(BaseModel):
-    transliterated: Optional[SearchField] = None
+    transliterated: SearchField | None = None
     original: SearchField
 
 
 class BrowseField(SearchField):
     browse: str
-    tag: Optional[str] = None
+    tag: str | None = None
 
 
 class PairedBrowseField(BaseModel):
-    transliterated: Optional[BrowseField] = None
+    transliterated: BrowseField | None = None
     original: BrowseField
 
 

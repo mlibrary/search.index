@@ -1,5 +1,6 @@
 import re
 from dataclasses import dataclass
+from types import MappingProxyType
 
 
 class FilterHandler:
@@ -20,22 +21,24 @@ class FilterHandler:
 
 
 class BaseResults:
-    sort_map = {
-        "relevance": "score desc",
-        "date_asc": "publishDateTrie asc",
-        "date_desc": "publishDateTrie desc",
-        "author_asc": "authorSort asc",
-        "author_desc": "authorSort desc",
-        "date_added": "cat_date desc",
-        "title_asc": "titleSort asc",
-        "title_desc": "titleSort desc",
-    }
-    inverse_sort_map = {v: k for k, v in sort_map.items()}
+    sort_map = MappingProxyType(
+        {
+            "relevance": "score desc",
+            "date_asc": "publishDateTrie asc",
+            "date_desc": "publishDateTrie desc",
+            "author_asc": "authorSort asc",
+            "author_desc": "authorSort desc",
+            "date_added": "cat_date desc",
+            "title_asc": "titleSort asc",
+            "title_desc": "titleSort desc",
+        }
+    )
+    inverse_sort_map = MappingProxyType({v: k for k, v in sort_map.items()})
 
-    def __init__(self, data: dict, query_params: dict, records: list = []):
+    def __init__(self, data: dict, query_params: dict, records: list | None = None):
         self.data = data
         self.query_params = query_params
-        self.records = records
+        self.records = records or []
 
     @property
     def total(self):
@@ -69,11 +72,7 @@ class BaseFilterQuery:
         self.facets = {}
         for f in data["filters"]:
             field, value = f.split(":", 1)
-            facet = (
-                self.fh.filter_to_facet[field]
-                if field in self.fh.filter_to_facet
-                else None
-            )
+            facet = self.fh.filter_to_facet.get(field)
             # if facet isn't in the facet list skip it
             if not facet:
                 continue
@@ -87,7 +86,7 @@ class BaseFilterQuery:
 
 class SolrFilterQuery(BaseFilterQuery):
     def basic_facet(self, field, values):
-        escaped = map(lambda v: solr_escape(v), values)
+        escaped = (solr_escape(v) for v in values)
         value = " AND ".join(escaped)
         return f"{field}:({value})"
 

@@ -1,24 +1,32 @@
-from pydantic import BaseModel, ConfigDict
-from typing import Optional
-from .holdings import Holdings, OnlinejournalsHoldings, ArticleHolding
-from .metadata import (
-    TextField,
-    PairedTextField,
-    PairedSearchField,
-    PairedBrowseField,
-    BareTextField,
-    BareSearchField,
-    AcademicDiscipline,
-    LinkField,
+import datetime
+import enum
+
+from pydantic import (
+    BaseModel,
+    ConfigDict,
 )
+
 from .citation import (
-    DatabasesCitation,
     ArticlesCitation,
     CatalogCitation,
+    DatabasesCitation,
     GuidesandmoreCitation,
 )
-import datetime
-from enum import Enum
+from .holdings import (
+    ArticleHolding,
+    Holdings,
+    OnlinejournalsHoldings,
+)
+from .metadata import (
+    AcademicDiscipline,
+    BareSearchField,
+    BareTextField,
+    LinkField,
+    PairedBrowseField,
+    PairedSearchField,
+    PairedTextField,
+    TextField,
+)
 
 
 ##########
@@ -194,7 +202,7 @@ class OnlinejournalsRecord(Record):
 class ArticlesRecord(BaseModel):
     id: str
     peer_reviewed: bool
-    retraction_notice_url: Optional[str] = None
+    retraction_notice_url: str | None = None
     title: list[BareTextField] = []
     abstract: list[BareTextField] = []
     author: list[BareSearchField] = []
@@ -223,7 +231,7 @@ class ArticlesResultRecord(BaseModel):
     id: str
     # formats: list[str]
     peer_reviewed: bool
-    retraction_notice_url: Optional[str] = None
+    retraction_notice_url: str | None = None
     title: list[BareTextField] = []
     abstract: list[BareTextField] = []
     author: list[BareSearchField] = []
@@ -378,7 +386,7 @@ BrowseAcademicDiscipline.model_rebuild()
 ###########
 
 
-class Sort(str, Enum):
+class Sort(enum.StrEnum):
     relevance = "relevance"
     date_asc = "date_asc"
     date_desc = "date_desc"
@@ -389,19 +397,19 @@ class Sort(str, Enum):
     title_desc = "title_desc"
 
 
-class ArticlesSort(str, Enum):
+class ArticlesSort(enum.StrEnum):
     relevance = "relevance"
     date_asc = "date_asc"
     date_desc = "date_desc"
 
 
-class DatabasesSort(str, Enum):
+class DatabasesSort(enum.StrEnum):
     relevance = "relevance"
     title_asc = "title_asc"
     title_desc = "title_desc"
 
 
-class GuidesandmoreSort(str, Enum):
+class GuidesandmoreSort(enum.StrEnum):
     relevance = "relevance"
     title_asc = "title_asc"
     title_desc = "title_desc"
@@ -420,11 +428,5 @@ class Response(BaseModel):
 
 class Response404(Response):
     model_config = ConfigDict(
-        json_schema_extra={
-            "examples": [
-                {
-                    "detail": "Record not found",
-                }
-            ]
-        }
+        json_schema_extra={"examples": [{"detail": "Record not found"}]}
     )

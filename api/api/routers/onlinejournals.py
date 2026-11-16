@@ -1,15 +1,17 @@
 from typing import Annotated
+
 from fastapi import APIRouter, HTTPException, Query
-from api.metrics import REQUEST_HISTOGRAM
-from api.schemas import main as schemas
+
+from api import specialists
+from api.academic_disciplines import get_onlinejournals_academic_disciplines
 from api.clients.solr_client import NotFoundError
+from api.metrics import REQUEST_HISTOGRAM
 from api.onlinejournals_record import record_for
 from api.onlinejournals_results import (
-    get_onlinejournals_results,
     get_onlinejournals_browse_academic_discipline,
+    get_onlinejournals_results,
 )
-from api.academic_disciplines import get_onlinejournals_academic_disciplines
-from api import specialists
+from api.schemas import main as schemas
 
 router = APIRouter(prefix="/onlinejournals", tags=["onlinejournals"])
 
@@ -49,7 +51,7 @@ async def get_search_results(
     query: str = "",
     offset: int = 0,
     limit: int = 10,
-    filters: Annotated[list[str], Query()] = [],
+    filters: Annotated[list[str] | None, Query()] = None,
     sort: schemas.Sort = schemas.Sort.relevance,
 ) -> schemas.OnlinejournalsResults:
     """
@@ -60,7 +62,7 @@ async def get_search_results(
             "query": query,
             "offset": offset,
             "limit": limit,
-            "filters": filters,
+            "filters": filters or [],
             "sort": sort,
         }
     )
@@ -75,7 +77,7 @@ async def get_search_results(
 )
 async def get_specialists(
     query: str = "",
-    filters: Annotated[list[str], Query()] = [],
+    filters: Annotated[list[str] | None, Query()] = None,
 ) -> schemas.Specialists:
     """
     Looks up specialists associated with given query
@@ -84,7 +86,7 @@ async def get_specialists(
         "onlinejournals",
         {
             "query": query,
-            "filters": filters,
+            "filters": filters or [],
         },
     )
     return results

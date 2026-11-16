@@ -1,10 +1,11 @@
 from typing import Annotated
+
 from fastapi import APIRouter, HTTPException, Query
-from api.metrics import REQUEST_HISTOGRAM
-from api.schemas import main as schemas
-from api.guidesandmore import get_results, record_for
 
 from api.clients.solr_client import NotFoundError
+from api.guidesandmore import get_results, record_for
+from api.metrics import REQUEST_HISTOGRAM
+from api.schemas import main as schemas
 
 router = APIRouter(prefix="/guidesandmore", tags=["guidesandmore"])
 
@@ -42,7 +43,7 @@ async def get_search_results(
     query: str = "",
     offset: int = 0,
     limit: int = 10,
-    filters: Annotated[list[str], Query()] = [],
+    filters: Annotated[list[str] | None, Query()] = None,
     sort: schemas.GuidesandmoreSort = schemas.GuidesandmoreSort.relevance,
 ) -> schemas.GuidesandmoreResults:
     """
@@ -53,7 +54,7 @@ async def get_search_results(
             "query": query,
             "offset": offset,
             "limit": limit,
-            "filters": filters,
+            "filters": filters or [],
             "sort": sort,
         }
     )

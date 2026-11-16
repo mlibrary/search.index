@@ -1,9 +1,10 @@
 import httpx
-from api.services import S
-from api.results import solr_escape
+
 from api.catalog_results import FilterQuery as CatalogFilterQuery
-from api.onlinejournals_results import FilterQuery as OnlinejournalsFilterQuery
 from api.databases import FilterQuery as DatabasesFilterQuery
+from api.onlinejournals_results import FilterQuery as OnlinejournalsFilterQuery
+from api.results import solr_escape
+from api.services import S
 
 
 class SpecialistFetcher:
@@ -49,11 +50,9 @@ class SpecialistFetcher:
                         term_counts[term] = 1
 
         result = []
-        for term in term_counts.keys():
-            if term_counts[term] >= term_threshold:
-                result.append(
-                    {"discipline": solr_escape(term), "count": term_counts[term]}
-                )
+        for term, count in term_counts.items():
+            if count >= term_threshold:
+                result.append({"discipline": solr_escape(term), "count": count})
         return result
 
     def website_solr_query_params(self, top_academic_disciplines, query_params):

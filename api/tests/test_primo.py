@@ -1,17 +1,19 @@
-import pytest
 import json
-from api.primo import (
-    Record,
-    AlmaHolding,
-    LibKeyHolding,
-    CSL,
-    PrimoDoc,
-    TaggedCitation,
-    ArticlesFilterQuery,
-    Results,
-)
-from urllib.parse import parse_qs
 import re
+from urllib.parse import parse_qs
+
+import pytest
+
+from api.primo import (
+    CSL,
+    AlmaHolding,
+    ArticlesFilterQuery,
+    LibKeyHolding,
+    PrimoDoc,
+    Record,
+    Results,
+    TaggedCitation,
+)
 
 
 @pytest.fixture()

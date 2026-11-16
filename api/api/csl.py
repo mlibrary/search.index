@@ -1,7 +1,10 @@
+from types import MappingProxyType
+
+
 class BaseCSL:
     # these come from here: https://docs.citationstyles.org/en/stable/specification.html#appendix-iii-types
     # yes, there is a mix of snake case and kebab case
-    TYPE_ORDER = [
+    TYPE_ORDER = (
         "article-journal",
         "article-magazine",
         "article-newspaper",
@@ -37,9 +40,9 @@ class BaseCSL:
         "article",
         "book",
         "manuscript",  # putting this at the bottom because chicago-notes-bibliography doesn't render it
-    ]
+    )
 
-    TYPE_MAPPING = []
+    TYPE_MAPPING = MappingProxyType({})
 
     DEFAULT = "article"
 

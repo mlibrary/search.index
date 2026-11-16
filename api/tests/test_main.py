@@ -1,7 +1,9 @@
-import pytest
 import json
+
+import pytest
 from fastapi.testclient import TestClient
 from httpx import Response
+
 from api.main import app
 from api.services import S
 

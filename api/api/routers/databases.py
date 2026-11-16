@@ -1,11 +1,13 @@
 from typing import Annotated
+
 from fastapi import APIRouter, HTTPException, Query
+
+from api import specialists
+from api.academic_disciplines import get_databases_academic_disciplines
+from api.clients.solr_client import NotFoundError
+from api.databases import get_browse_academic_discipline, get_results, record_for
 from api.metrics import REQUEST_HISTOGRAM
 from api.schemas import main as schemas
-from api.clients.solr_client import NotFoundError
-from api.databases import record_for, get_results, get_browse_academic_discipline
-from api.academic_disciplines import get_databases_academic_disciplines
-from api import specialists
 
 router = APIRouter(prefix="/databases", tags=["databases"])
 
@@ -43,7 +45,7 @@ async def get_search_results(
     query: str = "",
     offset: int = 0,
     limit: int = 10,
-    filters: Annotated[list[str], Query()] = [],
+    filters: Annotated[list[str] | None, Query()] = None,
     sort: schemas.DatabasesSort = schemas.DatabasesSort.relevance,
 ) -> schemas.DatabasesResults:
     """
@@ -54,7 +56,7 @@ async def get_search_results(
             "query": query,
             "offset": offset,
             "limit": limit,
-            "filters": filters,
+            "filters": filters or [],
             "sort": sort,
         }
     )
@@ -69,7 +71,7 @@ async def get_search_results(
 )
 async def get_specialists(
     query: str = "",
-    filters: Annotated[list[str], Query()] = [],
+    filters: Annotated[list[str] | None, Query()] = None,
 ) -> schemas.Specialists:
     """
     Looks up specialists associated with given query
@@ -78,7 +80,7 @@ async def get_specialists(
         "databases",
         {
             "query": query,
-            "filters": filters,
+            "filters": filters or [],
         },
     )
     return results

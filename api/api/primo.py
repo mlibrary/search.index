@@ -1,16 +1,19 @@
+import asyncio
+import re
+import string
+from datetime import datetime
+from functools import cached_property
+from types import MappingProxyType
+from urllib.parse import parse_qsl, urlencode
+
+import httpx
+import yaml
+
 from api.clients.exlibris_client import PrimoClient
 from api.clients.lib_key_client import LibKeyClient
-import yaml
-import re
-from api.services import S
-from urllib.parse import parse_qsl, urlencode
 from api.csl import BaseCSL
-from datetime import datetime
 from api.results import BaseFilterQuery, FilterHandler, FilterValue
-import httpx
-import string
-import asyncio
-from functools import cached_property
+from api.services import S
 
 sort_map = {"relevance": "rank", "date_desc": "date_d", "date_asc": "date_a"}
 
@@ -24,14 +27,14 @@ articles_filter_handler = FilterHandler(
 )
 
 
-with open(f"{S.project_root}/config/primo_languages.yaml", "r") as file:
+with open(f"{S.project_root}/config/primo_languages.yaml") as file:
     language_code_to_str = yaml.safe_load(file)
 
 language_str_to_code = {}
 for code in language_code_to_str:
     language_str_to_code[language_code_to_str[code]] = code
 
-with open(f"{S.project_root}/config/primo_formats.yaml", "r") as file:
+with open(f"{S.project_root}/config/primo_formats.yaml") as file:
     format_code_to_str = yaml.safe_load(file)
 
 format_str_to_code = {}
@@ -82,7 +85,7 @@ async def get_lib_key_holding(doi, pmid):
         return LibKeyHolding(data)
 
 
-async def get_results(query_params):
+async def get_results(query_params: dict):
     parser_params = {
         "q": query_params["query"],
         "offset": query_params["offset"],
@@ -156,10 +159,10 @@ class Results:
         records = await asyncio.gather(*map(fetch_record, data["docs"]))
         return Results(data=data, query_params=query_params, records=records)
 
-    def __init__(self, data: dict, query_params: dict, records: list = []):
+    def __init__(self, data: dict, query_params: dict, records: list | None = None):
         self.data = data
         self.query_params = query_params
-        self.records = records
+        self.records = records or []
 
     @property
     def total(self):
@@ -198,6 +201,13 @@ class Results:
 
 class ArticlesFilterQuery(BaseFilterQuery):
     fh = articles_filter_handler
+    tlevel_map = MappingProxyType(
+        {
+            "open_access": "open_access",
+            "online": "online_resources",
+            "peer_reviewed": "peer_reviewed",
+        }
+    )
 
     def query_params(self):
         result = {}
@@ -240,29 +250,15 @@ class ArticlesFilterQuery(BaseFilterQuery):
                             upto = parts[1]
                         normalized = f"[{start} TO {upto}]"
                         result.append(f"facet_search{field},exact,{normalized}")
-        tlevel_map = {
-            "open_access": "open_access",
-            "online": "online_resources",
-            "peer_reviewed": "peer_reviewed",
-        }
-        for key in tlevel_map.keys():
+        for key, value in self.tlevel_map.items():
             if self.data.get(key, False):
-                result.append(f"facet_tlevel,exact,{tlevel_map[key]}")
+                result.append(f"facet_tlevel,exact,{value}")
 
         return "|,|".join(result)
 
     def qExclude(self):
         if self.data.get("exclude_newspapers", False):
             return "facet_rtype,exact,newspaper_articles"
-
-
-# parser_params = {
-# "q": query_params["query"],
-# "limit": query_params["limit"],
-# "offset": query_params["offset"],
-# "sort": sort_map[query_params["sort"]],
-# }
-# qInclude = get_qInclude(query_params["filters"])
 
 
 class PrimoDoc:
@@ -611,52 +607,54 @@ class LibKeyHolding:
 
 
 class CSL(BaseCSL):
-    TYPE_MAPPING = {
-        "archival_material_manuscript": "manuscript",
-        "archival_material_manuscripts": "manuscript",
-        "article": "article-journal",
-        "articles": "article-journal",
-        "audio": "article",
-        "audios": "article",
-        "book": "book",
-        "book_chapter": "chapter",
-        "book_chapters": "chapter",
-        "books": "book",
-        "conference_proceeding": "paper-conference",
-        "conference_proceedings": "paper-conference",
-        "dataset": "dataset",
-        "datasets": "dataset",
-        "dissertation": "thesis",
-        "dissertations": "thesis",
-        "government_document": "article",
-        "government_documents": "article",
-        "image": "graphic",
-        "images": "graphic",
-        "journal": "article-journal",
-        "journals": "article-journal",
-        "magazinearticle": "article-magazine",
-        "magazinearticles": "article-magazine",
-        "newsletterarticle": "article",
-        "newsletterarticles": "article",
-        "newspaper_article": "article-newspaper",
-        "newspaper_articles": "article-newspaper",
-        "patent": "patent",
-        "patents": "patent",
-        "reference_entry": "article-journal",
-        "reference_entrys": "article-journal",
-        "report": "report",
-        "reports": "report",
-        "review": "review",
-        "reviews": "review",
-        "standard": "article",
-        "standards": "article",
-        "text_resource": "article",
-        "text_resources": "article",
-        "video": "motion_picture ",
-        "videos": "motion_picture",
-        "web_resource": "webpage",
-        "web_resources": "webpage",
-    }
+    TYPE_MAPPING = MappingProxyType(
+        {
+            "archival_material_manuscript": "manuscript",
+            "archival_material_manuscripts": "manuscript",
+            "article": "article-journal",
+            "articles": "article-journal",
+            "audio": "article",
+            "audios": "article",
+            "book": "book",
+            "book_chapter": "chapter",
+            "book_chapters": "chapter",
+            "books": "book",
+            "conference_proceeding": "paper-conference",
+            "conference_proceedings": "paper-conference",
+            "dataset": "dataset",
+            "datasets": "dataset",
+            "dissertation": "thesis",
+            "dissertations": "thesis",
+            "government_document": "article",
+            "government_documents": "article",
+            "image": "graphic",
+            "images": "graphic",
+            "journal": "article-journal",
+            "journals": "article-journal",
+            "magazinearticle": "article-magazine",
+            "magazinearticles": "article-magazine",
+            "newsletterarticle": "article",
+            "newsletterarticles": "article",
+            "newspaper_article": "article-newspaper",
+            "newspaper_articles": "article-newspaper",
+            "patent": "patent",
+            "patents": "patent",
+            "reference_entry": "article-journal",
+            "reference_entrys": "article-journal",
+            "report": "report",
+            "reports": "report",
+            "review": "review",
+            "reviews": "review",
+            "standard": "article",
+            "standards": "article",
+            "text_resource": "article",
+            "text_resources": "article",
+            "video": "motion_picture ",
+            "videos": "motion_picture",
+            "web_resource": "webpage",
+            "web_resources": "webpage",
+        }
+    )
 
     def __init__(self, doc):
         self.doc = doc
@@ -738,7 +736,7 @@ class CSL(BaseCSL):
 
 class TaggedCitation:
     # The meta tags come from: https://www.zotero.org/support/dev/exposing_metadata
-    TAG_MAPPING = [
+    TAG_MAPPING = (
         {"field": "id", "ris": ["ID"], "meta": ["id"]},
         {"field": "title", "ris": ["T1", "TI"], "meta": ["title"]},
         {"field": "authors", "ris": ["AU"], "meta": ["author"]},
@@ -756,54 +754,56 @@ class TaggedCitation:
         {"field": "language", "ris": ["LA"], "meta": ["language"]},
         {"field": "subject", "ris": ["KW"], "meta": ["keywords"]},
         {"field": "abstract", "ris": ["AB", "N2"], "meta": ["abstract"]},
-    ]
+    )
 
-    TYPE_MAPPING = {
-        "archival_material_manuscript": "MANSCPT",
-        "archival_material_manuscripts": "MANSPCT",
-        "article": "JOUR",
-        "articles": "JOUR",
-        "audio": "SOUND",
-        "audios": "SOUND",
-        "book": "BOOK",
-        "book_chapter": "CHAP",
-        "book_chapters": "CHAP",
-        "books": "BOOK",
-        "conference_proceeding": "CONF",
-        "conference_proceedings": "CONF",
-        "dataset": "DBASE",
-        "datasets": "DBASE",
-        "dissertation": "THES",
-        "dissertations": "THES",
-        "government_document": "GOVDOC",
-        "government_documents": "GOVDOC",
-        "image": "ADVS",
-        "images": "ADVS",
-        "journal": "JOUR",
-        "journals": "JOUR",
-        "magazinearticle": "MGZN",
-        "magazinearticles": "MGZN",
-        "newsletterarticle": "NEWS",
-        "newsletterarticles": "NEWS",
-        "newspaper_article": "NEWS",
-        "newspaper_articles": "NEWS",
-        "patent": "PAT",
-        "patents": "PAT",
-        "reference_entry": "JOUR",
-        "reference_entrys": "JOUR",
-        "report": "RPRT",
-        "reports": "RPRT",
-        "review": "JOUR",
-        "reviews": "JOUR",
-        "standard": "JOUR",
-        "standards": "JOUR",
-        "text_resource": "JOUR",
-        "text_resources": "JOUR",
-        "video": "VIDEO",
-        "videos": "VIDEO",
-        "web_resource": "WEB",
-        "web_resources": "WEB",
-    }
+    TYPE_MAPPING = MappingProxyType(
+        {
+            "archival_material_manuscript": "MANSCPT",
+            "archival_material_manuscripts": "MANSPCT",
+            "article": "JOUR",
+            "articles": "JOUR",
+            "audio": "SOUND",
+            "audios": "SOUND",
+            "book": "BOOK",
+            "book_chapter": "CHAP",
+            "book_chapters": "CHAP",
+            "books": "BOOK",
+            "conference_proceeding": "CONF",
+            "conference_proceedings": "CONF",
+            "dataset": "DBASE",
+            "datasets": "DBASE",
+            "dissertation": "THES",
+            "dissertations": "THES",
+            "government_document": "GOVDOC",
+            "government_documents": "GOVDOC",
+            "image": "ADVS",
+            "images": "ADVS",
+            "journal": "JOUR",
+            "journals": "JOUR",
+            "magazinearticle": "MGZN",
+            "magazinearticles": "MGZN",
+            "newsletterarticle": "NEWS",
+            "newsletterarticles": "NEWS",
+            "newspaper_article": "NEWS",
+            "newspaper_articles": "NEWS",
+            "patent": "PAT",
+            "patents": "PAT",
+            "reference_entry": "JOUR",
+            "reference_entrys": "JOUR",
+            "report": "RPRT",
+            "reports": "RPRT",
+            "review": "JOUR",
+            "reviews": "JOUR",
+            "standard": "JOUR",
+            "standards": "JOUR",
+            "text_resource": "JOUR",
+            "text_resources": "JOUR",
+            "video": "VIDEO",
+            "videos": "VIDEO",
+            "web_resource": "WEB",
+            "web_resources": "WEB",
+        }
+    )
 
     def __init__(self, doc):
         self.doc = doc

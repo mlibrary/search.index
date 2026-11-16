@@ -1,9 +1,11 @@
-import pymarc
-from dataclasses import dataclass
 import re
 import string
 from collections.abc import Callable
-from api.entities import SearchField, FieldElement, PairedField
+from dataclasses import dataclass
+
+import pymarc
+
+from api.entities import FieldElement, PairedField, SearchField
 
 # used with rstrip_chars. When we want to trim the end of a string, these are
 # the ones that usually should be removed.
@@ -104,6 +106,17 @@ class Processor:
         return result
 
     def generate_paired_fields(self, rulesets: tuple) -> list:
+        """generate paired fields from a tuple of rulesets
+
+        Uses a tuple because it's immutable (unlike a list) and is supposed to be faster.
+        Tuples for a single element are expressed with a trailing comma. Example: (1,)
+
+        Args:
+            rulesets: tuple of FieldRuleset objects
+
+        Returns:
+            list of PairedField objects
+        """
         result = []
         for ruleset in rulesets:
             for fields in self._get_paired_fields_for(ruleset):

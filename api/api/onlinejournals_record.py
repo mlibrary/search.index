@@ -1,17 +1,19 @@
 from __future__ import annotations
-import re
-import pymarc
+
 import io
 import json
+import re
+
 import fastapi_structured_logging
-from api.clients.solr_client import SolrClient
-from api.solr import SolrDocProcessor
-from api.holdings import (
-    electronic_items,
-    EmptyHoldings,
-)
+import pymarc
 
 from api.catalog_record import BaseRecord, Citation
+from api.clients.solr_client import SolrClient
+from api.holdings import (
+    EmptyHoldings,
+    electronic_items,
+)
+from api.solr import SolrDocProcessor
 
 logger = fastapi_structured_logging.get_logger()
 
@@ -35,14 +37,14 @@ class Record(BaseRecord):
     def __init__(
         self,
         data: dict,
-        holdings=EmptyHoldings(),
+        holdings=None,
         recommended_academic_discipline=None,
     ):
         self.data = data
         BaseRecord.__init__(self, data)
         self.record = pymarc.parse_xml_to_array(io.StringIO(data["fullrecord"]))[0]
         self.recommended_academic_discipline = recommended_academic_discipline
-        self.holdings = holdings
+        self.holdings = holdings or EmptyHoldings()
 
     @property
     def recommended_resource(self):

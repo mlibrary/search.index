@@ -1,7 +1,8 @@
-import httpx
-from api.services import S
-from api.metrics import SOLR_HISTOGRAM
 import fastapi_structured_logging
+import httpx
+
+from api.metrics import SOLR_HISTOGRAM
+from api.services import S
 
 logger = fastapi_structured_logging.get_logger()
 

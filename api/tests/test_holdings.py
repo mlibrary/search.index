@@ -1,23 +1,25 @@
-import pytest
-import pymarc
-import json
 import io
+import json
 from datetime import datetime
-from urllib.parse import urlparse, parse_qs
-from api.marc import bidi
-from api.holdings import (
-    PhysicalHolding,
-    ElectronicItem,
-    HathiTrustItem,
-    AlmaDigitalItem,
-    FindingAids,
-    FindingAidItem,
-    ReservableItem,
-    ClementsItem,
-    has_physical_holdings,
-    AlmaLoans,
-)
+from urllib.parse import parse_qs, urlparse
+
+import pymarc
+import pytest
+
 from api.catalog_record import Holdings
+from api.holdings import (
+    AlmaDigitalItem,
+    AlmaLoans,
+    ClementsItem,
+    ElectronicItem,
+    FindingAidItem,
+    FindingAids,
+    HathiTrustItem,
+    PhysicalHolding,
+    ReservableItem,
+    has_physical_holdings,
+)
+from api.marc import bidi
 
 
 @pytest.fixture
@@ -575,8 +577,8 @@ class TestReservableItem:
     ):
         url_parts = urlparse(base_reservable_item.url)
         subject = parse_qs(url_parts.query)
-        for key in base_reservable_item_fields.keys():
-            assert subject[key][0] == base_reservable_item_fields[key]
+        for key, value in base_reservable_item_fields.items():
+            assert subject[key][0] == value
 
     def test_clements_restricted(self, record, physical_item):
         record.add_field(

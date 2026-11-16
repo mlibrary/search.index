@@ -1,11 +1,13 @@
 from typing import Annotated
+
 from fastapi import APIRouter, HTTPException, Query
-from api.metrics import REQUEST_HISTOGRAM
-from api.schemas import main as schemas
-from api.clients.solr_client import NotFoundError
+
+from api import specialists
 from api.catalog_record import record_for
 from api.catalog_results import get_results
-from api import specialists
+from api.clients.solr_client import NotFoundError
+from api.metrics import REQUEST_HISTOGRAM
+from api.schemas import main as schemas
 
 router = APIRouter(prefix="/catalog", tags=["catalog"])
 
@@ -43,7 +45,7 @@ async def get_search_results(
     query: str = "",
     offset: int = 0,
     limit: int = 10,
-    filters: Annotated[list[str], Query()] = [],
+    filters: Annotated[list[str] | None, Query()] = None,
     ht_search_only: bool = False,
     sort: schemas.Sort = schemas.Sort.relevance,
 ) -> schemas.Results:
@@ -55,7 +57,7 @@ async def get_search_results(
             "query": query,
             "offset": offset,
             "limit": limit,
-            "filters": filters,
+            "filters": filters or [],
             "ht_search_only": ht_search_only,
             "sort": sort,
         }
@@ -71,7 +73,7 @@ async def get_search_results(
 )
 async def get_specialists(
     query: str = "",
-    filters: Annotated[list[str], Query()] = [],
+    filters: Annotated[list[str] | None, Query()] = None,
     ht_search_only: bool = False,
 ) -> schemas.Specialists:
     """
@@ -81,7 +83,7 @@ async def get_specialists(
         "catalog",
         {
             "query": query,
-            "filters": filters,
+            "filters": filters or [],
             "ht_search_only": ht_search_only,
         },
     )

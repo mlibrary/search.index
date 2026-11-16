@@ -1,12 +1,15 @@
-from api.solr import SolrDocProcessor
-from api.results import BaseResults, FilterHandler, BaseFilter, SolrFilterQuery
-from api.services import S
+import base64
+from datetime import date
+from types import MappingProxyType
+
+import httpx
+
 from api.clients.solr_client import WebsiteSolrClient
 from api.csl import BaseCSL
 from api.entities import TextField
-import httpx
-from datetime import date
-import base64
+from api.results import BaseFilter, BaseResults, FilterHandler, SolrFilterQuery
+from api.services import S
+from api.solr import SolrDocProcessor
 
 
 async def record_for(id: str):
@@ -42,13 +45,15 @@ def decode_id(id: str):
 
 
 class Results(BaseResults):
-    sort_map = {
-        "relevance": "score desc",
-        "title_asc": "sort_title asc",
-        "title_desc": "sort_title desc",
-        "date_asc": "created asc",
-        "date_desc": "created desc",
-    }
+    sort_map = MappingProxyType(
+        {
+            "relevance": "score desc",
+            "title_asc": "sort_title asc",
+            "title_desc": "sort_title desc",
+            "date_asc": "created asc",
+            "date_desc": "created desc",
+        }
+    )
     fh = filter_handler
 
     def __init__(self, data: dict, query_params: dict):
@@ -69,9 +74,9 @@ class Results(BaseResults):
         facet_fields = self.data["facet_counts"]["facet_fields"]
 
         result = []
-        for f in facet_fields.keys():
+        for f, v in facet_fields.items():
             if f in self.fh.facet_to_filter:
-                result.append(Filter(field=f, values=facet_fields[f]))
+                result.append(Filter(field=f, values=v))
 
         return result
 
@@ -143,11 +148,11 @@ class Record:
 
 
 class TaggedCitation:
-    TAG_MAPPING = [
+    TAG_MAPPING = (
         {"field": "id", "ris": ["ID"], "meta": ["id"]},
         {"field": "title", "ris": ["T1", "TI"], "meta": ["title"]},
         {"field": "url", "ris": ["L2", "UR"], "meta": ["fulltext_html_url"]},
-    ]
+    )
 
     def __init__(self, doc):
         self.doc = doc
@@ -226,12 +231,14 @@ class TaggedCitation:
 
 
 class CSL(BaseCSL):
-    TYPE_MAPPING = {
-        "Research Guides": "webpage",
-        "Blogs and Blog Posts": "post-weblog",
-        "Online Exhibits": "webpage",
-        "Specialty Sites": "webpage",
-    }
+    TYPE_MAPPING = MappingProxyType(
+        {
+            "Research Guides": "webpage",
+            "Blogs and Blog Posts": "post-weblog",
+            "Online Exhibits": "webpage",
+            "Specialty Sites": "webpage",
+        }
+    )
 
     def __init__(self, solr_doc):
         self.doc = solr_doc
